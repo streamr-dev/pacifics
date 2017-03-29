@@ -1,0 +1,10 @@
+{
+  "name": "streamr-frontend-starter-kit",
+  "script": "server.js",
+  "env": {
+    "NODE_ENV": "production",
+    "BASE_URL": "",
+    "PORT": 3600
+  },
+  "args": ""
+}
