@@ -6,6 +6,9 @@ import {createStore, applyMiddleware, compose} from 'redux'
 import createLogger from 'redux-logger'
 
 import userReducer from './reducers/user.js'
+import parcelReducer from './reducers/parcel.js'
+import deliveryReducer from './reducers/delivery.js'
+import postboxReducer from './reducers/postbox.js'
 
 import { useRouterHistory } from 'react-router'
 import { createHistory } from 'history'
@@ -18,6 +21,9 @@ export const browserHistory = useRouterHistory(createHistory)({
 
 const reducer = combineReducers({
     user: userReducer,
+    delivery: deliveryReducer,
+    parcel: parcelReducer,
+    postbox: postboxReducer,
     routing: routerReducer
 })
 
