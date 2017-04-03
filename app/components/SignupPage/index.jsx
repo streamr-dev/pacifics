@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {Alert, Col, Table, Panel, Button, FormGroup, ControlLabel, FormControl} from 'react-bootstrap'
-import {signup} from '../actions/user.js'
+import {signup} from '../../actions/user.js'
 import {Link} from 'react-router'
 
 class SignupPage extends Component {

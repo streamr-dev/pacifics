@@ -1,8 +1,8 @@
 const Sequelize = require('sequelize')
-const dbConfig = require('./config')
+const dbConfig = require('../config/database.config')
 
 if (dbConfig.host === null) {
-    throw new Error("Please specify database credentials in 'database/config.js'!")
+    throw new Error("Please specify database credentials in 'config/database.config.js'!")
 }
 
 const sequelize = new Sequelize(dbConfig.database, dbConfig.user, dbConfig.password, {

@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {login} from '../actions/user'
+import {login} from '../../actions/user'
 import {Link} from 'react-router'
 import {Alert, Panel, Col, Button, FormGroup, ControlLabel, FormControl} from 'react-bootstrap'
 

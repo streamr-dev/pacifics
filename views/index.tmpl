@@ -9,6 +9,8 @@
 
     <!-- Optional theme -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/latest/css/bootstrap-theme.min.css">
+
+    <link rel="stylesheet" href="<%= baseUrl %>/bundle.css">
 </head>
 <body>
     <div id="root"></div>
@@ -17,6 +19,6 @@
         <%= typeof user !== undefined ? "var user = " + JSON.stringify(user) : "" %>
         var baseUrl = "<%= baseUrl %>"
     </script>
-    <script src="bundle.js"></script>
+    <script src="<%= baseUrl %>/bundle.js"></script>
 </body>
 </html>

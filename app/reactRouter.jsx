@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
 import {Router, Route} from 'react-router'
 
-import App from './components/App.jsx'
-import SignupPage from './components/SignupPage.jsx'
-import LoginPage from './components/LoginPage.jsx'
+import App from './components/App'
+import SignupPage from './components/SignupPage'
+import LoginPage from './components/LoginPage'
 import /* store, */ {history} from './store.js'
 
 export default class ReactRouter extends Component {

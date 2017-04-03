@@ -47,13 +47,12 @@ app.use(passport.session())
 
 const inProduction = process.env.NODE_ENV === 'production'
 
-const webpackProdConfig = require('./webpack.prod.config')
-const webpackDevConfig = require('./webpack.dev.config')
+const webpackConfig = require('./config/webpack.config.js')
 
 try {
-    fs.accessSync(path.resolve(webpackProdConfig.output.path, webpackProdConfig.output.filename), fs.F_OK)
+    fs.accessSync(path.resolve(webpackConfig.output.path, webpackConfig.output.filename), fs.F_OK)
     if (!inProduction) {
-        console.warn(`\n\tOld javascript bundle found from ${webpackProdConfig.output.path}/${webpackProdConfig.output.filename}.` +
+        console.warn(`\n\tOld javascript bundle found from ${webpackConfig.output.path}/${webpackConfig.output.filename}.` +
             '\n\tIf not removed, it will override the in-memory bundle created by webpack-dev-server.\n')
     }
 // When the bundle was not found
@@ -69,7 +68,7 @@ try {
 
 // Set up dev server
 if (!inProduction) {
-    const compiler = webpack(webpackDevConfig)
+    const compiler = webpack(webpackConfig)
     app.use(webpackMiddleware(compiler))
     app.use(webpackHotMiddleware(compiler))
 }
