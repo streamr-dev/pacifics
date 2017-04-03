@@ -7,7 +7,6 @@ import {Alert, Panel, Col, Button, FormGroup, ControlLabel, FormControl} from 'r
 class LoginPage extends Component {
     constructor(props) {
         super(props)
-        
         this.handleSubmit = this.handleSubmit.bind(this)
     }
     

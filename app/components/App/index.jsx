@@ -1,27 +1,16 @@
 import React, {Component} from 'react'
-import {Link} from 'react-router'
 import {connect} from 'react-redux'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'font-awesome/css/font-awesome.css'
 import styles from './app-styles.pcss'
 
 class App extends Component {
     render() {
         return (
             <div className={['container', styles.appContainer].join(' ')}>
-                {this.props.user && this.props.user.id ?
-                    <div>
-                        {JSON.stringify(this.props.user)}
-                    </div>
-                    :
-                    <div>
-                        <div>No user</div>
-                        <div>
-                            <Link to="login">Login</Link>
-                        </div>
-                        <div>
-                            <Link to="signup">Signup</Link>
-                        </div>
-                    </div>
-                }
+                {/*Nav?*/}
+                {this.props.children}
+                {/*Footer?*/}
             </div>
         )
     }
@@ -29,7 +18,7 @@ class App extends Component {
 
 App.propTypes = {
     user: React.PropTypes.object,
-    router: React.PropTypes.object
+    children: React.PropTypes.oneOfType([React.PropTypes.element, React.PropTypes.arrayOf(React.PropTypes.element)])
 }
 
 const mapStateToProps = state => {
