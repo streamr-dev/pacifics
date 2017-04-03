@@ -23,6 +23,7 @@ class DeliveriesCreate extends Component {
         this.handleSubmit = this.handleSubmit.bind(this)
     }
     componentWillMount() {
+        this.props.dispatch(getAllPostboxes())
         this.props.location.state && this.setState({
             ...this.state,
             ...this.props.location.state

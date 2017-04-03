@@ -28,14 +28,12 @@ class ParcelsList extends Component {
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>Parcel1</td>
-                                <td>Me</td>
-                            </tr>
-                            <tr>
-                                <td>Parcel2</td>
-                                <td>Postbox1</td>
-                            </tr>
+                            {this.props.parcels.forEach((p) => (
+                                <tr>
+                                    <td>{p.name}</td>
+                                    <td>{p.owner}</td>
+                                </tr>
+                            ))}
                             </tbody>
                         </Table>
                     </Panel>
@@ -47,12 +45,14 @@ class ParcelsList extends Component {
 
 ParcelsList.propTypes = {
     user: React.PropTypes.object,
-    children: React.PropTypes.oneOfType([React.PropTypes.element, React.PropTypes.arrayOf(React.PropTypes.element)])
+    children: React.PropTypes.oneOfType([React.PropTypes.element, React.PropTypes.arrayOf(React.PropTypes.element)]),
+    parcels: React.PropTypes.array
 }
 
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+        parcels: state.parcels.parcels
     }
 }
 

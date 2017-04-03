@@ -3,13 +3,17 @@ import {Row, Col, Button, Panel, Table} from 'react-bootstrap'
 import {Link} from 'react-router'
 import FontAwesome from 'react-fontawesome'
 import {connect} from 'react-redux'
+import {getParcel} from '../../../actions/parcel'
 
 class ParcelsShow extends Component {
+    componentWillMount() {
+        this.props.dispatch(getParcel(this.props.params.id))
+    }
     render() {
         return (
             <Row>
                 <Col xs={12}>
-                    <h1>Parcel1</h1>
+                    <h1>{this.props.parcel.name}</h1>
                 </Col>
                 <Col xs={12}>
                     <Row>
@@ -17,7 +21,7 @@ class ParcelsShow extends Component {
                             <label>Owner</label>
                         </Col>
                         <Col xs={10}>
-                            <span>Me</span>
+                            <span>{this.props.parcel.owner}</span>
                         </Col>
                     </Row>
                     <Row>
@@ -25,7 +29,7 @@ class ParcelsShow extends Component {
                             <label>Currently at</label>
                         </Col>
                         <Col xs={10}>
-                            <span>Postbox1</span>
+                            <span>{this.props.parcel.currentlyAt}</span>
                         </Col>
                     </Row>
                     <Row>
@@ -33,7 +37,7 @@ class ParcelsShow extends Component {
                             <label>Temperature limit</label>
                         </Col>
                         <Col xs={10}>
-                            <span>10°C</span>
+                            <span>{this.props.parcel.temperatureLimit}</span>
                         </Col>
                     </Row>
                 </Col>
@@ -64,10 +68,12 @@ class ParcelsShow extends Component {
                             </tr>
                             </thead>
                             <tbody>
-                            <tr>
-                                <td>MyPostbox</td>
-                                <td>AnotherPostbox</td>
-                            </tr>
+                            {this.props.deliveries.forEach((d) => (
+                                <tr>
+                                    <td>{d.fromPostBox.name}</td>
+                                    <td>{d.toPostbox.name}</td>
+                                </tr>
+                            ))}
                             </tbody>
                         </Table>
                     </Panel>
@@ -79,12 +85,16 @@ class ParcelsShow extends Component {
 
 ParcelsShow.propTypes = {
     user: React.PropTypes.object,
-    params: React.PropTypes.object
+    params: React.PropTypes.object,
+    deliveries: React.PropTypes.array,
+    parcel: React.PropTypes.object
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, props) => {
     return {
         user: state.user.user,
+        deliveries: state.deliveries.deliveries,
+        parcel: state.parcels.parcels.find((p) => p.id === props.params.id)
     }
 }
 
