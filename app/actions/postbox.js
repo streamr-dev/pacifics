@@ -30,7 +30,7 @@ export const getPostbox = id => dispatch => {
         .catch(() => dispatch(getPostboxFailure()))
 }
 
-export const createPostbox = (name) => dispatch => {
+export const createPostbox = () => dispatch => {
     dispatch(createPostboxRequest())
     async()
         .then(() =>  dispatch(createPostboxSuccess()))

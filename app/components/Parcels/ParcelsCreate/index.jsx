@@ -1,8 +1,48 @@
 import React, {Component} from 'react'
 import {Row, Col, FormGroup, Form, ControlLabel, FormControl, Button} from 'react-bootstrap'
 import {connect} from 'react-redux'
+import {replace} from 'react-router-redux'
+import {createParcel} from '../../../actions/parcel'
 
 class ParcelsCreate extends Component {
+    constructor() {
+        super()
+        this.state = {
+            name: '',
+            description: new Date(),
+            owner: '',
+            temperatureLimit: 0,
+            currentlyAt: ''
+        }
+        this.handleInputChange = this.handleInputChange.bind(this)
+        this.handleSubmit = this.handleSubmit.bind(this)
+    }
+    handleInputChange(e) {
+        const changedPart = {
+            [e.target.name]: e.target.value
+        }
+        this.setState({
+            ...this.state,
+            ...changedPart
+        })
+        this.props.dispatch(replace({
+            ...this.props.location,
+            state: {
+                ...this.props.location.state,
+                ...changedPart
+            }
+        }))
+    }
+    componentWillMount() {
+        this.props.location.state && this.setState({
+            ...this.state,
+            ...this.props.location.state
+        })
+    }
+    handleSubmit(e) {
+        e.preventDefault()
+        this.props.dispatch(createParcel(this.state))
+    }
     render() {
         return (
             <Row>
@@ -13,23 +53,44 @@ class ParcelsCreate extends Component {
                     <Form>
                         <FormGroup>
                             <ControlLabel>Name</ControlLabel>
-                            <FormControl type="text"/>
+                            <FormControl
+                                name="name"
+                                onChange={this.handleInputChange}
+                                value={this.state.name}
+                            />
                         </FormGroup>
                         <FormGroup>
                             <ControlLabel>Description</ControlLabel>
-                            <FormControl type="text"/>
+                            <FormControl
+                                name="description"
+                                onChange={this.handleInputChange}
+                                value={this.state.description}
+                            />
                         </FormGroup>
                         <FormGroup>
                             <ControlLabel>Owner</ControlLabel>
-                            <FormControl type="text"/>
+                            <FormControl
+                                name="owner"
+                                onChange={this.handleInputChange}
+                                value={this.state.owner}
+                            />
                         </FormGroup>
                         <FormGroup>
                             <ControlLabel>Currently at</ControlLabel>
-                            <FormControl type="text" />
+                            <FormControl
+                                name="currentlyAt"
+                                onChange={this.handleInputChange}
+                                value={this.state.currentlyAt}
+                            />
                         </FormGroup>
                         <FormGroup>
                             <ControlLabel>Temperature limit</ControlLabel>
-                            <FormControl type="text" />
+                            <FormControl
+                                type="number"
+                                name="temperatureLimit"
+                                onChange={this.handleInputChange}
+                                value={this.state.temperatureLimit}
+                            />
                         </FormGroup>
                         <Button type="submit">
                             Create
@@ -43,7 +104,9 @@ class ParcelsCreate extends Component {
 
 ParcelsCreate.propTypes = {
     user: React.PropTypes.object,
-    params: React.PropTypes.object
+    params: React.PropTypes.object,
+    dispatch: React.PropTypes.func,
+    location: React.PropTypes.object
 }
 
 const mapStateToProps = state => {

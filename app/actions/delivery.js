@@ -30,7 +30,7 @@ export const getDelivery = id => dispatch => {
         .catch(() => dispatch(getDeliveryFailure()))
 }
 
-export const createDelivery = (name) => dispatch => {
+export const createDelivery = () => dispatch => {
     dispatch(createDeliveryRequest())
     async()
         .then(() =>  dispatch(createDeliverySuccess()))

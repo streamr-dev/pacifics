@@ -30,7 +30,7 @@ export const getParcel = id => dispatch => {
         .catch(() => dispatch(getParcelFailure()))
 }
 
-export const createParcel = (name) => dispatch => {
+export const createParcel = () => dispatch => {
     dispatch(createParcelRequest())
     async()
         .then(() =>  dispatch(createParcelSuccess()))

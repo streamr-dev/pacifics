@@ -1,8 +1,48 @@
 import React, {Component} from 'react'
 import {Row, Col, FormGroup, Form, ControlLabel, FormControl, Button} from 'react-bootstrap'
 import {connect} from 'react-redux'
+import {replace} from 'react-router-redux'
+import {createPostbox} from '../../../actions/postbox'
 
 class PostboxesCreate extends Component {
+    constructor() {
+        super()
+        this.state = {
+            name: '',
+            description: new Date(),
+            gLocation: '',
+            owner: null
+        }
+        this.handleInputChange = this.handleInputChange.bind(this)
+        this.handleSubmit = this.handleSubmit.bind(this)
+    }
+    componentWillMount() {
+        this.props.dispatch(getAllPostboxes())
+        this.props.location.state && this.setState({
+            ...this.state,
+            ...this.props.location.state
+        })
+    }
+    handleInputChange(e) {
+        const changedPart = {
+            [e.target.name]: e.target.value
+        }
+        this.setState({
+            ...this.state,
+            ...changedPart
+        })
+        this.props.dispatch(replace({
+            ...this.props.location,
+            state: {
+                ...this.props.location.state,
+                ...changedPart
+            }
+        }))
+    }
+    handleSubmit(e) {
+        e.preventDefault()
+        this.props.dispatch(createPostbox(this.state))
+    }
     render() {
         return (
             <Row>
@@ -13,19 +53,35 @@ class PostboxesCreate extends Component {
                     <Form>
                         <FormGroup>
                             <ControlLabel>Name</ControlLabel>
-                            <FormControl type="text"/>
+                            <FormControl
+                                name="name"
+                                onChange={this.handleInputChange}
+                                value={this.state.name}
+                            />
                         </FormGroup>
                         <FormGroup>
                             <ControlLabel>Description</ControlLabel>
-                            <FormControl type="text"/>
+                            <FormControl
+                                name="description"
+                                onChange={this.handleInputChange}
+                                value={this.state.description}
+                            />
                         </FormGroup>
                         <FormGroup>
                             <ControlLabel>Location</ControlLabel>
-                            <FormControl type="text"/>
+                            <FormControl
+                                name="gLocation"
+                                onChange={this.handleInputChange}
+                                value={this.state.location}
+                            />
                         </FormGroup>
                         <FormGroup>
                             <ControlLabel>Owner</ControlLabel>
-                            <FormControl type="text" />
+                            <FormControl
+                                name="owner"
+                                onChange={this.handleInputChange}
+                                value={this.state.owner}
+                            />
                         </FormGroup>
                         <Button type="submit">
                             Create
@@ -39,7 +95,9 @@ class PostboxesCreate extends Component {
 
 PostboxesCreate.propTypes = {
     user: React.PropTypes.object,
-    params: React.PropTypes.object
+    params: React.PropTypes.object,
+    dispatch: React.PropTypes.func,
+    location: React.PropTypes.string
 }
 
 const mapStateToProps = state => {
