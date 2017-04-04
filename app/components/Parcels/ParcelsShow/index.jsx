@@ -87,7 +87,8 @@ ParcelsShow.propTypes = {
     user: React.PropTypes.object,
     params: React.PropTypes.object,
     deliveries: React.PropTypes.array,
-    parcel: React.PropTypes.object
+    parcel: React.PropTypes.object,
+    dispatch: React.PropTypes.func
 }
 
 const mapStateToProps = (state, props) => {
