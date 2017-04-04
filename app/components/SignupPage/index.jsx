@@ -62,6 +62,14 @@ class SignupPage extends Component {
                         <form id="registerForm" onSubmit={this.handleSubmit} className="form-horizontal">
                             <FormGroup>
                                 <Col sm={3}>
+                                    <ControlLabel>Name</ControlLabel>
+                                </Col>
+                                <Col sm={9}>
+                                    <FormControl name="name" type="text" placeholder="Name" onChange={this.handleChange}/>
+                                </Col>
+                            </FormGroup>
+                            <FormGroup>
+                                <Col sm={3}>
                                     <ControlLabel>Email</ControlLabel>
                                 </Col>
                                 <Col sm={9}>
