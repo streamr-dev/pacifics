@@ -1,4 +1,6 @@
 
+import {newParcel} from '../../src/parcel'
+
 export const GET_ALL_PARCELS_REQUEST = 'GET_ALL_PARCELS_REQUEST'
 export const GET_ALL_PARCELS_SUCCESS = 'GET_ALL_PARCELS_SUCCESS'
 export const GET_ALL_PARCELS_FAILURE = 'GET_ALL_PARCELS_FAILURE'
@@ -30,11 +32,11 @@ export const getParcel = id => dispatch => {
         .catch(() => dispatch(getParcelFailure()))
 }
 
-export const createParcel = () => dispatch => {
+export const createParcel = (name, description, temperatureLimit) => dispatch => {
     dispatch(createParcelRequest())
-    async()
-        .then(() =>  dispatch(createParcelSuccess()))
-        .catch(() => dispatch(createParcelFailure()))
+    newParcel(name, description, temperatureLimit)
+        .then((parcel) =>  dispatch(createParcelSuccess(parcel)))
+        .catch((error) => dispatch(createParcelFailure(error)))
 }
 
 const getAllParcelsRequest = () => ({

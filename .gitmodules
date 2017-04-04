@@ -1,0 +1,3 @@
+[submodule "lib/streamr-web3"]
+	path = lib/streamr-web3
+	url = git@github.com:streamr-dev/streamr-web3.git
