@@ -11,13 +11,12 @@ class ParcelsCreate extends Component {
             name: '',
             description: new Date(),
             owner: '',
-            currentlyAt: '',
             temperatureLimit: 0
         }
         this.handleInputChange = this.handleInputChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
     }
-    componentWillReceiveProps() {
+    componentWillReceiveProps() {   // TODO: currently this won't update the address into UI
         this.setState({
             owner: this.props.user.address
         })

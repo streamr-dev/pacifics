@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {getAddress} from '../../src/parcel'
+import {getAddress} from '../../src/user'
 
 export const LOGIN_REQUEST = 'LOGIN_REQUEST'
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
