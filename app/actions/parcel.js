@@ -1,3 +1,4 @@
+import {createParcel as createParcelContract} from '../../src/parcel'
 
 import store from '../store'
 
@@ -40,11 +41,11 @@ export const ensureParcelIsFetched = id => dispatch => {
     }
 }
 
-export const createParcel = () => dispatch => {
+export const createParcel = parcel => dispatch => {
     dispatch(createParcelRequest())
-    async()
-        .then(() =>  dispatch(createParcelSuccess()))
-        .catch(() => dispatch(createParcelFailure()))
+    createParcelContract(parcel.name, parcel.description, parcel.temperatureLimit)
+        .then(p => dispatch(createParcelSuccess(p)))
+        .catch(error => dispatch(createParcelFailure(error)))
 }
 
 const getAllParcelsRequest = () => ({
@@ -79,8 +80,9 @@ const createParcelRequest = () => ({
     type: CREATE_PARCEL_REQUEST
 })
 
-const createParcelSuccess = () => ({
-    type: CREATE_PARCEL_SUCCESS
+const createParcelSuccess = (parcel) => ({
+    type: CREATE_PARCEL_SUCCESS,
+    parcel
 })
 
 const createParcelFailure = () => ({
