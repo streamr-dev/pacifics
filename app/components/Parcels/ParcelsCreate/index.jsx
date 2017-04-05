@@ -34,6 +34,7 @@ class ParcelsCreate extends Component {
         }))
     }
     componentWillMount() {
+        // This saves the form state
         this.props.location.state && this.setState({
             ...this.state,
             ...this.props.location.state

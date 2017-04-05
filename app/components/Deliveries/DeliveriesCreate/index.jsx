@@ -171,7 +171,7 @@ DeliveriesCreate.propTypes = {
 
 const mapStateToProps = state => {
     return {
-        postboxes: state.postboxes && state.postboxes.postboxes || [],
+        postboxes: state.postboxes ? state.postboxes.postboxes : [],
         user: state.user.user,
     }
 }

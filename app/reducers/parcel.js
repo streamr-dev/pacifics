@@ -32,7 +32,7 @@ export default (state = {
             }
         case GET_ALL_PARCELS_SUCCESS:
             return {
-                parcels: action.parcels,
+                parcels: action.parcels || state.parcels,
                 error: undefined,
                 fetching: false
             }

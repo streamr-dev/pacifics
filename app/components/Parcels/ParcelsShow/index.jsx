@@ -3,12 +3,8 @@ import {Row, Col, Button, Panel, Table} from 'react-bootstrap'
 import {Link} from 'react-router'
 import FontAwesome from 'react-fontawesome'
 import {connect} from 'react-redux'
-import {getParcel} from '../../../actions/parcel'
 
 class ParcelsShow extends Component {
-    componentWillMount() {
-        this.props.dispatch(getParcel(this.props.params.id))
-    }
     render() {
         return (
             <Row>
@@ -94,8 +90,8 @@ ParcelsShow.propTypes = {
 const mapStateToProps = (state, props) => {
     return {
         user: state.user.user,
-        deliveries: state.deliveries.deliveries,
-        parcel: state.parcels.parcels.find((p) => p.id === props.params.id)
+        deliveries: state.deliveries ? state.deliveries.deliveries : [],
+        parcel: state.parcels ? state.parcels.parcels.find((p) => p.id === props.params.id) : {}
     }
 }
 

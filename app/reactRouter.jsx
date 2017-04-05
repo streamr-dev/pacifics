@@ -16,6 +16,8 @@ import SignupPage from './components/SignupPage'
 import LoginPage from './components/LoginPage'
 import store, {history} from './store.js'
 
+import {getParcel, getAllParcels} from './actions/parcel'
+
 export default class ReactRouter extends Component {
     
     static requireAuth(nextState, replace) {
@@ -35,11 +37,11 @@ export default class ReactRouter extends Component {
                 <Route path="signup" component={SignupPage}/>
                 <Route path="login" component={LoginPage}/>
                 <Route path="/" onEnter={ReactRouter.requireAuth} component={App}>
-                    <Route path="/parcels" component={ParcelsList}/>
+                    <Route path="/parcels" component={ParcelsList} onEnter={() => store.dispatch(getAllParcels())}/>
                     <Route path="/parcels/create" component={ParcelsCreate}/>
-                    <Route path="/parcels/:id" component={ParcelsShow}/>
-                    <Route path="/parcels/:id/track" component={ParcelsTrack}/>
-                    <Route path="/parcels/:id/deliveries/create" components={DeliveryCreate}/>
+                    <Route path="/parcels/:id" component={ParcelsShow} onEnter={location => store.dispatch(getParcel(location.params.id))}/>
+                    <Route path="/parcels/:id/track" component={ParcelsTrack} onEnter={location => store.dispatch(getParcel(location.params.id))}/>
+                    <Route path="/parcels/:id/deliveries/create" components={DeliveryCreate} onEnter={location => store.dispatch(getParcel(location.params.id))}/>
                     <Route path="/postboxes/create" components={PostboxesCreate}/>
                     <IndexRedirect to="/parcels"/>
                 </Route>

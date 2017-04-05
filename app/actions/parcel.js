@@ -1,4 +1,6 @@
 
+import store from '../store'
+
 export const GET_ALL_PARCELS_REQUEST = 'GET_ALL_PARCELS_REQUEST'
 export const GET_ALL_PARCELS_SUCCESS = 'GET_ALL_PARCELS_SUCCESS'
 export const GET_ALL_PARCELS_FAILURE = 'GET_ALL_PARCELS_FAILURE'
@@ -28,6 +30,14 @@ export const getParcel = id => dispatch => {
     async(id)
         .then(() => dispatch(getParcelSuccess()))
         .catch(() => dispatch(getParcelFailure()))
+}
+
+// TODO: check that this works
+export const ensureParcelIsFetched = id => dispatch => {
+    const state = store.getState()
+    if (state.parcels && state.parcels.parcels.find((p) => p.id === id)) {
+        dispatch(getParcel(id))
+    }
 }
 
 export const createParcel = () => dispatch => {
