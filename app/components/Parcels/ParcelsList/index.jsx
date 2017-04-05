@@ -52,7 +52,11 @@ ParcelsList.propTypes = {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
+<<<<<<< HEAD
         parcels: state.parcels ? state.parcels.parcels : []
+=======
+        parcels: state.parcels && state.parcels.parcels || []
+>>>>>>> 726e244a67df3493ac7ed4cbe286a553f7debb2e
     }
 }
 
