@@ -111,6 +111,7 @@ SignupPage.propTypes = {
 }
 
 const mapStateToProps = state => ({
+    services: state.services.services,
     user: state.user.user,
     error: state.user.error
 })

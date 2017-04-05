@@ -9,6 +9,7 @@ import userReducer from './reducers/user.js'
 import parcelReducer from './reducers/parcel.js'
 import deliveryReducer from './reducers/delivery.js'
 import postboxReducer from './reducers/postbox.js'
+import serviceReducer from './reducers/service.js'
 
 import { useRouterHistory } from 'react-router'
 import { createHistory } from 'history'
@@ -24,6 +25,7 @@ const reducer = combineReducers({
     deliveries: deliveryReducer,
     parcels: parcelReducer,
     postboxes: postboxReducer,
+    services: serviceReducer,
     routing: routerReducer
 })
 

@@ -2,7 +2,7 @@ import axios from 'axios'
 
 export const GET_ALL_SERVICES_REQUEST = 'GET_ALL_SERVICES_REQUEST'
 export const GET_ALL_SERVICES_SUCCESS = 'GET_ALL_SERVICES_SUCCESS'
-export const GET_ALL_SERVICES_ERROR = 'GET_ALL_SERVICES_ERROR'
+export const GET_ALL_SERVICES_FAILURE = 'GET_ALL_SERVICES_FAILURE'
 
 export const LOGOUT = 'LOGOUT'
 
@@ -29,6 +29,6 @@ const getAllServicesSuccess = services => ({
 })
 
 const getAllServicesFailure = error => ({
-    type: GET_ALL_SERVICES_ERROR,
+    type: GET_ALL_SERVICES_FAILURE,
     error
 })
