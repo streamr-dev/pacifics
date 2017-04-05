@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "scripts": {
     "start": "node $NODE_DEBUG_OPTION server.js",
-    "build": "./node_modules/webpack/bin/webpack.js -p --config webpack.prod.config.js --progress",
-    "lint": "./node_modules/bin/eslint.js -c ./.eslintrc.js .",
-    "lint-fix": "./node_modules/bin/eslint.js -c ./.eslintrc.js . --fix"
+    "build": "./node_modules/webpack/bin/webpack.js -p --config config/webpack.prod.config.js --progress",
+    "lint": "./node_modules/bin/eslint.js -c ./config/.eslintrc.js .",
+    "lint-fix": "./node_modules/bin/eslint.js -c ./config/.eslintrc.js . --fix"
   },
   "dependencies": {
     "autoprefixer": "^6.7.7",

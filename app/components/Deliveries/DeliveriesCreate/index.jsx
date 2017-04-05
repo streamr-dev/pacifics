@@ -85,7 +85,7 @@ class DeliveriesCreate extends Component {
                             </Link>
                         </Button>
                         <FormControl componentClass="select" placeholder="select postbox">
-                            {this.props.postboxes.forEach((postbox) => (
+                            {this.props.postboxes.map((postbox) => (
                                 <option value={postbox.id}>{postbox.name}</option>
                             ))}
                         </FormControl>

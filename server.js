@@ -78,17 +78,16 @@ app.locals = {
     baseUrl: process.env.BASE_URL || ''
 }
 
-app.use('/', require('./routes/index'))
+app.use('/services', require('./routes/service'))
 app.use('/login', require('./routes/login'))
 app.use('/signup', require('./routes/signup'))
 app.use('/logout', require('./routes/logout'))
 
+app.use('/', require('./routes/index'))
 
 // Error handler, must have 4 args
 
-/* eslint-disable no-unused-vars */
-app.use((err, req, res, next) => {
-    /* eslint-enable no-unused-vars */
+app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
     console.error(err.stack)
     res.status(500)
         .send({
