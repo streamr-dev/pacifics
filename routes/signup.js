@@ -14,8 +14,6 @@ router.post('/', (req, res, next) => {
     let error
     if (!req.body.email) {
         error = 'Email required!'
-    } else if (!req.body.name) {
-        error = 'Name required!'
     } else if (!req.body.password) {
         error = 'Password required!'
     } else {

@@ -21,9 +21,9 @@ export const browserHistory = useRouterHistory(createHistory)({
 
 const reducer = combineReducers({
     user: userReducer,
-    delivery: deliveryReducer,
-    parcel: parcelReducer,
-    postbox: postboxReducer,
+    deliveries: deliveryReducer,
+    parcels: parcelReducer,
+    postboxes: postboxReducer,
     routing: routerReducer
 })
 

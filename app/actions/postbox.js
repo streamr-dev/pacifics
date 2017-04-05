@@ -69,10 +69,12 @@ const createPostboxRequest = () => ({
     type: CREATE_POSTBOX_REQUEST
 })
 
-const createPostboxSuccess = () => ({
-    type: CREATE_POSTBOX_SUCCESS
+const createPostboxSuccess = postbox => ({
+    type: CREATE_POSTBOX_SUCCESS,
+    postbox
 })
 
-const createPostboxFailure = () => ({
-    type: CREATE_POSTBOX_FAILURE
+const createPostboxFailure = error => ({
+    type: CREATE_POSTBOX_FAILURE,
+    error
 })

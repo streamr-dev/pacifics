@@ -16,32 +16,28 @@ import SignupPage from './components/SignupPage'
 import LoginPage from './components/LoginPage'
 import store, {history} from './store.js'
 
-import {getParcel, getAllParcels} from './actions/parcel'
+import {getParcel, getAllParcels, ensureParcelIsFetched} from './actions/parcel'
+import {getAllServices} from './actions/service'
 
 export default class ReactRouter extends Component {
     
     static requireAuth(nextState, replace) {
         if (!store.getState().user || !store.getState().user.user) {
-            replace({
-                pathname: '/login',
-                state: {
-                    nextPathname: nextState.location.pathname
-                }
-            })
+            replace('/login')
         }
     }
     
     render() {
         return (
             <Router history={history}>
-                <Route path="signup" component={SignupPage}/>
+                <Route path="signup" component={SignupPage} onEnter={() => store.dispatch(getAllServices())}/>
                 <Route path="login" component={LoginPage}/>
                 <Route path="/" onEnter={ReactRouter.requireAuth} component={App}>
                     <Route path="/parcels" component={ParcelsList} onEnter={() => store.dispatch(getAllParcels())}/>
                     <Route path="/parcels/create" component={ParcelsCreate}/>
                     <Route path="/parcels/:id" component={ParcelsShow} onEnter={location => store.dispatch(getParcel(location.params.id))}/>
-                    <Route path="/parcels/:id/track" component={ParcelsTrack} onEnter={location => store.dispatch(getParcel(location.params.id))}/>
-                    <Route path="/parcels/:id/deliveries/create" components={DeliveryCreate} onEnter={location => store.dispatch(getParcel(location.params.id))}/>
+                    <Route path="/parcels/:id/track" component={ParcelsTrack} onEnter={location => store.dispatch(ensureParcelIsFetched(location.params.id))}/>
+                    <Route path="/parcels/:id/deliveries/create" components={DeliveryCreate} onEnter={location => store.dispatch(ensureParcelIsFetched(location.params.id))}/>
                     <Route path="/postboxes/create" components={PostboxesCreate}/>
                     <IndexRedirect to="/parcels"/>
                 </Route>

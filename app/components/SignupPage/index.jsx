@@ -45,7 +45,7 @@ class SignupPage extends Component {
                 </Alert>
                 }
                 {this.props.user ?
-                    <Panel header={`Thank you for registering, ${this.props.user.name}!`} bsStyle="success">
+                    <Panel header={`Thank you for registering, ${this.props.user.email}!`} bsStyle="success">
                         <Table striped bordered hover>
                             <tbody>
                                 <tr>
@@ -60,14 +60,6 @@ class SignupPage extends Component {
                 :
                     <Panel header="Signup" footer={<Link to='login'>Login</Link>}>
                         <form id="registerForm" onSubmit={this.handleSubmit} className="form-horizontal">
-                            <FormGroup>
-                                <Col sm={3}>
-                                    <ControlLabel>Name</ControlLabel>
-                                </Col>
-                                <Col sm={9}>
-                                    <FormControl name="name" type="text" placeholder="Name" onChange={this.handleChange}/>
-                                </Col>
-                            </FormGroup>
                             <FormGroup>
                                 <Col sm={3}>
                                     <ControlLabel>Email</ControlLabel>

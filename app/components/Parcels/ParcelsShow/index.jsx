@@ -87,12 +87,10 @@ ParcelsShow.propTypes = {
     dispatch: React.PropTypes.func
 }
 
-const mapStateToProps = (state, props) => {
-    return {
-        user: state.user.user,
-        deliveries: state.deliveries ? state.deliveries.deliveries : [],
-        parcel: state.parcels ? state.parcels.parcels.find((p) => p.id === props.params.id) : {}
-    }
-}
+const mapStateToProps = (state, props) => ({
+    user: state.user.user,
+    deliveries: state.deliveries.deliveries ? state.deliveries.deliveries.filter(d => d.parcelId === props.params.id) : [],
+    parcel: state.parcels.parcels ? state.parcels.parcels.find((p) => p.id === props.params.id) : {}
+})
 
 export default connect(mapStateToProps, null)(ParcelsShow)

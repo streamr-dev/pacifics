@@ -1,11 +1,12 @@
 
 const connection = require('./connection')
 
-//const User = require('./models/user')
+const User = require('./models/user')
+const Service = require('./models/service')
 
 const initDependencies = () => {
-    // Init dependencies here, see
-    // https://sequelize.readthedocs.io/en/v3/docs/associations/
+    Service.hasMany(User)
+    User.belongsTo(Service)
 }
 
 const sync = () => connection.sync()

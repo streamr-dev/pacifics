@@ -69,10 +69,12 @@ const createDeliveryRequest = () => ({
     type: CREATE_DELIVERY_REQUEST
 })
 
-const createDeliverySuccess = () => ({
-    type: CREATE_DELIVERY_SUCCESS
+const createDeliverySuccess = delivery => ({
+    type: CREATE_DELIVERY_SUCCESS,
+    delivery
 })
 
-const createDeliveryFailure = () => ({
-    type: CREATE_DELIVERY_FAILURE
+const createDeliveryFailure = error => ({
+    type: CREATE_DELIVERY_FAILURE,
+    error
 })

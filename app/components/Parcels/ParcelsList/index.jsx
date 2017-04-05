@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
-import {Row, Col, Table, Panel, Button} from 'react-bootstrap'
+import {Row, Col, Panel, Button, Table} from 'react-bootstrap'
+//import {CTable, Tbody, Thead, Th, Tr, Td} from '../../ClickableTable'
 import {Link} from 'react-router'
 import FontAwesome from 'react-fontawesome'
 import {connect} from 'react-redux'
@@ -20,17 +21,36 @@ class ParcelsList extends Component {
                 </Col>
                 <Col xs={12}>
                     <Panel>
+                        {/*<CTable striped bordered hover>*/}
+                            {/*<Thead>*/}
+                                {/*<Tr>*/}
+                                    {/*<Th>Name</Th>*/}
+                                    {/*<Th>Current holder</Th>*/}
+                                {/*</Tr>*/}
+                            {/*</Thead>*/}
+                            {/*<Tbody>*/}
+                            {/*{this.props.parcels.map(p => (*/}
+                                {/*<Tr href={`/parcels/${p.id}`} key={p.id}>*/}
+                                    {/*<Td>{p.name}</Td>*/}
+                                    {/*<Td>{p.owner}</Td>*/}
+                                {/*</Tr>*/}
+                            {/*))}*/}
+                            {/*</Tbody>*/}
+                        {/*</CTable>*/}
                         <Table striped bordered hover>
                             <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Current holder</th>
-                            </tr>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Current holder</th>
+                                </tr>
                             </thead>
                             <tbody>
-                            {this.props.parcels.forEach((p) => (
-                                <tr>
-                                    <td>{p.name}</td>
+                            {this.props.parcels.map(p => (
+                                <tr href={`/parcels/${p.id}`} key={p.id}>
+                                    <td>
+                                        <Link to={`parcels/${p.id}`}>
+                                            {p.name}
+                                        </Link></td>
                                     <td>{p.owner}</td>
                                 </tr>
                             ))}
@@ -49,11 +69,9 @@ ParcelsList.propTypes = {
     parcels: React.PropTypes.array
 }
 
-const mapStateToProps = state => {
-    return {
-        user: state.user.user,
-        parcels: state.parcels ? state.parcels.parcels : []
-    }
-}
+const mapStateToProps = state => ({
+    user: state.user.user,
+    parcels: state.parcels.parcels || []
+})
 
 export default connect(mapStateToProps, null)(ParcelsList)

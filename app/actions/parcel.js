@@ -1,6 +1,6 @@
-import {createParcel as createParcelContract} from '../../src/parcel'
 
 import store from '../store'
+import {createParcel as createParcelContract} from '../../src/parcel'
 
 export const GET_ALL_PARCELS_REQUEST = 'GET_ALL_PARCELS_REQUEST'
 export const GET_ALL_PARCELS_SUCCESS = 'GET_ALL_PARCELS_SUCCESS'
@@ -14,29 +14,43 @@ export const CREATE_PARCEL_REQUEST = 'CREATE_PARCEL_REQUEST'
 export const CREATE_PARCEL_SUCCESS = 'CREATE_PARCEL_SUCCESS'
 export const CREATE_PARCEL_FAILURE = 'CREATE_PARCEL_FAILURE'
 
+let parcels = [{
+    id: 0,
+    name: '0',
+    owner: 'Aapeli'
+},{
+    id: 1,
+    name: '1',
+    owner: 'Henri'
+},{
+    id: 2,
+    name: '2',
+    owner: 'Risto'
+}]
+
 // JUST TO REPRESENT ASYNC ACTIONS, REMOVE
-const async = () => new Promise(resolve => {
-    setTimeout(resolve, 500)
+const async = (params) => new Promise(resolve => {
+    setTimeout(() => resolve(params), 100)
 })
 
 export const getAllParcels = () => dispatch => {
     dispatch(getAllParcelsRequest())
-    async()
-        .then(() => dispatch(getAllParcelsSuccess()))
+    async(parcels)
+        .then(p => dispatch(getAllParcelsSuccess(p)))
         .catch(() => dispatch(getAllParcelsFailure()))
 }
 
 export const getParcel = id => dispatch => {
     dispatch(getParcelRequest())
-    async(id)
-        .then(() => dispatch(getParcelSuccess()))
+    async(parcels.find(item => item.id === id))
+        .then(p => dispatch(getParcelSuccess(p)))
         .catch(() => dispatch(getParcelFailure()))
 }
 
 // TODO: check that this works
 export const ensureParcelIsFetched = id => dispatch => {
     const state = store.getState()
-    if (state.parcels && state.parcels.parcels.find((p) => p.id === id)) {
+    if (state.parcels.parcels && state.parcels.parcels.find((p) => p.id === id)) {
         dispatch(getParcel(id))
     }
 }
@@ -80,11 +94,12 @@ const createParcelRequest = () => ({
     type: CREATE_PARCEL_REQUEST
 })
 
-const createParcelSuccess = (parcel) => ({
+const createParcelSuccess = parcel => ({
     type: CREATE_PARCEL_SUCCESS,
     parcel
 })
 
-const createParcelFailure = () => ({
-    type: CREATE_PARCEL_FAILURE
+const createParcelFailure = error => ({
+    type: CREATE_PARCEL_FAILURE,
+    error
 })

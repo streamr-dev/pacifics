@@ -1,4 +1,5 @@
 import axios from 'axios'
+import {getAddress} from '../../src/parcel'
 
 export const LOGIN_REQUEST = 'LOGIN_REQUEST'
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
@@ -68,7 +69,10 @@ const loginRequest = () => ({
 
 export const loginSuccess = user => ({
     type: LOGIN_SUCCESS,
-    user
+    user: {
+        ...user,
+        address: getAddress()
+    }
 })
 
 const loginFailure = error => ({

@@ -1,0 +1,40 @@
+
+@import '../../../node_modules/bootstrap-table/dist/bootstrap-table.css';
+
+.clickableTable {
+  display: table;
+  width: 100%;
+  max-width: 100%;
+  margin-bottom: 20px;
+
+  .thead {
+    display: table-header-group;
+  }
+  .tbody {
+    display: table-row-group;
+  }
+  .tr {
+    display: table-row;
+  }
+  .td {
+    display: table-cell;
+    @extend: .table;
+    &:nth-of-type(odd) {
+      @extend: .table-striped > tbody > tr:nth-of-type(odd);
+    }
+    &:nth-of-type(even) {
+      @extend: .table-striped > tbody > tr:nth-of-type(even);
+    }
+  }
+  .th {
+    display: table-cell;
+    border-top: 0;
+    border-bottom-width: 2px;
+    border: 1px solid #ddd;
+    vertical-align: bottom;
+    padding: 8px;
+    line-height: 1.42857143;
+    @extend: .table > thead:first-child > tr:first-child > th;
+    @extend: .table-bordered > thead > tr > th;
+  }
+}

@@ -3,7 +3,6 @@ import {Row, Col, FormGroup, Form, ControlLabel, FormControl, Button} from 'reac
 import {connect} from 'react-redux'
 import {replace} from 'react-router-redux'
 import {createParcel} from '../../../actions/parcel'
-import {getAddress} from '../../../../src/parcel'
 
 class ParcelsCreate extends Component {
     constructor() {
@@ -11,12 +10,17 @@ class ParcelsCreate extends Component {
         this.state = {
             name: '',
             description: new Date(),
-            owner: getAddress(),
-//            currentlyAt: '',
+            owner: '',
+            currentlyAt: '',
             temperatureLimit: 0
         }
         this.handleInputChange = this.handleInputChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
+    }
+    componentWillReceiveProps() {
+        this.setState({
+            owner: this.props.user.address
+        })
     }
     handleInputChange(e) {
         const changedPart = {
