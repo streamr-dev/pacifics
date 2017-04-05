@@ -8,7 +8,7 @@ import createLogger from 'redux-logger'
 import userReducer from './reducers/user.js'
 import parcelReducer from './reducers/parcel.js'
 import deliveryReducer from './reducers/delivery.js'
-import userReducer from './reducers/user.js'
+import postboxReducer from './reducers/postbox.js'
 
 import { useRouterHistory } from 'react-router'
 import { createHistory } from 'history'
