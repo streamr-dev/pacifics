@@ -52,7 +52,7 @@ ParcelsList.propTypes = {
 const mapStateToProps = state => {
     return {
         user: state.user.user,
-        parcels: state.parcels.parcels
+        parcels: state.parcels && state.parcels.parcels || []
     }
 }
 
