@@ -1,5 +1,4 @@
-
-import {newParcel} from '../../src/parcel'
+import {createParcel as createParcelContract} from '../../src/parcel'
 
 export const GET_ALL_PARCELS_REQUEST = 'GET_ALL_PARCELS_REQUEST'
 export const GET_ALL_PARCELS_SUCCESS = 'GET_ALL_PARCELS_SUCCESS'
@@ -32,11 +31,11 @@ export const getParcel = id => dispatch => {
         .catch(() => dispatch(getParcelFailure()))
 }
 
-export const createParcel = (name, description, temperatureLimit) => dispatch => {
+export const createParcel = parcel => dispatch => {
     dispatch(createParcelRequest())
-    newParcel(name, description, temperatureLimit)
-        .then((parcel) =>  dispatch(createParcelSuccess(parcel)))
-        .catch((error) => dispatch(createParcelFailure(error)))
+    createParcelContract(parcel.name, parcel.description, parcel.temperatureLimit)
+        .then(p => dispatch(createParcelSuccess(p)))
+        .catch(error => dispatch(createParcelFailure(error)))
 }
 
 const getAllParcelsRequest = () => ({
@@ -71,8 +70,9 @@ const createParcelRequest = () => ({
     type: CREATE_PARCEL_REQUEST
 })
 
-const createParcelSuccess = () => ({
-    type: CREATE_PARCEL_SUCCESS
+const createParcelSuccess = (parcel) => ({
+    type: CREATE_PARCEL_SUCCESS,
+    parcel
 })
 
 const createParcelFailure = () => ({

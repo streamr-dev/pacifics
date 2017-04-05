@@ -26,7 +26,7 @@ export default (state = {
         case GET_PARCEL_SUCCESS:
         case CREATE_PARCEL_SUCCESS:
             return {
-                parcels: [...state.parcels, action.parcels],
+                parcels: [...state.parcels, action.parcel],
                 error: undefined,
                 fetching: false
             }
