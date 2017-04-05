@@ -1,9 +1,8 @@
 /*global web3*/
 //import web3 from 'web3'
 import {parcelCreatorABI, parcelCreatorAddress, postboxCreatorABI, postboxCreatorAddress, deliveryContractCreatorABI, deliveryContractCreatorAddress/*, parcelABI*/} from './abi'
-import {getEventsFromLogs} from '../lib/streamr-web3/src/ethCall'
+import {getEventsFromLogs} from './ethCall'
 
-/*eslint-disable no-console*/
 const assertEqual = (a, b) => {
     if (a !== b) {
         console.error(`Expected ${JSON.stringify(a)} === ${JSON.stringify(b)}`)
@@ -19,7 +18,7 @@ export const getAddress = () => web3.eth.coinbase
  */
 export const createParcel = (name = 'Parcel', description = 'Unnamed parcel', temperatureLimit = 100, ownerAddress = web3.eth.coinbase) => {
     const ParcelCreator = web3.eth.contract(parcelCreatorABI).at(parcelCreatorAddress)
-    console.log('Creating parcel ' + name)
+    console.log('Creating parcel ' + name)  
     return new Promise(done => {
         ParcelCreator.createParcel(ownerAddress, ownerAddress, name, description, temperatureLimit, (err, tx) => {
             if (err) {

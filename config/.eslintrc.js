@@ -40,17 +40,16 @@ module.exports = exports = {
     rules: {
         'no-debugger': WARN,
         'no-console': [
-            ERROR,
+            WARN,
             {
                 allow: [
                     'warn',
-                    'error',
-                    'info'
+                    'error'
                 ]
             }
         ],
         'semi': [ERROR, 'never'],
-        'no-unused-vars': ERROR,
+        'no-unused-vars': WARN,
         'curly': [ERROR, 'all'],
         'keyword-spacing': [ERROR, {
             'before': true,
