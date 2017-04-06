@@ -1,10 +1,11 @@
 /*global web3*/
 //import web3 from 'web3'
-import {parcelCreatorABI, parcelCreatorAddress/*, parcelABI*/} from './abi'
+import {parcelCreatorABI, parcelCreatorAddress, parcelABI} from './abi'
 import {getEventsFromLogs} from './ethCall'
 import _ from 'lodash'
 
 const ParcelCreator = web3.eth.contract(parcelCreatorABI).at(parcelCreatorAddress)
+const Parcel = web3.eth.contract(parcelABI)
 
 const assertEqual = (a, b) => {
     if (a !== b) {
@@ -34,13 +35,13 @@ export const updateParcels = (oldParcels, step = DEFAULT_PARCEL_FETCH_STEP) => {
 }
 
 export const getParcelRange = (startId, endId) => {
-    const res = _.range(startId, endId).map(getParcelContract)
+    const res = _.range(startId, endId).map(getParcelMetadata)
     return Promise.all(res)
 }
 
-export const getParcelContract = id => {
+export const getParcelMetadata = id => {
     return new Promise(done => {
-        return ParcelCreator.parcelCreations(id, (err, result) => {
+        ParcelCreator.parcelCreations(id, (err, result) => {
             if (!result) {
                 done()
             } else {
@@ -55,6 +56,36 @@ export const getParcelContract = id => {
     })
 }
 
+export const getParcelContract = id => getParcelMetadata(id).then(parcel => getParcelAt(parcel.address))
+
+export const getParcelAt = address => {
+    const parcelContract = Parcel.at(address)
+    const propNames = parcelABI
+        .filter(m => m.constant && m.inputs && m.inputs.length === 0 && m.outputs && m.outputs.length === 1)
+        .map(m => m.name)
+    return Promise.all(propNames.map(propName => getParcelProperty(parcelContract, propName)))
+        .then(propValues => {
+            return _.zipObject(propNames, propValues)
+        })
+}
+
+const getParcelProperty = (parcelContract, propName) => {
+    return new Promise((done, fail) => {
+        parcelContract[propName]((err, result) => {
+            if (err) {
+                fail(err)
+            } else {
+                // BigIntegers
+                if (result.toFixed) {
+                    result = result.toFixed()
+                }
+                done(result)
+            }
+        })
+    })
+}
+
+
 /**
  * Create PassParcel contract
  * @param temperatureLimit The maximum temperature in degrees celcius allowed for the parcel
@@ -62,7 +93,7 @@ export const getParcelContract = id => {
  */
 export const createParcelContract = (name = 'Parcel', description = 'Unnamed parcel', temperatureLimit = 100, ownerAddress = web3.eth.coinbase) => {
     const ParcelCreator = web3.eth.contract(parcelCreatorABI).at(parcelCreatorAddress)
-    console.log('Creating parcel ' + name)  
+    //console.log('Creating parcel ' + name)
     return new Promise(done => {
         ParcelCreator.createParcel(ownerAddress, ownerAddress, name, description, temperatureLimit, (err, tx) => {
             if (err) {
@@ -95,7 +126,7 @@ export const createParcelContract = (name = 'Parcel', description = 'Unnamed par
                     assertEqual(response.name, name)
                     assertEqual(response.creator, ownerAddress)
                     assertEqual(response.owner, ownerAddress)
-                    console.log('Created parcel', response)
+                    //console.log('Created parcel', response)
                     done(response)
                 })
             })

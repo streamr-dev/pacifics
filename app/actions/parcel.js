@@ -14,25 +14,6 @@ export const CREATE_PARCEL_REQUEST = 'CREATE_PARCEL_REQUEST'
 export const CREATE_PARCEL_SUCCESS = 'CREATE_PARCEL_SUCCESS'
 export const CREATE_PARCEL_FAILURE = 'CREATE_PARCEL_FAILURE'
 
-let parcels = [{
-    id: 0,
-    name: '0',
-    owner: 'Aapeli'
-},{
-    id: 1,
-    name: '1',
-    owner: 'Henri'
-},{
-    id: 2,
-    name: '2',
-    owner: 'Risto'
-}]
-
-// JUST TO REPRESENT ASYNC ACTIONS, REMOVE
-const async = (params) => new Promise(resolve => {
-    setTimeout(() => resolve(params), 100)
-})
-
 export const getAllParcels = () => dispatch => {
     dispatch(getAllParcelsRequest())
     getAllParcelContracts()

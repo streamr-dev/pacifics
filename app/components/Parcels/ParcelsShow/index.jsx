@@ -90,7 +90,7 @@ ParcelsShow.propTypes = {
 const mapStateToProps = (state, props) => ({
     user: state.user.user,
     deliveries: state.deliveries.deliveries ? state.deliveries.deliveries.filter(d => d.parcelId === props.params.id) : [],
-    parcel: state.parcels.parcels ? state.parcels.parcels.find((p) => p.id === props.params.id) : {}
+    parcel: state.parcel || {}
 })
 
 export default connect(mapStateToProps, null)(ParcelsShow)
