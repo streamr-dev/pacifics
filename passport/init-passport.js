@@ -2,6 +2,7 @@
 const passport = require('passport')
 
 const User = require('../database/models/user')
+const Service = require('../database/models/service')
 
 // used to serialize the user for the session
 passport.serializeUser(function(user, done) {
@@ -13,7 +14,8 @@ passport.deserializeUser((email, done) => {
     User.findOne({
         where: {
             email: email
-        }
+        },
+        include: [Service]
     })
         .then(user => done(null, user.toJSON()))
         .catch(() => done(new Error(`User with the email ${email} does not exist`)))
