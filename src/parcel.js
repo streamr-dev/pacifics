@@ -92,7 +92,6 @@ function getParcelProperty(parcelContract, propName) {
  * @returns {Promise.<string>} created contract's address
  */
 export function createParcelContract(name = 'Parcel', description = 'Unnamed parcel', temperatureLimit = 100, ownerAddress = web3.eth.coinbase) {
-    const ParcelCreator = web3.eth.contract(parcelCreatorABI).at(parcelCreatorAddress)
     return new Promise(done => {
         ParcelCreator.createParcel(ownerAddress, ownerAddress, name, description, temperatureLimit, (err, tx) => {
             if (err) {
