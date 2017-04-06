@@ -2,7 +2,6 @@
 //import web3 from 'web3'
 import {parcelCreatorABI, parcelCreatorAddress/*, parcelABI*/} from './abi'
 import {getEventsFromLogs} from './ethCall'
-import {promiseDoFor} from './promise-loops'
 import _ from 'lodash'
 
 const ParcelCreator = web3.eth.contract(parcelCreatorABI).at(parcelCreatorAddress)
@@ -15,22 +14,26 @@ const assertEqual = (a, b) => {
 
 const lastOf = arr => arr[arr.length - 1]
 
-const PARCEL_FETCH_STEP = 10
+// number of (parallel) fetches done at a time
+const DEFAULT_PARCEL_FETCH_STEP = 10
 
-// parcels are mapped to running id, starting from 1
 export const getAllParcelContracts = () => {
-    return getParcelsAfter(0)
+    return updateParcels([])
 }
 
-export const getParcelsAfter = startId => {
-    return promiseDoFor(parcels => {
-        return getParcelRange(startId + 1 + parcels.length, startId + 1 + parcels.length + PARCEL_FETCH_STEP)
-    }, lastOf, [].concat.bind([]), []).then(parcels => {
-        return _.filter(parcels)
+export const updateParcels = (oldParcels, step = DEFAULT_PARCEL_FETCH_STEP) => {
+    const startId = 1 + oldParcels.length   // parcels are mapped with running id, starting from 1
+    return getParcelRange(startId, startId + step).then(newParcels => {
+        const parcels = oldParcels.concat(newParcels)
+        if (lastOf(newParcels)) {
+            return updateParcels(parcels, step)
+        } else {
+            return _.filter(parcels)
+        }
     })
 }
 
-const getParcelRange = (startId, endId) => {
+export const getParcelRange = (startId, endId) => {
     const res = _.range(startId, endId).map(getParcelContract)
     return Promise.all(res)
 }
