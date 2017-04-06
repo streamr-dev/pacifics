@@ -1,6 +1,6 @@
 
 import store from '../store'
-import {createParcel as createParcelContract} from '../../src/parcel'
+import {getAllParcelContracts, getParcelContract, createParcelContract} from '../../src/parcel'
 
 export const GET_ALL_PARCELS_REQUEST = 'GET_ALL_PARCELS_REQUEST'
 export const GET_ALL_PARCELS_SUCCESS = 'GET_ALL_PARCELS_SUCCESS'
@@ -35,14 +35,14 @@ const async = (params) => new Promise(resolve => {
 
 export const getAllParcels = () => dispatch => {
     dispatch(getAllParcelsRequest())
-    async(parcels)
+    getAllParcelContracts()
         .then(p => dispatch(getAllParcelsSuccess(p)))
         .catch(() => dispatch(getAllParcelsFailure()))
 }
 
 export const getParcel = id => dispatch => {
     dispatch(getParcelRequest())
-    async(parcels.find(item => item.id === id))
+    getParcelContract(id)
         .then(p => dispatch(getParcelSuccess(p)))
         .catch(() => dispatch(getParcelFailure()))
 }

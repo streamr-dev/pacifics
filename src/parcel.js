@@ -2,6 +2,10 @@
 //import web3 from 'web3'
 import {parcelCreatorABI, parcelCreatorAddress/*, parcelABI*/} from './abi'
 import {getEventsFromLogs} from './ethCall'
+import {promiseDoFor} from './promise-loops'
+import _ from 'lodash'
+
+const ParcelCreator = web3.eth.contract(parcelCreatorABI).at(parcelCreatorAddress)
 
 const assertEqual = (a, b) => {
     if (a !== b) {
@@ -9,12 +13,51 @@ const assertEqual = (a, b) => {
     }
 }
 
+const lastOf = arr => arr[arr.length - 1]
+
+const PARCEL_FETCH_STEP = 10
+
+// parcels are mapped to running id, starting from 1
+export const getAllParcelContracts = () => {
+    return getParcelsAfter(0)
+}
+
+export const getParcelsAfter = startId => {
+    return promiseDoFor(parcels => {
+        return getParcelRange(startId + 1 + parcels.length, startId + 1 + parcels.length + PARCEL_FETCH_STEP)
+    }, lastOf, [].concat.bind([]), []).then(parcels => {
+        return _.filter(parcels)
+    })
+}
+
+const getParcelRange = (startId, endId) => {
+    const res = _.range(startId, endId).map(getParcelContract)
+    return Promise.all(res)
+}
+
+export const getParcelContract = id => {
+    return new Promise(done => {
+        return ParcelCreator.parcelCreations(id, (err, result) => {
+            if (!result) {
+                done()
+            } else {
+                done({
+                    id,
+                    address: result[0],
+                    creator: result[1],
+                    name: result[2]
+                })
+            }
+        })
+    })
+}
+
 /**
  * Create PassParcel contract
  * @param temperatureLimit The maximum temperature in degrees celcius allowed for the parcel
  * @returns {Promise.<string>} created contract's address
  */
-export const createParcel = (name = 'Parcel', description = 'Unnamed parcel', temperatureLimit = 100, ownerAddress = web3.eth.coinbase) => {
+export const createParcelContract = (name = 'Parcel', description = 'Unnamed parcel', temperatureLimit = 100, ownerAddress = web3.eth.coinbase) => {
     const ParcelCreator = web3.eth.contract(parcelCreatorABI).at(parcelCreatorAddress)
     console.log('Creating parcel ' + name)  
     return new Promise(done => {
