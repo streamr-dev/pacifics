@@ -18,11 +18,11 @@ const lastOf = arr => arr[arr.length - 1]
 // number of (parallel) fetches done at a time
 const DEFAULT_PARCEL_FETCH_STEP = 10
 
-export const getAllParcelContracts = () => {
-    return updateParcels([])
-}
+// drop already known parcels and fetch all a-fresh
+export const getAllParcelContracts = updateParcels.bind(null, [])
 
-export const updateParcels = (oldParcels, step = DEFAULT_PARCEL_FETCH_STEP) => {
+// this can be used to fetch only parcels newer than those we already have
+export function updateParcels(oldParcels, step = DEFAULT_PARCEL_FETCH_STEP) {
     const startId = 1 + oldParcels.length   // parcels are mapped with running id, starting from 1
     return getParcelRange(startId, startId + step).then(newParcels => {
         const parcels = oldParcels.concat(newParcels)
@@ -34,12 +34,12 @@ export const updateParcels = (oldParcels, step = DEFAULT_PARCEL_FETCH_STEP) => {
     })
 }
 
-export const getParcelRange = (startId, endId) => {
+export function getParcelRange(startId, endId) {
     const res = _.range(startId, endId).map(getParcelMetadata)
     return Promise.all(res)
 }
 
-export const getParcelMetadata = id => {
+export function getParcelMetadata(id) {
     return new Promise(done => {
         ParcelCreator.parcelCreations(id, (err, result) => {
             if (!result) {
@@ -58,7 +58,7 @@ export const getParcelMetadata = id => {
 
 export const getParcelContract = id => getParcelMetadata(id).then(parcel => getParcelAt(parcel.address))
 
-export const getParcelAt = address => {
+export function getParcelAt(address) {
     const parcelContract = Parcel.at(address)
     const propNames = parcelABI
         .filter(m => m.constant && m.inputs && m.inputs.length === 0 && m.outputs && m.outputs.length === 1)
@@ -69,7 +69,7 @@ export const getParcelAt = address => {
         })
 }
 
-const getParcelProperty = (parcelContract, propName) => {
+function getParcelProperty(parcelContract, propName) {
     return new Promise((done, fail) => {
         parcelContract[propName]((err, result) => {
             if (err) {
@@ -91,9 +91,8 @@ const getParcelProperty = (parcelContract, propName) => {
  * @param temperatureLimit The maximum temperature in degrees celcius allowed for the parcel
  * @returns {Promise.<string>} created contract's address
  */
-export const createParcelContract = (name = 'Parcel', description = 'Unnamed parcel', temperatureLimit = 100, ownerAddress = web3.eth.coinbase) => {
+export function createParcelContract(name = 'Parcel', description = 'Unnamed parcel', temperatureLimit = 100, ownerAddress = web3.eth.coinbase) {
     const ParcelCreator = web3.eth.contract(parcelCreatorABI).at(parcelCreatorAddress)
-    //console.log('Creating parcel ' + name)
     return new Promise(done => {
         ParcelCreator.createParcel(ownerAddress, ownerAddress, name, description, temperatureLimit, (err, tx) => {
             if (err) {
@@ -126,7 +125,6 @@ export const createParcelContract = (name = 'Parcel', description = 'Unnamed par
                     assertEqual(response.name, name)
                     assertEqual(response.creator, ownerAddress)
                     assertEqual(response.owner, ownerAddress)
-                    //console.log('Created parcel', response)
                     done(response)
                 })
             })
