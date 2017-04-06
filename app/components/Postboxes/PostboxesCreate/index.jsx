@@ -10,8 +10,7 @@ class PostboxesCreate extends Component {
         this.state = {
             name: '',
             description: new Date(),
-            gLocation: '',
-            owner: null
+            gLocation: ''
         }
         this.handleInputChange = this.handleInputChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
@@ -49,7 +48,7 @@ class PostboxesCreate extends Component {
                     <h2>New Postbox</h2>
                 </Col>
                 <Col xs={4}>
-                    <Form>
+                    <Form onSubmit={this.handleSubmit}>
                         <FormGroup>
                             <ControlLabel>Name</ControlLabel>
                             <FormControl
@@ -74,14 +73,6 @@ class PostboxesCreate extends Component {
                                 value={this.state.location}
                             />
                         </FormGroup>
-                        <FormGroup>
-                            <ControlLabel>Owner</ControlLabel>
-                            <FormControl
-                                name="owner"
-                                onChange={this.handleInputChange}
-                                value={this.state.owner}
-                            />
-                        </FormGroup>
                         <Button type="submit">
                             Create
                         </Button>
@@ -101,7 +92,7 @@ PostboxesCreate.propTypes = {
 
 const mapStateToProps = state => {
     return {
-        user: state.user.user,
+        user: state.user.user
     }
 }
 

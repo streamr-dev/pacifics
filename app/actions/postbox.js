@@ -1,4 +1,6 @@
 
+import {getAllPostboxContracts, getPostboxContract, createPostboxContract} from '../../src/postbox'
+
 export const GET_ALL_POSTBOXES_REQUEST = 'GET_ALL_POSTBOXES_REQUEST'
 export const GET_ALL_POSTBOXES_SUCCESS = 'GET_ALL_POSTBOXES_SUCCESS'
 export const GET_ALL_POSTBOXES_FAILURE = 'GET_ALL_POSTBOXES_FAILURE'
@@ -11,30 +13,26 @@ export const CREATE_POSTBOX_REQUEST = 'CREATE_POSTBOX_REQUEST'
 export const CREATE_POSTBOX_SUCCESS = 'CREATE_POSTBOX_SUCCESS'
 export const CREATE_POSTBOX_FAILURE = 'CREATE_POSTBOX_FAILURE'
 
-// JUST TO REPRESENT ASYNC ACTIONS, REMOVE
-const async = () => new Promise(resolve => {
-    setTimeout(resolve, 500)
-})
 
 export const getAllPostboxes = () => dispatch => {
     dispatch(getAllPostboxesRequest())
-    async()
-        .then(() => dispatch(getAllPostboxesSuccess()))
-        .catch(() => dispatch(getAllPostboxesFailure()))
+    getAllPostboxContracts()
+        .then(postboxes => dispatch(getAllPostboxesSuccess(postboxes)))
+        .catch(err => dispatch(getAllPostboxesFailure(err)))
 }
 
 export const getPostbox = id => dispatch => {
     dispatch(getPostboxRequest())
-    async(id)
-        .then(() => dispatch(getPostboxSuccess()))
-        .catch(() => dispatch(getPostboxFailure()))
+    getPostboxContract(id)
+        .then(postbox => dispatch(getPostboxSuccess(postbox)))
+        .catch(err => dispatch(getPostboxFailure(err)))
 }
 
-export const createPostbox = () => dispatch => {
+export const createPostbox = postbox => dispatch => {
     dispatch(createPostboxRequest())
-    async()
-        .then(() =>  dispatch(createPostboxSuccess()))
-        .catch(() => dispatch(createPostboxFailure()))
+    createPostboxContract(postbox.name, postbox.description, postbox.location/*, postbox.minuteFee, postbox.minRent, postbox.maxDeposit*/)
+        .then(postbox => dispatch(createPostboxSuccess(postbox)))
+        .catch(err => dispatch(createPostboxFailure(err)))
 }
 
 const getAllPostboxesRequest = () => ({
