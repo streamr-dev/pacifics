@@ -2,6 +2,8 @@
 const Sequelize = require('sequelize')
 const connection = require('../connection')
 
+const Service = require('./service')
+
 const User = connection.define('user', {
     id: {
         type: Sequelize.INTEGER,
@@ -20,7 +22,8 @@ const User = connection.define('user', {
         allowNull: false
     }
 }, {
-    timestamps: true
+    timestamps: true,
+    include: [ Service ]
 })
 
 User.Instance.prototype.toJSON = function() {
