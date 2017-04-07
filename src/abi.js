@@ -1,6 +1,6 @@
 /*eslint-disable quotes*/
 
-export const parcelCreatorAddress = "0xAE23DA949F70d63Cd74c96DF6183F1B93F451dAa"
+export const parcelCreatorAddress = "0x2ABd0fc72Aa43152693E3C96CCA2027bb7F5432a"
 export const postboxCreatorAddress = "0xFa9bda06D96Fe7fE5a6DcABeafEbf486a477924F"
 export const deliveryContractCreatorAddress = "0x3A5D686EC5b9b39617f105e6ec43f70b0Fa6d2Ff"
 
@@ -12,8 +12,20 @@ export const parcelCreatorABI = [
         "outputs": [
             {
                 "name": "",
-                "type": "address",
-                "value": "0x2be1557dd54f762181a930265a8b6149bd4e1108"
+                "type": "address"
+            }
+        ],
+        "payable": false,
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "numberOfParcels",
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256"
             }
         ],
         "payable": false,
@@ -39,8 +51,7 @@ export const parcelCreatorABI = [
         "outputs": [
             {
                 "name": "",
-                "type": "address",
-                "value": "0xd30f6685e9a39ff768f81f48bd14df917931d994"
+                "type": "address"
             }
         ],
         "payable": false,
@@ -105,18 +116,15 @@ export const parcelCreatorABI = [
         "outputs": [
             {
                 "name": "parcel",
-                "type": "address",
-                "value": "0x0000000000000000000000000000000000000000"
+                "type": "address"
             },
             {
                 "name": "creator",
-                "type": "address",
-                "value": "0x0000000000000000000000000000000000000000"
+                "type": "address"
             },
             {
                 "name": "name",
-                "type": "string",
-                "value": ""
+                "type": "string"
             }
         ],
         "payable": false,
@@ -142,8 +150,7 @@ export const parcelCreatorABI = [
         "outputs": [
             {
                 "name": "",
-                "type": "address",
-                "value": "0x45fe0bcf5b785a27c2a1e27796f348afe9121490"
+                "type": "address"
             }
         ],
         "payable": false,
@@ -153,33 +160,15 @@ export const parcelCreatorABI = [
         "inputs": [
             {
                 "name": "_deliveryContractCreator",
-                "type": "address",
-                "index": 0,
-                "typeShort": "address",
-                "bits": "",
-                "displayName": "&thinsp;<span class=\"punctuation\">_</span>&thinsp;delivery Contract Creator",
-                "template": "elements_input_address",
-                "value": "0x45fE0Bcf5B785a27c2A1E27796f348AFe9121490"
+                "type": "address"
             },
             {
                 "name": "_passPostboxCreator",
-                "type": "address",
-                "index": 1,
-                "typeShort": "address",
-                "bits": "",
-                "displayName": "&thinsp;<span class=\"punctuation\">_</span>&thinsp;pass Postbox Creator",
-                "template": "elements_input_address",
-                "value": "0xD30f6685e9A39fF768f81f48Bd14DF917931d994"
+                "type": "address"
             },
             {
                 "name": "_eventManager",
-                "type": "address",
-                "index": 2,
-                "typeShort": "address",
-                "bits": "",
-                "displayName": "&thinsp;<span class=\"punctuation\">_</span>&thinsp;event Manager",
-                "template": "elements_input_address",
-                "value": "0x2be1557dD54F762181a930265A8B6149Bd4e1108"
+                "type": "address"
             }
         ],
         "payable": false,
