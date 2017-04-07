@@ -1,7 +1,7 @@
 /*eslint-disable quotes*/
 
 export const parcelCreatorAddress = "0xAE23DA949F70d63Cd74c96DF6183F1B93F451dAa"
-export const postboxCreatorAddress = "0xD30f6685e9A39fF768f81f48Bd14DF917931d994"
+export const postboxCreatorAddress = "0xFa9bda06D96Fe7fE5a6DcABeafEbf486a477924F"
 export const deliveryContractCreatorAddress = "0x3A5D686EC5b9b39617f105e6ec43f70b0Fa6d2Ff"
 
 export const parcelCreatorABI = [
@@ -242,6 +242,19 @@ export const postboxCreatorABI = [
         "type": "function"
     },
     {
+        "constant": true,
+        "inputs": [],
+        "name": "numberOfPostboxes",
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "type": "function"
+    },
+    {
         "constant": false,
         "inputs": [
             {
@@ -291,6 +304,24 @@ export const postboxCreatorABI = [
             {
                 "name": "",
                 "type": "address"
+            }
+        ],
+        "payable": false,
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "name": "postboxID",
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256"
             }
         ],
         "payable": false,
