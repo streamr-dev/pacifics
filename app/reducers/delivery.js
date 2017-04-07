@@ -26,13 +26,13 @@ export default (state = {
         case GET_DELIVERY_SUCCESS:
         case CREATE_DELIVERY_SUCCESS:
             return {
-                deliveries: [...state.deliveries, action.deliveries],
+                all: [...state.deliveries, action.delivery],
                 error: undefined,
                 fetching: false
             }
         case GET_ALL_DELIVERIES_SUCCESS:
             return {
-                deliveries: action.deliveries,
+                all: action.deliveries,
                 error: undefined,
                 fetching: false
             }

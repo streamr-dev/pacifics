@@ -1,42 +1,44 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router'
 import {Row, Col, FormGroup, Form, ControlLabel, FormControl, Button, Alert} from 'react-bootstrap'
-import Switch from 'react-bootstrap-switch'
-import 'react-bootstrap-switch/dist/css/bootstrap3/react-bootstrap-switch.min.css'
+//import Switch from 'react-bootstrap-switch'
+//import 'react-bootstrap-switch/dist/css/bootstrap3/react-bootstrap-switch.min.css'
+import NumericInput from 'react-numeric-input'
 import {connect} from 'react-redux'
 import {replace} from 'react-router-redux'
-import {getAllPostboxes} from '../../../actions/postbox'
 import {createDelivery} from '../../../actions/delivery'
+//import BigNumber from 'bignumber.js'
 
 class DeliveriesCreate extends Component {
     constructor() {
         super()
         this.state = {
-            receiverAddress: '',
-            canStartAfter: new Date(),
-            depositUnlockedAfter: new Date(),
-            depositRequired: null,
+            senderPostbox: '0x3878376aEB446B70066eE8F58db9942B4b11D01F',    // TODO: get post box address
+            receiverPostbox: '0xa1B20149df843f9aB57f5C8D142a18c2f5587f0c',  // TODO: get post box address
+            receiverAddress: '0x26aa20a3ca450537f1bb5b037facd513c723153b',
+            canStartAfter: '',
+            depositUnlockedAfter: '',
+            deposit: 0,
             deliveryDeadline: ''
         }
         this.handleInputChange = this.handleInputChange.bind(this)
-        this.handleSwitchChange = this.handleSwitchChange.bind(this)
+        //this.handleSwitchChange = this.handleSwitchChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
     }
     componentWillMount() {
-        this.props.dispatch(getAllPostboxes())
         this.props.location.state && this.setState({
             ...this.state,
             ...this.props.location.state
         })
     }
-    handleSwitchChange(s, value) {
+/*    handleSwitchChange(s, value) {
         this.handleInputChange({
             target: {
                 name: 'depositRequired',
                 value: value
             }
         })
-    }
+    }*/
     handleInputChange(e) {
         const changedPart = {
             [e.target.name]: e.target.value
@@ -55,7 +57,7 @@ class DeliveriesCreate extends Component {
     }
     handleSubmit(e) {
         e.preventDefault()
-        this.props.dispatch(createDelivery(this.state))
+        this.props.dispatch(createDelivery(this.state, this.props.parcel.address))
     }
     render() {
         return (
@@ -73,7 +75,7 @@ class DeliveriesCreate extends Component {
                                 <label>Parcel:</label>
                             </Col>
                             <Col xs={8}>
-                                <label>Parcel1</label>
+                                {this.props.parcel ? <Link to={`parcels/${this.props.parcel.address}`}>{this.props.parcel.name}</Link> : ''}
                             </Col>
                         </Row>
                     </Col>
@@ -86,7 +88,7 @@ class DeliveriesCreate extends Component {
                         </Button>
                         <FormControl componentClass="select" placeholder="select postbox">
                             {this.props.postboxes.map((postbox) => (
-                                <option value={postbox.id}>{postbox.name}</option>
+                                <option value={postbox.id} key={postbox.id}>{postbox.name}</option>
                             ))}
                         </FormControl>
                         <FormGroup>
@@ -118,26 +120,29 @@ class DeliveriesCreate extends Component {
                         </FormGroup>
                     </Col>
                     <Col xs={4}>
-                        <h4>From Postbox</h4>
+                        <h4>To Postbox</h4>
                         <Button>
                             <Link to="/postboxes/create">
                                 New Postbox
                             </Link>
                         </Button>
                         <FormControl componentClass="select" placeholder="select postbox">
-                            {this.props.postboxes.forEach((postbox) => (
-                                <option value={postbox.id}>{postbox.name}</option>
+                            {this.props.postboxes.map((postbox) => (
+                                <option value={postbox.id} key={postbox.id}>{postbox.name}</option>
                             ))}
                         </FormControl>
                         <FormGroup>
-                            <ControlLabel>Deposit required</ControlLabel>
-                            <div>
-                                <Switch
-                                    name="depositRequired"
-                                    value={this.state.depositRequired}
-                                    onChange={this.handleSwitchChange}
-                                />
-                            </div>
+                            <ControlLabel>Deposit (ETH)</ControlLabel>
+                            <NumericInput
+                                className="form-control"
+                                name="deposit"
+                                value={this.state.deposit}
+                                onChange={this.handleInputChange}
+                                min={0}
+                                precision={9}
+                                //parse={str => new BigNumber(str).toFixed()}
+                                type="number"
+                            />
                         </FormGroup>
                         <FormGroup>
                             <ControlLabel>Delivery deadline</ControlLabel>
@@ -166,13 +171,15 @@ DeliveriesCreate.propTypes = {
     user: React.PropTypes.object,
     params: React.PropTypes.object,
     postboxes: React.PropTypes.arrayOf(React.PropTypes.object),
-    error: React.PropTypes.string
+    error: React.PropTypes.string,
+    parcel: React.PropTypes.object
 }
 
 const mapStateToProps = state => {
     return {
         postboxes: state.postboxes ? state.postboxes.postboxes : [],
         user: state.user.user,
+        parcel: state.parcels.current
     }
 }
 

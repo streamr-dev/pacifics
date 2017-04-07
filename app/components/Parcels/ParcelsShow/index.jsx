@@ -14,18 +14,26 @@ class ParcelsShow extends Component {
                 <Col xs={12}>
                     <Row>
                         <Col xs={2}>
-                            <label>Owner</label>
+                            <label>Description</label>
                         </Col>
                         <Col xs={10}>
-                            <span>{this.props.parcel.owner}</span>
+                            <span>{this.props.parcel.description}</span>
                         </Col>
                     </Row>
                     <Row>
                         <Col xs={2}>
-                            <label>Currently at</label>
+                            <label>Owner</label>
                         </Col>
                         <Col xs={10}>
-                            <span>{this.props.parcel.currentlyAt}</span>
+                            <span>{this.props.parcel.Owner}</span>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={2}>
+                            <label>Current holder</label>
+                        </Col>
+                        <Col xs={10}>
+                            <span>{this.props.parcel.TransmittedTo}</span>
                         </Col>
                     </Row>
                     <Row>
@@ -33,13 +41,13 @@ class ParcelsShow extends Component {
                             <label>Temperature limit</label>
                         </Col>
                         <Col xs={10}>
-                            <span>{this.props.parcel.temperatureLimit}</span>
+                            <span>{this.props.parcel.TemperatureLimit}</span>
                         </Col>
                     </Row>
                 </Col>
                 <Col xs={12}>
                     <Button>
-                        <Link to={`/parcels/${this.props.params.id}/track`}>
+                        <Link to={`/parcels/${this.props.params.address}/track`}>
                             Track Parcel
                         </Link>
                     </Button>
@@ -49,7 +57,7 @@ class ParcelsShow extends Component {
                 </Col>
                 <Col xs={12}>
                     <Button>
-                        <Link to={`/parcels/${this.props.params.id}/deliveries/create`}>
+                        <Link to={`/parcels/${this.props.params.address}/deliveries/create`}>
                             <FontAwesome name="plus"/> New Delivery
                         </Link>
                     </Button>
@@ -64,10 +72,11 @@ class ParcelsShow extends Component {
                             </tr>
                             </thead>
                             <tbody>
-                            {this.props.deliveries.forEach((d) => (
-                                <tr>
-                                    <td>{d.fromPostBox.name}</td>
-                                    <td>{d.toPostbox.name}</td>
+                            {/*TODO: change after solidity-getters:getIndexedPropAt works*/}
+                            {this.props.deliveries.map((d) => (
+                                <tr key={d[1]}>
+                                    <td>{d[3]}</td>
+                                    <td>{d[4]}</td>
                                 </tr>
                             ))}
                             </tbody>
@@ -89,8 +98,8 @@ ParcelsShow.propTypes = {
 
 const mapStateToProps = (state, props) => ({
     user: state.user.user,
-    deliveries: state.deliveries.deliveries ? state.deliveries.deliveries.filter(d => d.parcelId === props.params.id) : [],
-    parcel: state.parcel || {}
+    deliveries: state.deliveries.all ? state.deliveries.all.filter(d => d[2] === props.params.address) : [], // TODO: change after solidity-getters:getIndexedPropAt works
+    parcel: state.parcels.current || {}
 })
 
 export default connect(mapStateToProps, null)(ParcelsShow)

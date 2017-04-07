@@ -1,6 +1,7 @@
 /*global web3*/
 //import web3 from 'web3'
 import zipObject from 'lodash/zipObject'
+import isArray from 'lodash/isArray'
 
 /**
  * Get all fields marked "public" in given Solidity contract
@@ -19,6 +20,27 @@ export function getAll(abi, address) {
         })
 }
 
+// TODO: WIP
+export function getIndexedPropAt(id, abi, address, propName) {
+    const contract = web3.eth.contract(abi).at(address)
+    const values = wrapArray(at(id, contract, propName))
+    let i = 0
+    const propNames = wrapArray(abi.find(m => m.name === propName).outputs.map(o => o.name ? o.name : i++))
+    return zipObject(propNames, values)
+}
+
+const wrapArray = maybeArray => isArray(maybeArray) ? maybeArray : [maybeArray]
+
+const enhance = raw => isArray(raw) ? raw.map(enhancePrimitive) : enhancePrimitive(raw)
+
+function enhancePrimitive(raw) {
+    // BigIntegers
+    if (raw.toFixed) {
+        return raw.toFixed()
+    }
+    return raw
+}
+
 /**
  * Getter for Solidity contract field marked "public"
  * Must be a primitive (not array or mapping)
@@ -32,14 +54,10 @@ export function get(contract, propName) {
             if (err) {
                 fail(err)
             } else {
-                // BigIntegers
-                if (result.toFixed) {
-                    result = result.toFixed()
-                }
                 done(result)
             }
         })
-    })
+    }).then(enhance)
 }
 
 /**
@@ -55,12 +73,8 @@ export function at(index, contract, propName) {
             if (err) {
                 fail(err)
             } else {
-                // BigIntegers
-                if (result.toFixed) {
-                    result = result.toFixed()
-                }
                 done(result)
             }
         })
-    })
+    }).then(enhance)
 }

@@ -1,11 +1,43 @@
+/*global web3*/
+//import web3 from 'web3'
+
 import _ from 'lodash'
 import SolidityEvent from 'web3/lib/web3/event'
 import solidityCoder from 'web3/lib/solidity/coder'
 
+export function sendTransaction(abi, address, funcName, args) {
+    const contract = web3.eth.contract(abi).at(address)
+    return new Promise(done => {
+        contract[funcName](...args, (err, tx) => {
+            if (err) {
+                throw err
+            }
+            console.log(`Sending transaction https://testnet.etherscan.io/tx/${tx}`)
+            const filter = web3.eth.filter('latest')
+            filter.watch(function(error/*, blockHash*/) {
+                if (error) {
+                    throw error
+                }
+                web3.eth.getTransactionReceipt(tx, (err, tr) => {
+                    if (err) {
+                        throw err
+                    }
+                    if (tr == null) {
+                        return      // not yet...
+                    }
+                    filter.stopWatching()
+                    const events = getEventsFromLogs(tr.logs, abi)
+                    done(events)
+                })
+            })
+        })
+    })
+}
 
 // optionally filter by address
 export function getEventsFromLogs(logs, abi, address) {
     if (!logs.length) {
+        debugger
         console.log('Received empty/undefined "logs" for getEventsFromLogs')      //eslint-disable-line no-console
         return []
     }

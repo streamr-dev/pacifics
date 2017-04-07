@@ -16,8 +16,10 @@ import SignupPage from './components/SignupPage'
 import LoginPage from './components/LoginPage'
 import store, {history} from './store.js'
 
-import {getParcel, getAllParcels, ensureParcelIsFetched} from './actions/parcel'
+import {getParcel, getAllParcels} from './actions/parcel'
 import {getAllServices} from './actions/service'
+import {getAllDeliveries} from './actions/delivery'
+import {getAllPostboxes} from './actions/postbox'
 
 export default class ReactRouter extends Component {
     
@@ -33,11 +35,19 @@ export default class ReactRouter extends Component {
                 <Route path="signup" component={SignupPage} onEnter={() => store.dispatch(getAllServices())}/>
                 <Route path="login" component={LoginPage}/>
                 <Route path="/" onEnter={ReactRouter.requireAuth} component={App}>
-                    <Route path="/parcels" component={ParcelsList} onEnter={() => store.dispatch(getAllParcels())}/>
+                    <Route path="/parcels" component={ParcelsList} onEnter={() =>
+                        store.dispatch(getAllParcels())
+                    }/>
                     <Route path="/parcels/create" component={ParcelsCreate}/>
-                    <Route path="/parcels/:id" component={ParcelsShow} onEnter={location => store.dispatch(getParcel(location.params.id))}/>
-                    <Route path="/parcels/:id/track" component={ParcelsTrack} onEnter={location => store.dispatch(ensureParcelIsFetched(location.params.id))}/>
-                    <Route path="/parcels/:id/deliveries/create" components={DeliveryCreate} onEnter={location => store.dispatch(ensureParcelIsFetched(location.params.id))}/>
+                    <Route path="/parcels/:address" component={ParcelsShow} onEnter={location =>
+                        store.dispatch(getParcel(location.params.address)).then(store.dispatch(getAllDeliveries()))
+                    }/>
+                    <Route path="/parcels/:address/track" component={ParcelsTrack} onEnter={location =>
+                        store.dispatch(getParcel(location.params.address))
+                    }/>
+                    <Route path="/parcels/:address/deliveries/create" components={DeliveryCreate} onEnter={location =>
+                        store.dispatch(getParcel(location.params.address)).then(store.dispatch(getAllPostboxes()))
+                    }/>
                     <Route path="/postboxes/create" components={PostboxesCreate}/>
                     <IndexRedirect to="/parcels"/>
                 </Route>

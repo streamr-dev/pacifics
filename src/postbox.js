@@ -6,7 +6,6 @@ import {getAll as solidityGetProperties, get as solidityGet} from './solidity-ge
 import _ from 'lodash'
 
 const PostboxCreator = web3.eth.contract(postboxCreatorABI).at(postboxCreatorAddress)
-const Postbox = web3.eth.contract(postboxABI)
 
 const assertEqual = (a, b) => {
     if (a !== b) {
@@ -48,8 +47,8 @@ export function getPostboxMetadata(id) {
             } else {
                 done({
                     id,
-                    address: result[0],
-                    creator: result[1],
+                    creator: result[0],
+                    address: result[1],
                     name: result[2]
                 })
             }
@@ -71,6 +70,7 @@ export const getPostboxCount = () => solidityGet(PostboxCreator, 'numberOfPostbo
  */
 export const createPostboxContract = (name = 'Postbox', description = 'Unnamed postbox', location = 'Unknown'/*, minuteFee=0, minRent=0, maxDeposit=0*/, ownerAddress = web3.eth.coinbase) => {
     //console.log('Creating postbox ' + name)
+    // TODO: write using ethCall:sendTransaction
     return new Promise(done => {
         PostboxCreator.createPostbox(ownerAddress, name, description, location, 0, 0, 0 /*minuteFee, minRent, maxDeposit*/, (err, tx) => {
             if (err) {

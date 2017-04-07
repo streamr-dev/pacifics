@@ -21,37 +21,25 @@ class ParcelsList extends Component {
                 </Col>
                 <Col xs={12}>
                     <Panel>
-                        {/*<CTable striped bordered hover>*/}
-                            {/*<Thead>*/}
-                                {/*<Tr>*/}
-                                    {/*<Th>Name</Th>*/}
-                                    {/*<Th>Current holder</Th>*/}
-                                {/*</Tr>*/}
-                            {/*</Thead>*/}
-                            {/*<Tbody>*/}
-                            {/*{this.props.parcels.map(p => (*/}
-                                {/*<Tr href={`/parcels/${p.id}`} key={p.id}>*/}
-                                    {/*<Td>{p.name}</Td>*/}
-                                    {/*<Td>{p.owner}</Td>*/}
-                                {/*</Tr>*/}
-                            {/*))}*/}
-                            {/*</Tbody>*/}
-                        {/*</CTable>*/}
                         <Table striped bordered hover>
                             <thead>
                                 <tr>
                                     <th>Name</th>
+                                    <th>Owner</th>
                                     <th>Current holder</th>
+                                    <th>Transmission date</th>
                                 </tr>
                             </thead>
                             <tbody>
                             {this.props.parcels.map(p => (
-                                <tr href={`/parcels/${p.id}`} key={p.id}>
+                                <tr href={`/parcels/${p.id}`} key={p.address}>
                                     <td>
-                                        <Link to={`parcels/${p.id}`}>
+                                        <Link to={`parcels/${p.address}`}>
                                             {p.name}
                                         </Link></td>
-                                    <td>{p.owner}</td>
+                                    <td>{p.Owner.slice(0, 10)}</td>
+                                    <td>{p.TransmittedTo.slice(0, 10)}</td>
+                                    <td>{p.transmissionDate}</td>
                                 </tr>
                             ))}
                             </tbody>

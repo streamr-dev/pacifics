@@ -1,6 +1,6 @@
 
 import store from '../store'
-import {getAllParcelContracts, getParcelContract, createParcelContract} from '../../src/parcel'
+import {getAllParcelContracts, getParcelContractAt, createParcelContract} from '../../src/parcel'
 
 export const GET_ALL_PARCELS_REQUEST = 'GET_ALL_PARCELS_REQUEST'
 export const GET_ALL_PARCELS_SUCCESS = 'GET_ALL_PARCELS_SUCCESS'
@@ -16,29 +16,28 @@ export const CREATE_PARCEL_FAILURE = 'CREATE_PARCEL_FAILURE'
 
 export const getAllParcels = () => dispatch => {
     dispatch(getAllParcelsRequest())
-    getAllParcelContracts()
+    return getAllParcelContracts()
         .then(p => dispatch(getAllParcelsSuccess(p)))
         .catch(e => dispatch(getAllParcelsFailure(e)))
 }
 
-export const getParcel = id => dispatch => {
-    dispatch(getParcelRequest())
-    getParcelContract(id)
-        .then(p => dispatch(getParcelSuccess(p)))
-        .catch(e => dispatch(getParcelFailure(e)))
-}
-
-// TODO: check that this works
-export const ensureParcelIsFetched = id => dispatch => {
+// TODO: name probably should be selectParcel (plus same changes everywhere)
+export const getParcel = address => dispatch => {
     const state = store.getState()
-    if (state.parcels.parcels && state.parcels.parcels.find((p) => p.id === id)) {
-        dispatch(getParcel(id))
+    if (state.parcels && state.parcels.current && state.parcels.current.address === address) {
+        return Promise.resolve(state.parcels.current)
     }
+    // TODO(later): check state.parcels if already fetched? (use state.parcel.parcels as a cache)
+
+    dispatch(getParcelRequest())
+    return getParcelContractAt(address)
+        .then(p => dispatch(getParcelSuccess(Object.assign(p, {address})))) //eslint-disable-line object-curly-newline
+        .catch(e => dispatch(getParcelFailure(e)))
 }
 
 export const createParcel = parcel => dispatch => {
     dispatch(createParcelRequest())
-    createParcelContract(parcel.name, parcel.description, parcel.temperatureLimit)
+    return createParcelContract(parcel.name, parcel.description, parcel.temperatureLimit)
         .then(p => dispatch(createParcelSuccess(p)))
         .catch(error => dispatch(createParcelFailure(error)))
 }

@@ -1,12 +1,14 @@
 /*global web3*/
 //import web3 from 'web3'
+import filter from 'lodash/filter'
+import range from 'lodash/range'
+
 import {parcelCreatorABI, parcelCreatorAddress, parcelABI} from './abi'
 import {getEventsFromLogs} from './ethCall'
 import {getAll as solidityGetProperties} from './solidity-getters'
-import _ from 'lodash'
 
 const ParcelCreator = web3.eth.contract(parcelCreatorABI).at(parcelCreatorAddress)
-const Parcel = web3.eth.contract(parcelABI)
+//const Parcel = web3.eth.contract(parcelABI)
 
 const assertEqual = (a, b) => {
     if (a !== b) {
@@ -30,13 +32,14 @@ export function updateParcels(oldParcels, step = DEFAULT_PARCEL_FETCH_STEP) {
         if (lastOf(newParcels)) {
             return updateParcels(parcels, step)
         } else {
-            return _.filter(parcels)
+            return filter(parcels)
         }
     })
 }
 
 export function getParcelRange(startId, endId) {
-    const res = _.range(startId, endId).map(getParcelMetadata)
+    console.log(`Getting parcels ${startId}...${endId}`)
+    const res = range(startId, endId).map(getParcelContract)
     return Promise.all(res)
 }
 
@@ -57,8 +60,26 @@ export function getParcelMetadata(id) {
     })
 }
 
-export const getParcelContract = id => getParcelMetadata(id).then(parcel => solidityGetProperties(parcelABI, parcel.address))
+/**
+ * @param id a running number given by ParcelCreator (starting from 1)
+ * @returns {Promise} all Parcel's public properties
+ */
+export function getParcelContract(id) {
+    return getParcelMetadata(id).then(p => {
+        if (p) {
+            const address = p.address
+            return getParcelContractAt(address).then(p => Object.assign(p, {address}))    //eslint-disable-line object-curly-newline
+        }
+    })
+}
 
+/**
+ * @param address Parcel contract's address in blockchain
+ * @returns {Promise} all Parcel's public properties
+ */
+export function getParcelContractAt(address) {
+    return solidityGetProperties(parcelABI, address)
+}
 
 /**
  * Create PassParcel contract
@@ -66,6 +87,7 @@ export const getParcelContract = id => getParcelMetadata(id).then(parcel => soli
  * @returns {Promise.<string>} created contract's address
  */
 export function createParcelContract(name = 'Parcel', description = 'Unnamed parcel', temperatureLimit = 100, ownerAddress = web3.eth.coinbase) {
+    // TODO: write using ethCall:sendTransaction
     return new Promise(done => {
         ParcelCreator.createParcel(ownerAddress, ownerAddress, name, description, temperatureLimit, (err, tx) => {
             if (err) {

@@ -1,3 +1,4 @@
+import {createDeliveryContract, getAllDeliveryContracts} from '../../src/deliveryContract'
 
 export const GET_ALL_DELIVERIES_REQUEST = 'GET_ALL_DELIVERIES_REQUEST'
 export const GET_ALL_DELIVERIES_SUCCESS = 'GET_ALL_DELIVERIES_SUCCESS'
@@ -11,30 +12,40 @@ export const CREATE_DELIVERY_REQUEST = 'CREATE_DELIVERY_REQUEST'
 export const CREATE_DELIVERY_SUCCESS = 'CREATE_DELIVERY_SUCCESS'
 export const CREATE_DELIVERY_FAILURE = 'CREATE_DELIVERY_FAILURE'
 
-// JUST TO REPRESENT ASYNC ACTIONS, REMOVE
-const async = () => new Promise(resolve => {
-    setTimeout(resolve, 500)
-})
 
 export const getAllDeliveries = () => dispatch => {
     dispatch(getAllDeliveriesRequest())
-    async()
-        .then(() => dispatch(getAllDeliveriesSuccess()))
-        .catch(() => dispatch(getAllDeliveriesFailure()))
+    return getAllDeliveryContracts()
+        .then(d => dispatch(getAllDeliveriesSuccess(d)))
+        .catch(e => dispatch(getAllDeliveriesFailure(e)))
 }
 
+/*
 export const getDelivery = id => dispatch => {
     dispatch(getDeliveryRequest())
     async(id)
         .then(() => dispatch(getDeliverySuccess()))
         .catch(() => dispatch(getDeliveryFailure()))
 }
+*/
 
-export const createDelivery = () => dispatch => {
+export const createDelivery = (delivery, parcelAddress) => dispatch => {
+    /* TODO: fix date pickers in DeliveriesCreate/index.jsx
+    const startDate = +delivery.canStartAfter
+    const endDate = +delivery.depositUnlockedAfter
+     const minutes = delivery.deliveryDeadline - startDate
+    */
+    const startDate = +new Date()
+    const endDate = +new Date() + 10000
+    const minutes = 5000
+    const depositETH = delivery.deposit
+
     dispatch(createDeliveryRequest())
-    async()
-        .then(() =>  dispatch(createDeliverySuccess()))
-        .catch(() => dispatch(createDeliveryFailure()))
+    return createDeliveryContract(parcelAddress, delivery.senderPostbox, delivery.receiverPostbox, delivery.receiverAddress, endDate, depositETH, startDate, minutes)
+        .then(d => {
+            return dispatch(createDeliverySuccess(d))
+        })
+        .catch(e => dispatch(createDeliveryFailure(e)))
 }
 
 const getAllDeliveriesRequest = () => ({
@@ -51,6 +62,7 @@ const getAllDeliveriesFailure = error => ({
     error
 })
 
+/*
 const getDeliveryRequest = () => ({
     type: GET_DELIVERY_REQUEST
 })
@@ -64,6 +76,7 @@ const getDeliveryFailure = error => ({
     type: GET_DELIVERY_FAILURE,
     error
 })
+*/
 
 const createDeliveryRequest = () => ({
     type: CREATE_DELIVERY_REQUEST
