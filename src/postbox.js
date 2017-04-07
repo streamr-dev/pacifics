@@ -2,6 +2,7 @@
 //import web3 from 'web3'
 import {postboxCreatorABI, postboxCreatorAddress, postboxABI} from './abi'
 import {getEventsFromLogs} from './ethCall'
+import {getAll as solidityGetProperties, get as solidityGet} from './solidity-getters'
 import _ from 'lodash'
 
 const PostboxCreator = web3.eth.contract(postboxCreatorABI).at(postboxCreatorAddress)
@@ -56,34 +57,9 @@ export function getPostboxMetadata(id) {
     })
 }
 
-export const getPostboxContract = id => getPostboxMetadata(id).then(postbox => getPostboxAt(postbox.address))
+export const getPostboxContract = id => getPostboxMetadata(id).then(postbox => solidityGetProperties(postboxABI, postbox.address))
 
-export function getPostboxAt(address) {
-    const postboxContract = Postbox.at(address)
-    const propNames = postboxABI
-        .filter(m => m.constant && m.inputs && m.inputs.length === 0 && m.outputs && m.outputs.length === 1)
-        .map(m => m.name)
-    return Promise.all(propNames.map(propName => getPostboxProperty(postboxContract, propName)))
-        .then(propValues => {
-            return _.zipObject(propNames, propValues)
-        })
-}
-
-function getPostboxProperty(postboxContract, propName) {
-    return new Promise((done, fail) => {
-        postboxContract[propName]((err, result) => {
-            if (err) {
-                fail(err)
-            } else {
-                // BigIntegers
-                if (result.toFixed) {
-                    result = result.toFixed()
-                }
-                done(result)
-            }
-        })
-    })
-}
+export const getPostboxCount = () => solidityGet(PostboxCreator, 'numberOfPostboxes')
 
 
 /**

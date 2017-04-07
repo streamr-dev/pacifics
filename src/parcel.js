@@ -2,6 +2,7 @@
 //import web3 from 'web3'
 import {parcelCreatorABI, parcelCreatorAddress, parcelABI} from './abi'
 import {getEventsFromLogs} from './ethCall'
+import {getAll as solidityGetProperties} from './solidity-getters'
 import _ from 'lodash'
 
 const ParcelCreator = web3.eth.contract(parcelCreatorABI).at(parcelCreatorAddress)
@@ -56,34 +57,7 @@ export function getParcelMetadata(id) {
     })
 }
 
-export const getParcelContract = id => getParcelMetadata(id).then(parcel => getParcelAt(parcel.address))
-
-export function getParcelAt(address) {
-    const parcelContract = Parcel.at(address)
-    const propNames = parcelABI
-        .filter(m => m.constant && m.inputs && m.inputs.length === 0 && m.outputs && m.outputs.length === 1)
-        .map(m => m.name)
-    return Promise.all(propNames.map(propName => getParcelProperty(parcelContract, propName)))
-        .then(propValues => {
-            return _.zipObject(propNames, propValues)
-        })
-}
-
-function getParcelProperty(parcelContract, propName) {
-    return new Promise((done, fail) => {
-        parcelContract[propName]((err, result) => {
-            if (err) {
-                fail(err)
-            } else {
-                // BigIntegers
-                if (result.toFixed) {
-                    result = result.toFixed()
-                }
-                done(result)
-            }
-        })
-    })
-}
+export const getParcelContract = id => getParcelMetadata(id).then(parcel => solidityGetProperties(parcelABI, parcel.address))
 
 
 /**

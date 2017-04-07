@@ -18,14 +18,14 @@ export const getAllParcels = () => dispatch => {
     dispatch(getAllParcelsRequest())
     getAllParcelContracts()
         .then(p => dispatch(getAllParcelsSuccess(p)))
-        .catch(() => dispatch(getAllParcelsFailure()))
+        .catch(e => dispatch(getAllParcelsFailure(e)))
 }
 
 export const getParcel = id => dispatch => {
     dispatch(getParcelRequest())
     getParcelContract(id)
         .then(p => dispatch(getParcelSuccess(p)))
-        .catch(() => dispatch(getParcelFailure()))
+        .catch(e => dispatch(getParcelFailure(e)))
 }
 
 // TODO: check that this works
