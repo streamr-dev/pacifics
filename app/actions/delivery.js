@@ -35,16 +35,14 @@ export const createDelivery = (delivery, parcelAddress) => dispatch => {
     const endDate = +delivery.depositUnlockedAfter
      const minutes = delivery.deliveryDeadline - startDate
     */
-    const startDate = +new Date()
-    const endDate = +new Date() + 10000
+    const startDate = Date.now()
+    const endDate = startDate + 10000
     const minutes = 5000
     const depositETH = delivery.deposit
 
     dispatch(createDeliveryRequest())
     return createDeliveryContract(parcelAddress, delivery.senderPostbox, delivery.receiverPostbox, delivery.receiverAddress, endDate, depositETH, startDate, minutes)
-        .then(d => {
-            return dispatch(createDeliverySuccess(d))
-        })
+        .then(d => dispatch(createDeliverySuccess(d)))
         .catch(e => dispatch(createDeliveryFailure(e)))
 }
 

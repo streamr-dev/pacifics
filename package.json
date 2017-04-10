@@ -23,6 +23,7 @@
     "extract-text-webpack-plugin": "^2.1.0",
     "file-loader": "^0.11.1",
     "font-awesome": "^4.7.0",
+    "form-serialize": "^0.7.1",
     "history": "^3.3.0",
     "lodash": "^4.17.4",
     "morgan": "^1.7.0",

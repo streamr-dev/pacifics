@@ -5,7 +5,7 @@ import {connect} from 'react-redux'
 import {replace} from 'react-router-redux'
 import {createDelivery} from '../../../actions/delivery'
 
-class DeliveriesCreate extends Component {
+class DeliveryCreate extends Component {
     constructor() {
         super()
         this.state = {
@@ -158,7 +158,7 @@ class DeliveriesCreate extends Component {
     }
 }
 
-DeliveriesCreate.propTypes = {
+DeliveryCreate.propTypes = {
     location: React.PropTypes.object,
     dispatch: React.PropTypes.func,
     user: React.PropTypes.object,
@@ -176,4 +176,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps, null)(DeliveriesCreate)
+export default connect(mapStateToProps, null)(DeliveryCreate)

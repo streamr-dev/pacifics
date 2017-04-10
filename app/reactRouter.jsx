@@ -3,14 +3,14 @@ import {Router, Route, IndexRedirect} from 'react-router'
 
 import App from './components/App'
 
-import ParcelsList from './components/Parcels/ParcelsList'
-import ParcelsShow from './components/Parcels/ParcelsShow'
-import ParcelsCreate from './components/Parcels/ParcelsCreate'
-import ParcelsTrack from './components/Parcels/ParcelsTrack'
+import ParcelsList from './components/Parcel/ParcelList'
+import ParcelsShow from './components/Parcel/ParcelShow'
+import ParcelsCreate from './components/Parcel/ParcelCreate'
+import ParcelsTrack from './components/Parcel/ParcelTrack'
 
-import DeliveryCreate from './components/Deliveries/DeliveriesCreate'
+import DeliveryCreate from './components/Delivery/DeliveryCreate'
 
-import PostboxesCreate from './components/Postboxes/PostboxesCreate'
+import PostboxesCreate from './components/Postbox/PostboxCreate'
 
 import SignupPage from './components/SignupPage'
 import LoginPage from './components/LoginPage'

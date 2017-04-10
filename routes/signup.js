@@ -17,8 +17,8 @@ router.post('/', (req, res, next) => {
     } else if (!req.body.password) {
         error = 'Password required!'
     } else {
-        for (var input in req.body) {
-            var value = req.body[input]
+        for (const input in req.body) {
+            const value = req.body[input]
             /* eslint no-control-regex: 0 */
             if (value.match(/[^\x00-\x7F]/)) {
                 error = 'Fields cannot contain any non-ASCII characters! Field: ' + input

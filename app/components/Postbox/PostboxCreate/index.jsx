@@ -2,23 +2,23 @@ import React, {Component} from 'react'
 import {Row, Col, FormGroup, Form, ControlLabel, FormControl, Button} from 'react-bootstrap'
 import {connect} from 'react-redux'
 import {replace} from 'react-router-redux'
-import {createParcel} from '../../../actions/parcel'
+import {createPostbox} from '../../../actions/postbox'
 
-class ParcelsCreate extends Component {
+class PostboxCreate extends Component {
     constructor() {
         super()
         this.state = {
             name: '',
             description: new Date(),
-            owner: '',
-            temperatureLimit: 0
+            gLocation: ''
         }
         this.handleInputChange = this.handleInputChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
     }
-    componentWillReceiveProps() {   // TODO: currently this won't update the address into UI
-        this.setState({
-            owner: this.props.user.address
+    componentWillMount() {
+        this.props.location.state && this.setState({
+            ...this.state,
+            ...this.props.location.state
         })
     }
     handleInputChange(e) {
@@ -37,22 +37,15 @@ class ParcelsCreate extends Component {
             }
         }))
     }
-    componentWillMount() {
-        // This saves the form state
-        this.props.location.state && this.setState({
-            ...this.state,
-            ...this.props.location.state
-        })
-    }
     handleSubmit(e) {
         e.preventDefault()
-        this.props.dispatch(createParcel(this.state))
+        this.props.dispatch(createPostbox(this.state))
     }
     render() {
         return (
             <Row>
                 <Col xs={12}>
-                    <h2>New Parcel</h2>
+                    <h2>New Postbox</h2>
                 </Col>
                 <Col xs={4}>
                     <Form onSubmit={this.handleSubmit}>
@@ -73,20 +66,11 @@ class ParcelsCreate extends Component {
                             />
                         </FormGroup>
                         <FormGroup>
-                            <ControlLabel>Owner</ControlLabel>
+                            <ControlLabel>Location</ControlLabel>
                             <FormControl
-                                name="owner"
+                                name="gLocation"
                                 onChange={this.handleInputChange}
-                                value={this.state.owner}
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <ControlLabel>Temperature limit</ControlLabel>
-                            <FormControl
-                                type="number"
-                                name="temperatureLimit"
-                                onChange={this.handleInputChange}
-                                value={this.state.temperatureLimit}
+                                value={this.state.location}
                             />
                         </FormGroup>
                         <Button type="submit">
@@ -99,17 +83,17 @@ class ParcelsCreate extends Component {
     }
 }
 
-ParcelsCreate.propTypes = {
+PostboxCreate.propTypes = {
     user: React.PropTypes.object,
     params: React.PropTypes.object,
     dispatch: React.PropTypes.func,
-    location: React.PropTypes.object
+    location: React.PropTypes.string
 }
 
 const mapStateToProps = state => {
     return {
-        user: state.user.user,
+        user: state.user.user
     }
 }
 
-export default connect(mapStateToProps, null)(ParcelsCreate)
+export default connect(mapStateToProps, null)(PostboxCreate)

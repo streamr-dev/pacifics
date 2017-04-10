@@ -1,11 +1,11 @@
 import React, {Component} from 'react'
 import {Row, Col, Panel, Button, Table} from 'react-bootstrap'
-//import {CTable, Tbody, Thead, Th, Tr, Td} from '../../ClickableTable'
 import {Link} from 'react-router'
 import FontAwesome from 'react-fontawesome'
 import {connect} from 'react-redux'
+import styles from './parcelList.pcss'
 
-class ParcelsList extends Component {
+class ParcelList extends Component {
     render() {
         return (
             <Row>
@@ -13,15 +13,17 @@ class ParcelsList extends Component {
                     <h1>My parcels</h1>
                 </Col>
                 <Col xs={12}>
-                    <Button>
-                        <Link to="/parcels/create">
-                            <FontAwesome name="plus"/> New parcel
-                        </Link>
-                    </Button>
+                    <div className={styles.parcelCreateButtonContainer}>
+                        <Button>
+                            <Link to="/parcels/create">
+                                <FontAwesome name="plus"/> New parcel
+                            </Link>
+                        </Button>
+                    </div>
                 </Col>
                 <Col xs={12}>
                     <Panel>
-                        <Table striped bordered hover>
+                        <Table striped bordered hover className={styles.parcelTable}>
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -44,6 +46,15 @@ class ParcelsList extends Component {
                             ))}
                             </tbody>
                         </Table>
+                        {this.props.fetching && (
+                            <div className={styles.spinnerContainer}>
+                                <FontAwesome
+                                    name="spinner"
+                                    size='2x'
+                                    pulse
+                                />
+                            </div>
+                        )}
                     </Panel>
                 </Col>
             </Row>
@@ -51,15 +62,17 @@ class ParcelsList extends Component {
     }
 }
 
-ParcelsList.propTypes = {
+ParcelList.propTypes = {
     user: React.PropTypes.object,
     children: React.PropTypes.oneOfType([React.PropTypes.element, React.PropTypes.arrayOf(React.PropTypes.element)]),
-    parcels: React.PropTypes.array
+    parcels: React.PropTypes.array,
+    fetching: React.PropTypes.bool
 }
 
 const mapStateToProps = state => ({
     user: state.user.user,
-    parcels: state.parcels.parcels || []
+    parcels: state.parcels.parcels || [],
+    fetching: Boolean(state.parcels.fetching)
 })
 
-export default connect(mapStateToProps, null)(ParcelsList)
+export default connect(mapStateToProps, null)(ParcelList)

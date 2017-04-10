@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {Row, Col, Panel, Table} from 'react-bootstrap'
 import {connect} from 'react-redux'
 
-class ParcelsTrack extends Component {
+class ParcelTrack extends Component {
     render() {
         return (
             <Row>
@@ -59,7 +59,7 @@ class ParcelsTrack extends Component {
     }
 }
 
-ParcelsTrack.propTypes = {
+ParcelTrack.propTypes = {
     user: React.PropTypes.object,
     params: React.PropTypes.object
 }
@@ -70,4 +70,4 @@ const mapStateToProps = state => {
     }
 }
 
-export default connect(mapStateToProps, null)(ParcelsTrack)
+export default connect(mapStateToProps, null)(ParcelTrack)

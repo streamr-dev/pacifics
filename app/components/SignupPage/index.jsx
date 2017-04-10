@@ -3,34 +3,27 @@ import {connect} from 'react-redux'
 import {Alert, Col, Table, Panel, Button, FormGroup, ControlLabel, FormControl} from 'react-bootstrap'
 import {signup} from '../../actions/user.js'
 import {Link} from 'react-router'
+import serialize from 'form-serialize'
 
 class SignupPage extends Component {
+    
     constructor(props) {
         super(props)
-        this.state = {
-            email: '',
-            name: '',
-            password: ''
-        }
-        
-        this.handleChange = this.handleChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
-    }
-    
-    handleChange(e) {
-        this.setState({
-            ...this.state,
-            [e.target.name]: e.target.value
-        })
+        this.checkPasswordSimilarity = this.checkPasswordSimilarity.bind(this)
     }
     
     handleSubmit(e) {
         e.preventDefault()
-        this.props.dispatch(signup(this.state))
+        const formObject = serialize(e.target, {
+            hash: true
+        })
+        debugger
+        this.props.dispatch(signup(formObject))
     }
     
     checkPasswordSimilarity() {
-        this.pwd2Input.setCustomValidity(this.state.password != this.pwd2Input.value ? 'Passwords don\'t match' : '')
+        this.pwd2Input.setCustomValidity(this.pwdInput.value != this.pwd2Input.value ? 'Passwords don\'t match' : '')
     }
     
     render() {
@@ -51,8 +44,7 @@ class SignupPage extends Component {
                                 <tr>
                                     <td style={{
                                         fontWeight: 'bold'
-                                    }}>Email
-                                    </td>
+                                    }}>Email</td>
                                     <td>{this.props.user.email}</td>
                                 </tr>
                                 </tbody>
@@ -66,8 +58,7 @@ class SignupPage extends Component {
                                         <ControlLabel>Email</ControlLabel>
                                     </Col>
                                     <Col sm={9}>
-                                        <FormControl name="email" type="email" placeholder="Email"
-                                                     onChange={this.handleChange}/>
+                                        <FormControl name="email" type="email" placeholder="Email"/>
                                     </Col>
                                 </FormGroup>
                                 <FormGroup>
@@ -76,10 +67,8 @@ class SignupPage extends Component {
                                     </Col>
                                     <Col sm={9}>
                                         <FormControl name="password" type="password" placeholder="Password"
-                                                     onChange={e => {
-                                                         this.handleChange(e)
-                                                         setTimeout(() => this.checkPasswordSimilarity())
-                                                     }}/>
+                                                     inputRef={input => this.pwdInput = input}
+                                                     onChange={this.checkPasswordSimilarity}/>
                                     </Col>
                                 </FormGroup>
                                 <FormGroup>
@@ -90,7 +79,7 @@ class SignupPage extends Component {
                                     </Col>
                                     <Col sm={9}>
                                         <FormControl name="password2" type="password" placeholder="Password again"
-                                                     onChange={e => this.checkPasswordSimilarity(e)}
+                                                     onChange={this.checkPasswordSimilarity}
                                                      inputRef={input => this.pwd2Input = input}/>
                                     </Col>
                                 </FormGroup>
@@ -99,7 +88,11 @@ class SignupPage extends Component {
                                         <ControlLabel>Service</ControlLabel>
                                     </Col>
                                     <Col sm={9}>
-                                        <FormControl componentClass="select" placeholder="select service">
+                                        <FormControl
+                                            componentClass="select"
+                                            placeholder="select service"
+                                            name="serviceId"
+                                        >
                                             {this.props.services.map((s) => (
                                                 <option key={s.id} value={s.id}>{s.name}</option>
                                             ))}

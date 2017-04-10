@@ -7,11 +7,9 @@ const SignupStrategy = new LocalStrategy({
     passwordField: 'password',
     passReqToCallback: true
 }, (req, email, password, done) => {
-    User.create({
-        email: req.body.email,
-        name: req.body.name,
+    User.create(Object.assign({}, req.body, {
         password: bcrypt.hashSync(password)
-    })
+    }))
         .then(user => done(null, user.toJSON()))
         .catch(e => done(e))
 })

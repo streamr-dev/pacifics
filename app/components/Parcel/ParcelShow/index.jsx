@@ -4,7 +4,7 @@ import {Link} from 'react-router'
 import FontAwesome from 'react-fontawesome'
 import {connect} from 'react-redux'
 
-class ParcelsShow extends Component {
+class ParcelShow extends Component {
     render() {
         return (
             <Row>
@@ -88,7 +88,7 @@ class ParcelsShow extends Component {
     }
 }
 
-ParcelsShow.propTypes = {
+ParcelShow.propTypes = {
     user: React.PropTypes.object,
     params: React.PropTypes.object,
     deliveries: React.PropTypes.array,
@@ -102,4 +102,4 @@ const mapStateToProps = (state, props) => ({
     parcel: state.parcels.current || {}
 })
 
-export default connect(mapStateToProps, null)(ParcelsShow)
+export default connect(mapStateToProps, null)(ParcelShow)
