@@ -1,13 +1,9 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router'
 import {Row, Col, FormGroup, Form, ControlLabel, FormControl, Button, Alert} from 'react-bootstrap'
-//import Switch from 'react-bootstrap-switch'
-//import 'react-bootstrap-switch/dist/css/bootstrap3/react-bootstrap-switch.min.css'
-import NumericInput from 'react-numeric-input'
 import {connect} from 'react-redux'
 import {replace} from 'react-router-redux'
 import {createDelivery} from '../../../actions/delivery'
-//import BigNumber from 'bignumber.js'
 
 class DeliveriesCreate extends Component {
     constructor() {
@@ -22,7 +18,6 @@ class DeliveriesCreate extends Component {
             deliveryDeadline: ''
         }
         this.handleInputChange = this.handleInputChange.bind(this)
-        //this.handleSwitchChange = this.handleSwitchChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
     }
     componentWillMount() {
@@ -31,14 +26,6 @@ class DeliveriesCreate extends Component {
             ...this.props.location.state
         })
     }
-/*    handleSwitchChange(s, value) {
-        this.handleInputChange({
-            target: {
-                name: 'depositRequired',
-                value: value
-            }
-        })
-    }*/
     handleInputChange(e) {
         const changedPart = {
             [e.target.name]: e.target.value
@@ -81,16 +68,20 @@ class DeliveriesCreate extends Component {
                     </Col>
                     <Col xs={4}>
                         <h4>From Postbox</h4>
-                        <Button>
-                            <Link to="/postboxes/create">
-                                New Postbox
-                            </Link>
-                        </Button>
-                        <FormControl componentClass="select" placeholder="select postbox">
-                            {this.props.postboxes.map((postbox) => (
-                                <option value={postbox.id} key={postbox.id}>{postbox.name}</option>
-                            ))}
-                        </FormControl>
+                        <FormGroup>
+                            <Button>
+                                <Link to="/postboxes/create">
+                                    New Postbox
+                                </Link>
+                            </Button>
+                        </FormGroup>
+                        <FormGroup>
+                            <FormControl componentClass="select" placeholder="select postbox">
+                                {this.props.postboxes.map((postbox) => (
+                                    <option value={postbox.id} key={postbox.id}>{postbox.name}</option>
+                                ))}
+                            </FormControl>
+                        </FormGroup>
                         <FormGroup>
                             <ControlLabel>Receiver address</ControlLabel>
                             <FormControl
@@ -121,26 +112,28 @@ class DeliveriesCreate extends Component {
                     </Col>
                     <Col xs={4}>
                         <h4>To Postbox</h4>
-                        <Button>
-                            <Link to="/postboxes/create">
-                                New Postbox
-                            </Link>
-                        </Button>
-                        <FormControl componentClass="select" placeholder="select postbox">
-                            {this.props.postboxes.map((postbox) => (
-                                <option value={postbox.id} key={postbox.id}>{postbox.name}</option>
-                            ))}
-                        </FormControl>
+                        <FormGroup>
+                            <Button>
+                                <Link to="/postboxes/create">
+                                    New Postbox
+                                </Link>
+                            </Button>
+                        </FormGroup>
+                        <FormGroup>
+                            <FormControl componentClass="select" placeholder="select postbox">
+                                {this.props.postboxes.map((postbox) => (
+                                    <option value={postbox.id} key={postbox.id}>{postbox.name}</option>
+                                ))}
+                            </FormControl>
+                        </FormGroup>
                         <FormGroup>
                             <ControlLabel>Deposit (ETH)</ControlLabel>
-                            <NumericInput
-                                className="form-control"
+                            <FormControl
                                 name="deposit"
                                 value={this.state.deposit}
                                 onChange={this.handleInputChange}
                                 min={0}
-                                precision={9}
-                                //parse={str => new BigNumber(str).toFixed()}
+                                step="any"
                                 type="number"
                             />
                         </FormGroup>
