@@ -24,11 +24,6 @@ export default (state = {
                 fetching: true
             }
         case GET_PARCEL_SUCCESS:
-            return {
-                ...state,
-                error: undefined,
-                fetching: false
-            }
         case CREATE_PARCEL_SUCCESS:
             return {
                 list: [...state.list, action.parcel],

@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router'
-import {Row, Col, FormGroup, Form, ControlLabel, FormControl, Button, Alert} from 'react-bootstrap'
+import {Row, Col, FormGroup, Form, ControlLabel, FormControl, Button} from 'react-bootstrap'
 import {connect} from 'react-redux'
 import {replace} from 'react-router-redux'
 import {createDelivery} from '../../../actions/delivery'
@@ -23,12 +23,14 @@ class DeliveryCreate extends Component {
         this.handleInputChange = this.handleInputChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
     }
+    
     componentWillMount() {
         this.props.location.state && this.setState({
             ...this.state,
             ...this.props.location.state
         })
     }
+    
     handleInputChange(e) {
         const changedPart = {
             [e.target.name]: e.target.value
@@ -45,6 +47,7 @@ class DeliveryCreate extends Component {
             }
         }))
     }
+    
     handleDateChange(name, momentDate) {
         this.handleInputChange({
             target: {
@@ -53,10 +56,12 @@ class DeliveryCreate extends Component {
             }
         })
     }
+    
     handleSubmit(e) {
         e.preventDefault()
         this.props.dispatch(createDelivery(this.state, this.props.parcel.address))
     }
+    
     render() {
         const createDatePicker = name => (
             <DateTime
@@ -75,11 +80,6 @@ class DeliveryCreate extends Component {
         
         return (
             <Row>
-                {this.props.error &&
-                <Alert bsStyle="danger">
-                    {this.props.error}
-                </Alert>
-                }
                 <Form onSubmit={this.handleSubmit}>
                     <Col xs={12}>
                         <h2>New Delivery</h2>
@@ -88,7 +88,8 @@ class DeliveryCreate extends Component {
                                 <label>Parcel:</label>
                             </Col>
                             <Col xs={8}>
-                                {this.props.parcel ? <Link to={`parcels/${this.props.parcel.address}`}>{this.props.parcel.name}</Link> : ''}
+                                {this.props.parcel ? <Link
+                                        to={`parcels/${this.props.parcel.address}`}>{this.props.parcel.name}</Link> : ''}
                             </Col>
                         </Row>
                     </Col>
@@ -175,7 +176,6 @@ DeliveryCreate.propTypes = {
     user: React.PropTypes.object,
     params: React.PropTypes.object,
     postboxes: React.PropTypes.arrayOf(React.PropTypes.object),
-    error: React.PropTypes.string,
     parcel: React.PropTypes.object
 }
 

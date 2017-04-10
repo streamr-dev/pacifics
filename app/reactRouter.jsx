@@ -34,7 +34,7 @@ export default class ReactRouter extends Component {
             <Router history={history}>
                 <Route path="signup" component={SignupPage} onEnter={() => store.dispatch(getAllServices())}/>
                 <Route path="login" component={LoginPage}/>
-                <Route path="/" onEnter={ReactRouter.requireAuth} component={App}>
+                <Route path="/" onEnter={ReactRouter.requireAuth} component={App} onError={e => console.log(e)}>
                     <Route path="/parcels" component={ParcelsList} onEnter={() =>
                         store.dispatch(getAllParcels())
                     }/>

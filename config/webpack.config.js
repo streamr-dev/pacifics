@@ -1,6 +1,8 @@
 const path = require('path')
 const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const WebpackNotifierPlugin = require('webpack-notifier')
+
 const postcssConfig = require('./postcss.config.js')
 
 const root = path.resolve(__dirname, '..')
@@ -83,7 +85,8 @@ module.exports = {
             }
         })
     ] : [
-        new webpack.NoEmitOnErrorsPlugin()
+        new webpack.NoEmitOnErrorsPlugin(),
+        new WebpackNotifierPlugin()
     ]),
     devtool: !inProduction && 'eval-source-map',
     devServer: !inProduction && {
