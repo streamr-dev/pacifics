@@ -7,7 +7,8 @@ import {
     GET_ALL_POSTBOXES_FAILURE,
     GET_POSTBOX_REQUEST,
     GET_POSTBOX_SUCCESS,
-    GET_POSTBOX_FAILURE
+    GET_POSTBOX_FAILURE,
+    CREATE_POSTBOX_REQUEST
 } from '../actions/postbox.js'
 
 export default (state = {
@@ -18,6 +19,7 @@ export default (state = {
     switch (action.type) {
         case GET_ALL_POSTBOXES_REQUEST:
         case GET_POSTBOX_REQUEST:
+        case CREATE_POSTBOX_REQUEST:
             return {
                 ...state,
                 error: undefined,
@@ -26,7 +28,7 @@ export default (state = {
         case GET_POSTBOX_SUCCESS:
         case CREATE_POSTBOX_SUCCESS:
             return {
-                postboxes: [...state.postboxes, action.postboxes],
+                postboxes: [...state.postboxes, action.postbox],
                 error: undefined,
                 fetching: false
             }

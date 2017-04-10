@@ -77,6 +77,7 @@ class DeliveryCreate extends Component {
                 utc={true}
             />
         )
+        const postboxCreateUrl = `/postboxes/create?parcelAddress=${this.props.parcel ? this.props.parcel.address : '' }`
         
         return (
             <Row>
@@ -88,19 +89,22 @@ class DeliveryCreate extends Component {
                                 <label>Parcel:</label>
                             </Col>
                             <Col xs={8}>
-                                {this.props.parcel ? <Link
-                                        to={`parcels/${this.props.parcel.address}`}>{this.props.parcel.name}</Link> : ''}
+                                {this.props.parcel &&
+                                    <Link to={`parcels/${this.props.parcel.address}`}>
+                                        {this.props.parcel.name}
+                                    </Link>
+                                }
                             </Col>
                         </Row>
                     </Col>
                     <Col xs={4}>
                         <h4>From Postbox</h4>
                         <FormGroup>
-                            <Button>
-                                <Link to="/postboxes/create">
+                            <Link to={postboxCreateUrl}>
+                                <Button>
                                     New Postbox
-                                </Link>
-                            </Button>
+                                </Button>
+                            </Link>
                         </FormGroup>
                         <FormGroup>
                             <FormControl componentClass="select" placeholder="select postbox">
@@ -130,11 +134,11 @@ class DeliveryCreate extends Component {
                     <Col xs={4}>
                         <h4>To Postbox</h4>
                         <FormGroup>
-                            <Button>
-                                <Link to="/postboxes/create">
+                            <Link to={postboxCreateUrl}>
+                                <Button>
                                     New Postbox
-                                </Link>
-                            </Button>
+                                </Button>
+                            </Link>
                         </FormGroup>
                         <FormGroup>
                             <FormControl componentClass="select" placeholder="select postbox">
@@ -179,11 +183,11 @@ DeliveryCreate.propTypes = {
     parcel: React.PropTypes.object
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, props) => {
     return {
         postboxes: state.postboxes ? state.postboxes.postboxes : [],
         user: state.user.user,
-        parcel: state.parcels.current
+        parcel: state.parcels && state.parcels.list.find(p => p.address === props.params.address)
     }
 }
 

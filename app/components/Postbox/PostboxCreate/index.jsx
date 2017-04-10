@@ -1,45 +1,28 @@
 import React, {Component} from 'react'
 import {Row, Col, FormGroup, Form, ControlLabel, FormControl, Button} from 'react-bootstrap'
 import {connect} from 'react-redux'
-import {replace} from 'react-router-redux'
 import {createPostbox} from '../../../actions/postbox'
+import serialize from 'form-serialize'
+import {replace} from 'react-router-redux'
+import FontAwesome from 'react-fontawesome'
 
 class PostboxCreate extends Component {
     constructor() {
         super()
-        this.state = {
-            name: '',
-            description: new Date(),
-            gLocation: ''
-        }
-        this.handleInputChange = this.handleInputChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
     }
-    componentWillMount() {
-        this.props.location.state && this.setState({
-            ...this.state,
-            ...this.props.location.state
-        })
-    }
-    handleInputChange(e) {
-        const changedPart = {
-            [e.target.name]: e.target.value
+    componentWillReceiveProps(props) {
+        if (props.postbox) {
+            const url = this.props.location.query.parcelAddress ? `/parcels/${this.props.location.query.parcelAddress}/deliveries/create` : '/'
+            this.props.dispatch(replace(url))
         }
-        this.setState({
-            ...this.state,
-            ...changedPart
-        })
-        this.props.dispatch(replace({
-            ...this.props.location,
-            state: {
-                ...this.props.location.state,
-                ...changedPart
-            }
-        }))
     }
     handleSubmit(e) {
         e.preventDefault()
-        this.props.dispatch(createPostbox(this.state))
+        const form = serialize(e.target, {
+            hash: true
+        })
+        this.props.dispatch(createPostbox(form))
     }
     render() {
         return (
@@ -51,31 +34,36 @@ class PostboxCreate extends Component {
                     <Form onSubmit={this.handleSubmit}>
                         <FormGroup>
                             <ControlLabel>Name</ControlLabel>
-                            <FormControl
-                                name="name"
-                                onChange={this.handleInputChange}
-                                value={this.state.name}
-                            />
+                            <FormControl name="name" disabled={this.props.fetching}/>
                         </FormGroup>
                         <FormGroup>
                             <ControlLabel>Description</ControlLabel>
-                            <FormControl
-                                name="description"
-                                onChange={this.handleInputChange}
-                                value={this.state.description}
-                            />
+                            <FormControl name="description" disabled={this.props.fetching}/>
                         </FormGroup>
                         <FormGroup>
                             <ControlLabel>Location</ControlLabel>
-                            <FormControl
-                                name="gLocation"
-                                onChange={this.handleInputChange}
-                                value={this.state.location}
-                            />
+                            <FormControl name="location" disabled={this.props.fetching}/>
                         </FormGroup>
-                        <Button type="submit">
-                            Create
-                        </Button>
+                        {this.props.fetching ?
+                            <Col xs={12}>
+                                <FontAwesome
+                                    name="spinner"
+                                    size="3x"
+                                    pulse
+                                />
+                                <span style={{
+                                    padding: '15px'
+                                }}>
+                                    Creating postbox
+                                </span>
+                            </Col>
+                            :
+                            <FormGroup>
+                                <Button type="submit">
+                                    Create
+                                </Button>
+                            </FormGroup>
+                        }
                     </Form>
                 </Col>
             </Row>
@@ -84,16 +72,14 @@ class PostboxCreate extends Component {
 }
 
 PostboxCreate.propTypes = {
-    user: React.PropTypes.object,
-    params: React.PropTypes.object,
     dispatch: React.PropTypes.func,
-    location: React.PropTypes.string
+    postbox: React.PropTypes.object,
+    location: React.PropTypes.object,
+    fetching: React.PropTypes.bool
 }
 
-const mapStateToProps = state => {
-    return {
-        user: state.user.user
-    }
-}
+const mapStateToProps = state => ({
+    fetching: Boolean(state.postboxes.fetching)
+})
 
-export default connect(mapStateToProps, null)(PostboxCreate)
+export default connect(mapStateToProps)(PostboxCreate)

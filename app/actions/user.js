@@ -1,5 +1,6 @@
 import axios from 'axios'
-import {getAddress} from '../../src/user'
+import {push} from 'react-router-redux'
+import UrlBuilder from './util/urlBuilder.js'
 
 export const LOGIN_REQUEST = 'LOGIN_REQUEST'
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS'
@@ -10,9 +11,6 @@ export const SIGNUP_SUCCESS = 'SIGNUP_SUCCESS'
 export const SIGNUP_FAILURE = 'SIGNUP_FAILURE'
 
 export const LOGOUT = 'LOGOUT'
-
-import {push} from 'react-router-redux'
-import UrlBuilder from './util/urlBuilder.js'
 
 const urlBuilder = new UrlBuilder()
 
@@ -69,10 +67,7 @@ const loginRequest = () => ({
 
 export const loginSuccess = user => ({
     type: LOGIN_SUCCESS,
-    user: {
-        ...user,
-        address: getAddress()
-    }
+    user
 })
 
 const loginFailure = error => ({

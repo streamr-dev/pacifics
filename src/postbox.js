@@ -8,9 +8,9 @@ import _ from 'lodash'
 let PostboxCreator
 
 const assertEqual = (a, b) => {
-    if (a !== b) {
-        console.error(`Expected ${JSON.stringify(a)} === ${JSON.stringify(b)}`)
-    }
+    //if (a !== b) {
+    //    console.error(`Expected ${JSON.stringify(a)} === ${JSON.stringify(b)}`)
+    //}
 }
 
 const lastOf = arr => arr[arr.length - 1]

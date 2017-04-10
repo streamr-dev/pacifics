@@ -13,7 +13,7 @@ class App extends Component {
                 {/*Nav?*/}
                 {this.props.errors.map(e => (
                     <Alert bsStyle="danger" key={Date.now() + e}>
-                        {e}
+                        {e.message || e}
                     </Alert>
                 ))}
                 {this.props.children}
@@ -26,7 +26,7 @@ class App extends Component {
 App.propTypes = {
     user: React.PropTypes.object,
     children: React.PropTypes.oneOfType([React.PropTypes.element, React.PropTypes.arrayOf(React.PropTypes.element)]),
-    errors: React.PropTypes.arrayOf(React.PropTypes.string)
+    errors: React.PropTypes.array
 }
 
 const mapStateToProps = state => {

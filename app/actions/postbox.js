@@ -1,5 +1,6 @@
 
 import {getAllPostboxContracts, getPostboxContract, createPostboxContract} from '../../src/postbox'
+import {goBack} from 'react-router-redux'
 
 export const GET_ALL_POSTBOXES_REQUEST = 'GET_ALL_POSTBOXES_REQUEST'
 export const GET_ALL_POSTBOXES_SUCCESS = 'GET_ALL_POSTBOXES_SUCCESS'
@@ -12,7 +13,6 @@ export const GET_POSTBOX_FAILURE = 'GET_POSTBOX_FAILURE'
 export const CREATE_POSTBOX_REQUEST = 'CREATE_POSTBOX_REQUEST'
 export const CREATE_POSTBOX_SUCCESS = 'CREATE_POSTBOX_SUCCESS'
 export const CREATE_POSTBOX_FAILURE = 'CREATE_POSTBOX_FAILURE'
-
 
 export const getAllPostboxes = () => dispatch => {
     dispatch(getAllPostboxesRequest())
@@ -31,7 +31,10 @@ export const getPostbox = id => dispatch => {
 export const createPostbox = postbox => dispatch => {
     dispatch(createPostboxRequest())
     createPostboxContract(postbox.name, postbox.description, postbox.location/*, postbox.minuteFee, postbox.minRent, postbox.maxDeposit*/)
-        .then(postbox => dispatch(createPostboxSuccess(postbox)))
+        .then(postbox => {
+            dispatch(goBack())
+            dispatch(createPostboxSuccess(postbox))
+        })
         .catch(err => dispatch(createPostboxFailure(err)))
 }
 

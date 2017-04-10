@@ -17,7 +17,7 @@ const DEFAULT_DELIVERY_FETCH_STEP = 10
 export const getAllDeliveryContracts = updateDeliveryContracts.bind(null, [])
 
 // parcel address, will be zero not non-existent
-const isValid = d => d[1] !== '0x'
+const isValid = d => d && d[1] !== '0x'
 
 // this can be used to fetch only deliveryContracts newer than those we already have
 export function updateDeliveryContracts(oldDeliveryContracts, step = DEFAULT_DELIVERY_FETCH_STEP) {
