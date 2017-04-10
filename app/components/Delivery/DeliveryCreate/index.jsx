@@ -4,6 +4,9 @@ import {Row, Col, FormGroup, Form, ControlLabel, FormControl, Button, Alert} fro
 import {connect} from 'react-redux'
 import {replace} from 'react-router-redux'
 import {createDelivery} from '../../../actions/delivery'
+import moment from 'moment'
+import DateTime from 'react-datetime'
+import 'react-datetime/css/react-datetime.css'
 
 class DeliveryCreate extends Component {
     constructor() {
@@ -12,10 +15,10 @@ class DeliveryCreate extends Component {
             senderPostbox: '0x3878376aEB446B70066eE8F58db9942B4b11D01F',    // TODO: get post box address
             receiverPostbox: '0xa1B20149df843f9aB57f5C8D142a18c2f5587f0c',  // TODO: get post box address
             receiverAddress: '0x26aa20a3ca450537f1bb5b037facd513c723153b',
-            canStartAfter: '',
-            depositUnlockedAfter: '',
+            canStartAfter: new Date(),
+            depositUnlockedAfter: new Date(),
             deposit: 0,
-            deliveryDeadline: ''
+            deliveryDeadline: new Date()
         }
         this.handleInputChange = this.handleInputChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
@@ -42,11 +45,34 @@ class DeliveryCreate extends Component {
             }
         }))
     }
+    handleDateChange(name, momentDate) {
+        this.handleInputChange({
+            target: {
+                value: momentDate.toDate(),
+                name
+            }
+        })
+    }
     handleSubmit(e) {
         e.preventDefault()
         this.props.dispatch(createDelivery(this.state, this.props.parcel.address))
     }
     render() {
+        const createDatePicker = name => (
+            <DateTime
+                inputProps={{
+                    name: name
+                }}
+                defaultValue={moment(this.state[name])}
+                onChange={date => {
+                    this.handleDateChange(name, date)
+                }}
+                dateFormat="MM-DD-YYYY"
+                timeFormat="HH:mm:ss z"
+                utc={true}
+            />
+        )
+        
         return (
             <Row>
                 {this.props.error &&
@@ -93,21 +119,11 @@ class DeliveryCreate extends Component {
                         </FormGroup>
                         <FormGroup>
                             <ControlLabel>Can start after</ControlLabel>
-                            <FormControl
-                                name="canStartAfter"
-                                onChange={this.handleInputChange}
-                                value={this.state.canStartAfter}
-                                type="date"
-                            />
+                            {createDatePicker('canStartAfter')}
                         </FormGroup>
                         <FormGroup>
                             <ControlLabel>Deposit unlocked after</ControlLabel>
-                            <FormControl
-                                name="depositUnlockedAfter"
-                                value={this.state.depositUnlockedAfter}
-                                onChange={this.handleInputChange}
-                                type="date"
-                            />
+                            {createDatePicker('depositUnlockedAfter')}
                         </FormGroup>
                     </Col>
                     <Col xs={4}>
@@ -139,12 +155,7 @@ class DeliveryCreate extends Component {
                         </FormGroup>
                         <FormGroup>
                             <ControlLabel>Delivery deadline</ControlLabel>
-                            <FormControl
-                                name="deliveryDeadline"
-                                type="date"
-                                value={this.state.deliveryDeadline}
-                                onChange={this.handleInputChange}
-                            />
+                            {createDatePicker('deliveryDeadline')}
                         </FormGroup>
                     </Col>
                     <Col xs={12}>
