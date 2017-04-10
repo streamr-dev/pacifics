@@ -4,6 +4,8 @@ import {Link} from 'react-router'
 import FontAwesome from 'react-fontawesome'
 import {connect} from 'react-redux'
 import styles from './parcelList.pcss'
+import commonStyles from '../../../commonStyles.pcss'
+import {ClickableTr, ClickableTd} from '../../ClickableTable'
 
 class ParcelList extends Component {
     render() {
@@ -12,14 +14,12 @@ class ParcelList extends Component {
                 <Col xs={12}>
                     <h1>My parcels</h1>
                 </Col>
-                <Col xs={12}>
-                    <div className={styles.parcelCreateButtonContainer}>
+                <Col xs={12} className={commonStyles.buttonContainer}>
+                    <Link to="/parcels/create">
                         <Button>
-                            <Link to="/parcels/create">
-                                <FontAwesome name="plus"/> New parcel
-                            </Link>
+                            <FontAwesome name="plus"/> New parcel
                         </Button>
-                    </div>
+                    </Link>
                 </Col>
                 <Col xs={12}>
                     <Panel>
@@ -34,15 +34,12 @@ class ParcelList extends Component {
                             </thead>
                             <tbody>
                             {this.props.parcels.map(p => (
-                                <tr href={`/parcels/${p.id}`} key={p.address}>
-                                    <td>
-                                        <Link to={`parcels/${p.address}`}>
-                                            {p.name}
-                                        </Link></td>
-                                    <td>{p.Owner.slice(0, 10)}</td>
-                                    <td>{p.TransmittedTo.slice(0, 10)}</td>
-                                    <td>{p.transmissionDate}</td>
-                                </tr>
+                                <ClickableTr href={`/parcels/${p.address}`} key={p.address}>
+                                    <ClickableTd>{p.name}</ClickableTd>
+                                    <ClickableTd>{p.Owner.slice(0, 10)}</ClickableTd>
+                                    <ClickableTd>{p.TransmittedTo.slice(0, 10)}</ClickableTd>
+                                    <ClickableTd>{p.transmissionDate}</ClickableTd>
+                                </ClickableTr>
                             ))}
                             </tbody>
                         </Table>

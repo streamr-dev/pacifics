@@ -3,6 +3,7 @@ import {Row, Col, Button, Panel, Table} from 'react-bootstrap'
 import {Link} from 'react-router'
 import FontAwesome from 'react-fontawesome'
 import {connect} from 'react-redux'
+import commonStyles from '../../../commonStyles.pcss'
 
 class ParcelShow extends Component {
     render() {
@@ -45,22 +46,22 @@ class ParcelShow extends Component {
                         </Col>
                     </Row>
                 </Col>
-                <Col xs={12}>
-                    <Button>
-                        <Link to={`/parcels/${this.props.params.address}/track`}>
+                <Col xs={12} className={commonStyles.buttonContainer}>
+                    <Link to={`/parcels/${this.props.params.address}/track`}>
+                        <Button>
                             Track Parcel
-                        </Link>
-                    </Button>
+                        </Button>
+                    </Link>
                 </Col>
                 <Col xs={12}>
                     <h1>Deliveries</h1>
                 </Col>
-                <Col xs={12}>
-                    <Button>
-                        <Link to={`/parcels/${this.props.params.address}/deliveries/create`}>
+                <Col xs={12} className={commonStyles.buttonContainer}>
+                    <Link to={`/parcels/${this.props.params.address}/deliveries/create`}>
+                        <Button>
                             <FontAwesome name="plus"/> New Delivery
-                        </Link>
-                    </Button>
+                        </Button>
+                    </Link>
                 </Col>
                 <Col xs={12}>
                     <Panel>

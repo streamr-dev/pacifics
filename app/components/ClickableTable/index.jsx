@@ -1,107 +1,58 @@
-import React from 'react'
-import {Link} from 'react-router'
-import styles from './clickableTable.pcss'
 
-export class CTable extends React.Component {
+import React, {Component} from 'react'
+
+export class ClickableTr extends Component {
     render() {
         return (
-            <div className={`${styles.clickableTable} table`}>
-                {this.props.children}
-            </div>
+            <tr>
+                {React.Children.map(this.props.children, c => {
+                    return React.cloneElement(c, {
+                        href: this.props.href
+                    })
+                })}
+            </tr>
         )
     }
 }
 
-CTable.propTypes = {
-    className: React.PropTypes.string,
+ClickableTr.propTypes = {
+    href: React.PropTypes.string.isRequired,
     children: React.PropTypes.oneOfType([
         React.PropTypes.element,
         React.PropTypes.arrayOf(React.PropTypes.element)
     ])
 }
 
-export class Thead extends React.Component {
+const tdStyle = {
+    padding: 0
+}
+
+const aStyle = {
+    padding: '8px',
+    display: 'block',
+    width: '100%',
+    height: '100%',
+    textDecoration: 'inherit',
+    color: 'inherit'
+}
+
+export class ClickableTd extends Component {
     render() {
         return (
-            <div className={styles.thead}>
-                {this.props.children}
-            </div>
+            <td style={tdStyle}>
+                <a href={this.props.href} style={aStyle}>
+                    {this.props.children}
+                </a>
+            </td>
         )
     }
 }
 
-Thead.propTypes = {
-    children: React.PropTypes.oneOfType([
-        React.PropTypes.element,
-        React.PropTypes.arrayOf(React.PropTypes.element)
-    ])
-}
-
-export class Tbody extends React.Component {
-    render() {
-        return (
-            <div className={styles.thead}>
-                {this.props.children}
-            </div>
-        )
-    }
-}
-
-Tbody.propTypes = {
-    children: React.PropTypes.oneOfType([
-        React.PropTypes.element,
-        React.PropTypes.arrayOf(React.PropTypes.element)
-    ])
-}
-
-export class Tr extends React.Component {
-    render() {
-        return (
-            <Link to={this.props.href} className={styles.tr}>
-                {this.props.children}
-            </Link>
-        )
-    }
-}
-
-Tr.propTypes = {
+ClickableTd.propTypes = {
     href: React.PropTypes.string,
     children: React.PropTypes.oneOfType([
+        React.PropTypes.string,
         React.PropTypes.element,
         React.PropTypes.arrayOf(React.PropTypes.element)
-    ])
-}
-
-export class Th extends React.Component {
-    render() {
-        return (
-            <span className={styles.th}>
-                {this.props.children}
-            </span>
-        )
-    }
-}
-
-Th.propTypes = {
-    children: React.PropTypes.oneOfType([
-        React.PropTypes.string,
-        React.PropTypes.element
-    ])
-}
-
-export class Td extends React.Component {
-    render() {
-        return (
-            <span className={styles.td}>
-                {this.props.children}
-            </span>
-        )
-    }
-}
-
-Td.propTypes = {
-    children: React.PropTypes.oneOfType([
-        React.PropTypes.string,
-        React.PropTypes.element
     ])
 }
