@@ -1,5 +1,5 @@
-/*global web3*/
-//import web3 from 'web3'
+
+import web3 from './web3-wrapper.js'
 import _ from 'lodash'
 
 import {deliveryContractCreatorABI, deliveryContractCreatorAddress, deliveryContractABI} from './abi'
@@ -7,7 +7,6 @@ import {getAll as solidityGetProperties, at as solidityGetBy} from './solidity-g
 //import {getAll as solidityGetProperties, getIndexedPropAt as solidityGetBy} from './solidity-getters'
 import {sendTransaction} from './ethCall'
 
-const deliveryContractCreator = web3.eth.contract(deliveryContractCreatorABI).at(deliveryContractCreatorAddress)
 
 const lastOf = arr => arr[arr.length - 1]
 
@@ -38,8 +37,11 @@ export function getDeliveryRange(startId, endId) {
     return Promise.all(res)
 }
 
-//export const getDeliveryMetadata = id => solidityGetBy(id, deliveryContractCreatorABI, deliveryContractCreatorAddress, 'contracts')
-export const getDeliveryMetadata = id => solidityGetBy(id, deliveryContractCreator, 'contracts')
+let deliveryContractCreator
+export const getDeliveryMetadata = id => {
+    deliveryContractCreator = deliveryContractCreator || web3.eth.contract(deliveryContractCreatorABI).at(deliveryContractCreatorAddress)
+    solidityGetBy(id, deliveryContractCreator, 'contracts')
+}
 
 export const getDeliveryContract = id => getDeliveryMetadata(id).then(d => solidityGetProperties(deliveryContractABI, d.address))
 

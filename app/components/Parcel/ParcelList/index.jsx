@@ -68,7 +68,7 @@ ParcelList.propTypes = {
 
 const mapStateToProps = state => ({
     user: state.user.user,
-    parcels: state.parcels.parcels || [],
+    parcels: state.parcels.list || [],
     fetching: Boolean(state.parcels.fetching)
 })
 

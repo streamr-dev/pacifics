@@ -1,6 +1,5 @@
-/*global web3*/
-//import web3 from 'web3'
 
+import web3 from './web3-wrapper.js'
 import _ from 'lodash'
 import SolidityEvent from 'web3/lib/web3/event'
 import solidityCoder from 'web3/lib/solidity/coder'

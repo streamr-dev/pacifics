@@ -1,5 +1,5 @@
-/*global web3*/
-//import web3 from 'web3'
+
+import web3 from './web3-wrapper.js'
 import filter from 'lodash/filter'
 import range from 'lodash/range'
 
@@ -7,8 +7,7 @@ import {parcelCreatorABI, parcelCreatorAddress, parcelABI} from './abi'
 import {getEventsFromLogs} from './ethCall'
 import {getAll as solidityGetProperties} from './solidity-getters'
 
-const ParcelCreator = web3.eth.contract(parcelCreatorABI).at(parcelCreatorAddress)
-//const Parcel = web3.eth.contract(parcelABI)
+let ParcelCreator
 
 const assertEqual = (a, b) => {
     if (a !== b) {
@@ -44,6 +43,7 @@ export function getParcelRange(startId, endId) {
 }
 
 export function getParcelMetadata(id) {
+    ParcelCreator = ParcelCreator || web3.eth.contract(parcelCreatorABI).at(parcelCreatorAddress)
     return new Promise(done => {
         ParcelCreator.parcelCreations(id, (err, result) => {
             if (!result) {
@@ -88,6 +88,7 @@ export function getParcelContractAt(address) {
  */
 export function createParcelContract(name = 'Parcel', description = 'Unnamed parcel', temperatureLimit = 100, ownerAddress = web3.eth.coinbase) {
     // TODO: write using ethCall:sendTransaction
+    ParcelCreator = ParcelCreator || web3.eth.contract(parcelCreatorABI).at(parcelCreatorAddress)
     return new Promise(done => {
         ParcelCreator.createParcel(ownerAddress, ownerAddress, name, description, temperatureLimit, (err, tx) => {
             if (err) {

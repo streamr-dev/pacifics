@@ -1,11 +1,11 @@
-/*global web3*/
-//import web3 from 'web3'
+
+import web3 from './web3-wrapper.js'
 import {postboxCreatorABI, postboxCreatorAddress, postboxABI} from './abi'
 import {getEventsFromLogs} from './ethCall'
 import {getAll as solidityGetProperties, get as solidityGet} from './solidity-getters'
 import _ from 'lodash'
 
-const PostboxCreator = web3.eth.contract(postboxCreatorABI).at(postboxCreatorAddress)
+let PostboxCreator
 
 const assertEqual = (a, b) => {
     if (a !== b) {
@@ -40,6 +40,7 @@ export function getPostboxRange(startId, endId) {
 }
 
 export function getPostboxMetadata(id) {
+    PostboxCreator = PostboxCreator || web3.eth.contract(postboxCreatorABI).at(postboxCreatorAddress)
     return new Promise(done => {
         PostboxCreator.postboxCreations(id, (err, result) => {
             if (!result) {
@@ -58,7 +59,10 @@ export function getPostboxMetadata(id) {
 
 export const getPostboxContract = id => getPostboxMetadata(id).then(postbox => solidityGetProperties(postboxABI, postbox.address))
 
-export const getPostboxCount = () => solidityGet(PostboxCreator, 'numberOfPostboxes')
+export const getPostboxCount = () => {
+    PostboxCreator = PostboxCreator || web3.eth.contract(postboxCreatorABI).at(postboxCreatorAddress)
+    solidityGet(PostboxCreator, 'numberOfPostboxes')
+}
 
 
 /**
@@ -71,6 +75,7 @@ export const getPostboxCount = () => solidityGet(PostboxCreator, 'numberOfPostbo
 export const createPostboxContract = (name = 'Postbox', description = 'Unnamed postbox', location = 'Unknown'/*, minuteFee=0, minRent=0, maxDeposit=0*/, ownerAddress = web3.eth.coinbase) => {
     //console.log('Creating postbox ' + name)
     // TODO: write using ethCall:sendTransaction
+    PostboxCreator = PostboxCreator || web3.eth.contract(postboxCreatorABI).at(postboxCreatorAddress)
     return new Promise(done => {
         PostboxCreator.createPostbox(ownerAddress, name, description, location, 0, 0, 0 /*minuteFee, minRent, maxDeposit*/, (err, tx) => {
             if (err) {

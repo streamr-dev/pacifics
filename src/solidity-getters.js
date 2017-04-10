@@ -1,5 +1,5 @@
-/*global web3*/
-//import web3 from 'web3'
+
+import web3 from './web3-wrapper.js'
 import zipObject from 'lodash/zipObject'
 import isArray from 'lodash/isArray'
 

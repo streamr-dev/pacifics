@@ -11,7 +11,7 @@ import {
 } from '../actions/parcel.js'
 
 export default (state = {
-    parcels: [],
+    list: [],
     fetching: false,
     error: undefined
 }, action) => {
@@ -26,19 +26,18 @@ export default (state = {
         case GET_PARCEL_SUCCESS:
             return {
                 ...state,
-                current: action.parcel,
                 error: undefined,
                 fetching: false
             }
         case CREATE_PARCEL_SUCCESS:
             return {
-                parcels: [...state.parcels, action.parcel],
+                list: [...state.list, action.parcel],
                 error: undefined,
                 fetching: false
             }
         case GET_ALL_PARCELS_SUCCESS:
             return {
-                parcels: action.parcels || state.parcels,
+                list: action.parcels,
                 error: undefined,
                 fetching: false
             }

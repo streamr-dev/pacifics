@@ -24,14 +24,17 @@ export const getAllParcels = () => dispatch => {
 // TODO: name probably should be selectParcel (plus same changes everywhere)
 export const getParcel = address => dispatch => {
     const state = store.getState()
-    if (state.parcels && state.parcels.current && state.parcels.current.address === address) {
-        return Promise.resolve(state.parcels.current)
+    
+    const foundParcel = state.parcels.list.find(i => i.address === address)
+    if (foundParcel) {
+        return Promise.resolve(dispatch(getParcelSuccess(foundParcel)))
     }
-    // TODO(later): check state.parcels if already fetched? (use state.parcel.parcels as a cache)
 
     dispatch(getParcelRequest())
     return getParcelContractAt(address)
-        .then(p => dispatch(getParcelSuccess(Object.assign(p, {address})))) //eslint-disable-line object-curly-newline
+        .then(p => dispatch(getParcelSuccess(Object.assign(p, {
+            address
+        }))))
         .catch(e => dispatch(getParcelFailure(e)))
 }
 
