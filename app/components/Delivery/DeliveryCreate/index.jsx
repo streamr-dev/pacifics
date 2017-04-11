@@ -182,7 +182,7 @@ const mapStateToProps = (state, props) => {
     return {
         postboxes: state.postboxes ? state.postboxes.postboxes : [],
         user: state.user.user,
-        parcel: state.parcels && state.parcels.list.find(p => p.address === props.params.address)
+        parcel: state.parcels.list && state.parcels.list.find(p => p.address === props.params.address)
     }
 }
 

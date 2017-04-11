@@ -40,7 +40,8 @@ export default (state = {
         case GET_DELIVERY_FAILURE:
         case CREATE_DELIVERY_FAILURE:
             return {
-                error: action.error,
+                ...state,
+                error: action.error.toString(),
                 fetching: false
             }
         default:
