@@ -50,7 +50,7 @@ export const getDeliveryContract = id => getDeliveryMetadata(id).then(d => solid
  * @param senderPostbox {@see createPostbox}
  * @param receiverPostbox {@see createPostbox}
  * @param receiver Address of the receiver of the delivery
- * @param endDate The end date of the contract. After this date, deposits are unlocked
+ * @param endDate The end date of the contract. After this date, deposits are unlocked; SET THIS TO ZERO IF YOU'RE NOT SURE WHAT YOU'RE DOING
  * @param depositETH Deposit (in ETH, 'ether') paid by the courier or transporter when taking parcel
  * @param startDate Date when the parcel can be transferred by the sender
  * @param minutes how many minutes from now must the delivery arrive

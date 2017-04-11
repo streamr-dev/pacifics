@@ -16,7 +16,6 @@ class DeliveryCreate extends Component {
             receiverPostbox: '0xa1B20149df843f9aB57f5C8D142a18c2f5587f0c',  // TODO: get post box address
             receiverAddress: '0x26aa20a3ca450537f1bb5b037facd513c723153b',
             canStartAfter: new Date(),
-            depositUnlockedAfter: new Date(),
             deposit: 0,
             deliveryDeadline: new Date()
         }
@@ -125,10 +124,6 @@ class DeliveryCreate extends Component {
                         <FormGroup>
                             <ControlLabel>Can start after</ControlLabel>
                             {createDatePicker('canStartAfter')}
-                        </FormGroup>
-                        <FormGroup>
-                            <ControlLabel>Deposit unlocked after</ControlLabel>
-                            {createDatePicker('depositUnlockedAfter')}
                         </FormGroup>
                     </Col>
                     <Col xs={4}>

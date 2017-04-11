@@ -29,19 +29,19 @@ export const getDelivery = id => dispatch => {
 }
 */
 
+// js Date.getTime is ms, Solidity epoch is seconds
+function dateToSeconds(date) {
+    return Math.floor(new Date(date).getTime() / 1000)
+}
+
 export const createDelivery = (delivery, parcelAddress) => dispatch => {
-    /* TODO: fix date pickers in DeliveriesCreate/index.jsx
-    const startDate = +delivery.canStartAfter
-    const endDate = +delivery.depositUnlockedAfter
-     const minutes = delivery.deliveryDeadline - startDate
-    */
-    const startDate = Date.now()
-    const endDate = startDate + 10000
-    const minutes = 5000
+    const startDate = dateToSeconds(delivery.canStartAfter)
+    const deadline = dateToSeconds(delivery.deliveryDeadline)
+    const minutes = Math.ceil((deadline - startDate) / 60)
     const depositETH = delivery.deposit
 
     dispatch(createDeliveryRequest())
-    return createDeliveryContract(parcelAddress, delivery.senderPostbox, delivery.receiverPostbox, delivery.receiverAddress, endDate, depositETH, startDate, minutes)
+    return createDeliveryContract(parcelAddress, delivery.senderPostbox, delivery.receiverPostbox, delivery.receiverAddress, 0, depositETH, startDate, minutes)
         .then(d => dispatch(createDeliverySuccess(d)))
         .catch(e => dispatch(createDeliveryFailure(e)))
 }
