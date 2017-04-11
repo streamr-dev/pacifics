@@ -70,14 +70,18 @@ class ParcelShow extends Component {
                             <tr>
                                 <th>From</th>
                                 <th>To</th>
+                                <th>Start</th>
+                                <th>Deadline</th>
                             </tr>
                             </thead>
                             <tbody>
                             {/*TODO: change after solidity-getters:getIndexedPropAt works*/}
                             {this.props.deliveries.map((d) => (
                                 <tr key={d[1]}>
-                                    <td>{d[3]}</td>
-                                    <td>{d[4]}</td>
+                                    <td>{d[3].slice(0, 10)}</td>
+                                    <td>{d[4].slice(0, 10)}</td>
+                                    <td>{'' + new Date(+d[6])}</td>
+                                    <td>{'' + new Date(+d[7])}</td>
                                 </tr>
                             ))}
                             </tbody>
