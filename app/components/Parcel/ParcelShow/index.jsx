@@ -100,7 +100,7 @@ ParcelShow.propTypes = {
 const mapStateToProps = (state, props) => ({
     user: state.user.user,
     deliveries: state.deliveries.all ? state.deliveries.all.filter(d => d[2] === props.params.address) : [], // TODO: change after solidity-getters:getIndexedPropAt works
-    parcel: state.parcels.current || {}
+    parcel: state.parcels.list && state.parcels.list.find(p => p.address === props.params.address) || {}
 })
 
 export default connect(mapStateToProps, null)(ParcelShow)
