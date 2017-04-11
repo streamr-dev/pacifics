@@ -40,7 +40,7 @@ export function getDeliveryRange(startId, endId) {
 let deliveryContractCreator
 export const getDeliveryMetadata = id => {
     deliveryContractCreator = deliveryContractCreator || web3.eth.contract(deliveryContractCreatorABI).at(deliveryContractCreatorAddress)
-    solidityGetBy(id, deliveryContractCreator, 'contracts')
+    return solidityGetBy(id, deliveryContractCreator, 'contracts')
 }
 
 export const getDeliveryContract = id => getDeliveryMetadata(id).then(d => solidityGetProperties(deliveryContractABI, d.address))
