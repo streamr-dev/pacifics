@@ -34,7 +34,6 @@ export function sendTransaction(abi, address, funcName, args) {
 // optionally filter by address
 export function getEventsFromLogs(logs, abi, address) {
     if (!logs.length) {
-        debugger
         console.log('Received empty/undefined "logs" for getEventsFromLogs')      //eslint-disable-line no-console
         return []
     }
