@@ -22,6 +22,10 @@ const Service = connection.define('service', {
         allowNull: false,
         unique: true
     },
+    deliveryCreatorAddress: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
     eventManagerAddress: {
         type: Sequelize.STRING,
         allowNull: false
