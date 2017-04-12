@@ -12,7 +12,7 @@ import {
 } from '../actions/postbox.js'
 
 export default (state = {
-    postboxes: [],
+    list: [],
     fetching: false,
     error: undefined
 }, action) => {
@@ -28,13 +28,13 @@ export default (state = {
         case GET_POSTBOX_SUCCESS:
         case CREATE_POSTBOX_SUCCESS:
             return {
-                postboxes: [...state.postboxes, action.postbox],
+                list: [...state.list, action.list],
                 error: undefined,
                 fetching: false
             }
         case GET_ALL_POSTBOXES_SUCCESS:
             return {
-                postboxes: action.postboxes,
+                list: action.list,
                 error: undefined,
                 fetching: false
             }

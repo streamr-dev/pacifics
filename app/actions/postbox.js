@@ -42,9 +42,9 @@ const getAllPostboxesRequest = () => ({
     type: GET_ALL_POSTBOXES_REQUEST
 })
 
-const getAllPostboxesSuccess = postboxes => ({
+const getAllPostboxesSuccess = list => ({
     type: GET_ALL_POSTBOXES_SUCCESS,
-    postboxes
+    list
 })
 
 const getAllPostboxesFailure = error => ({

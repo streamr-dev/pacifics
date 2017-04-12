@@ -58,13 +58,11 @@ export const getDeliveryContract = id => getDeliveryMetadata(id).then(d => solid
  */
 export const createDeliveryContract = (parcelAddress, senderPostbox, receiverPostbox, receiver, endDate, depositETH, startDate, minutes) => {
     const deposit = web3.toWei(depositETH, 'ether')
-    console.log(`Creating delivery contract ${senderPostbox} -> ${receiverPostbox} in ${minutes} minutes`)
     return sendTransaction(deliveryContractCreatorABI, deliveryContractCreatorAddress, 'createDeliveryContract', [parcelAddress, senderPostbox, receiverPostbox, receiver, endDate, deposit, startDate, minutes]).then(events => {
         const responseArray = events.NewContract
         if (!responseArray) {
             throw new Error('NewContract event not sent from Solidity')
         }
-        console.log('Created delivery contract', responseArray)
         return {
             creator: responseArray[0],
             address: responseArray[1]

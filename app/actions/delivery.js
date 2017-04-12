@@ -37,9 +37,9 @@ const getAllDeliveriesRequest = () => ({
     type: GET_ALL_DELIVERIES_REQUEST
 })
 
-const getAllDeliveriesSuccess = deliveries => ({
+const getAllDeliveriesSuccess = list => ({
     type: GET_ALL_DELIVERIES_SUCCESS,
-    deliveries
+    list
 })
 
 const getAllDeliveriesFailure = error => ({

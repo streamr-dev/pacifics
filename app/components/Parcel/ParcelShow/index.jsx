@@ -22,17 +22,25 @@ class ParcelShow extends Component {
                 </Col>
                 <Col xs={12}>
                     <Row>
-                        <Col xs={2}>
-                            <label>Description</label>
+                        <Col xs={12} md={6}>
+                            <Row>
+                                <Col xs={4}>
+                                    <label>Description</label>
+                                </Col>
+                                <Col xs={8}>
+                                    <span>{this.props.parcel.description}</span>
+                                </Col>
+                            </Row>
                         </Col>
-                        <Col xs={4}>
-                            <span>{this.props.parcel.description}</span>
-                        </Col>
-                        <Col xs={2}>
-                            <label>Owner</label>
-                        </Col>
-                        <Col xs={4}>
-                            <span>{this.props.parcel.Owner}</span>
+                        <Col xs={12} md={6}>
+                            <Row>
+                                <Col xs={4}>
+                                    <label>Owner</label>
+                                </Col>
+                                <Col xs={8}>
+                                    <span>{this.props.parcel.Owner}</span>
+                                </Col>
+                            </Row>
                         </Col>
                     </Row>
                     <Row>
@@ -77,10 +85,10 @@ class ParcelShow extends Component {
                             {this.props.deliveries.map(d => (
                                 <tr key={d[1]}>
                                     <td>
-                                        <AddressLabel address={d[3]}/>
+                                        <AddressLabel address={d[3]} name={(this.props.postboxes.find(i => i.address === d[3]) || {}).name}/>
                                     </td>
                                     <td>
-                                        <AddressLabel address={d[4]}/>
+                                        <AddressLabel address={d[4]} name={(this.props.postboxes.find(i => i.address === d[4]) || {}).name}/>
                                     </td>
                                     <td>
                                         <DateLabel date={d[6]} />
@@ -105,13 +113,15 @@ ParcelShow.propTypes = {
     params: object,
     deliveries: array,
     parcel: object,
-    dispatch: func
+    dispatch: func,
+    postboxes: array
 }
 
-const mapStateToProps = (state, props) => ({
-    user: state.user.user,
-    deliveries: state.deliveries.all ? state.deliveries.all.filter(d => d[2] === props.params.address) : [], // TODO: change after solidity-getters:getIndexedPropAt works
-    parcel: state.parcels.list && state.parcels.list.find(p => p.address === props.params.address) || {}
+const mapStateToProps = ({user, postboxes, parcels, deliveries}, props) => ({
+    user: user.user,
+    deliveries: deliveries.list ? deliveries.list.filter(d => d[2] === props.params.address) : [], // TODO: change after solidity-getters:getIndexedPropAt works
+    parcel: parcels.list && parcels.list.find(p => p.address === props.params.address) || {},
+    postboxes: postboxes.list || []
 })
 
 export default connect(mapStateToProps, null)(ParcelShow)

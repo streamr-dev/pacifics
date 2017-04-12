@@ -214,7 +214,7 @@ DeliveryCreate.propTypes = {
 }
 
 const mapStateToProps = ({postboxes, user, parcels, deliveries}, props) => ({
-    postboxes: postboxes ? postboxes.postboxes : [],
+    postboxes: postboxes.list || [],
     user: user.user,
     parcel: parcels.list && parcels.list.find(p => p.address === props.params.address),
     fetching: Boolean(deliveries.fetching)

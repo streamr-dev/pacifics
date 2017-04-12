@@ -9,7 +9,7 @@ import {
 } from '../actions/delivery.js'
 
 export default (state = {
-    deliveries: [],
+    list: [],
     fetching: false,
     error: undefined
 }, action) => {
@@ -23,13 +23,13 @@ export default (state = {
             }
         case CREATE_DELIVERY_SUCCESS:
             return {
-                all: [...state.deliveries, action.delivery],
+                list: [...state.list, action.list],
                 error: undefined,
                 fetching: false
             }
         case GET_ALL_DELIVERIES_SUCCESS:
             return {
-                all: action.deliveries,
+                list: action.list,
                 error: undefined,
                 fetching: false
             }

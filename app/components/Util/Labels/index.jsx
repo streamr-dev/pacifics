@@ -28,7 +28,7 @@ export class AddressLabel extends Component {
     render() {
         return (
             <span title={this.props.address}>
-                {this.props.address.slice(0, this.props.visibleLength)}
+                {this.props.name || this.props.address.slice(0, this.props.visibleLength)}
             </span>
         )
     }
@@ -36,7 +36,8 @@ export class AddressLabel extends Component {
 
 AddressLabel.propTypes = {
     address: string,
-    visibleLength: number
+    visibleLength: number,
+    name: string
 }
 
 AddressLabel.defaultProps = {
