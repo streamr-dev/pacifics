@@ -1,52 +1,24 @@
 import React, {Component} from 'react'
 import {Row, Col, FormGroup, Form, ControlLabel, FormControl, Button} from 'react-bootstrap'
+import FontAwesome from 'react-fontawesome'
 import {connect} from 'react-redux'
 import {replace} from 'react-router-redux'
 import {createParcel} from '../../../actions/parcel'
+import serialize from 'form-serialize'
 
 class ParcelCreate extends Component {
     constructor() {
         super()
-        this.state = {
-            name: '',
-            description: new Date(),
-            owner: '',
-            temperatureLimit: 0
-        }
-        this.handleInputChange = this.handleInputChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
-    }
-    componentWillReceiveProps() {   // TODO: currently this won't update the address into UI
-        this.setState({
-            owner: this.props.user.address
-        })
-    }
-    handleInputChange(e) {
-        const changedPart = {
-            [e.target.name]: e.target.value
-        }
-        this.setState({
-            ...this.state,
-            ...changedPart
-        })
-        this.props.dispatch(replace({
-            ...this.props.location,
-            state: {
-                ...this.props.location.state,
-                ...changedPart
-            }
-        }))
-    }
-    componentWillMount() {
-        // This saves the form state
-        this.props.location.state && this.setState({
-            ...this.state,
-            ...this.props.location.state
-        })
     }
     handleSubmit(e) {
         e.preventDefault()
-        this.props.dispatch(createParcel(this.state))
+        const form = serialize(e.target, {
+            hash: true
+        })
+        this.props.dispatch(createParcel(form)).then(({parcel}) => {
+            this.props.dispatch(replace(`/parcels/${parcel.address}`))
+        })
     }
     render() {
         return (
@@ -58,40 +30,36 @@ class ParcelCreate extends Component {
                     <Form onSubmit={this.handleSubmit}>
                         <FormGroup>
                             <ControlLabel>Name</ControlLabel>
-                            <FormControl
-                                name="name"
-                                onChange={this.handleInputChange}
-                                value={this.state.name}
-                            />
+                            <FormControl name="name" disabled={this.props.fetching}/>
                         </FormGroup>
                         <FormGroup>
                             <ControlLabel>Description</ControlLabel>
-                            <FormControl
-                                name="description"
-                                onChange={this.handleInputChange}
-                                value={this.state.description}
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <ControlLabel>Owner</ControlLabel>
-                            <FormControl
-                                name="owner"
-                                onChange={this.handleInputChange}
-                                value={this.state.owner}
-                            />
+                            <FormControl name="description" disabled={this.props.fetching}/>
                         </FormGroup>
                         <FormGroup>
                             <ControlLabel>Temperature limit</ControlLabel>
-                            <FormControl
-                                type="number"
-                                name="temperatureLimit"
-                                onChange={this.handleInputChange}
-                                value={this.state.temperatureLimit}
-                            />
+                            <FormControl type="number" name="temperatureLimit" disabled={this.props.fetching}/>
                         </FormGroup>
-                        <Button type="submit">
-                            Create
-                        </Button>
+                        {this.props.fetching ?
+                            <Col xs={12}>
+                                <FontAwesome
+                                    name="spinner"
+                                    size="3x"
+                                    pulse
+                                />
+                                <span style={{
+                                    padding: '15px'
+                                }}>
+                                    Creating parcel
+                                </span>
+                            </Col>
+                            :
+                            <FormGroup>
+                                <Button type="submit">
+                                    Create
+                                </Button>
+                            </FormGroup>
+                        }
                     </Form>
                 </Col>
             </Row>
@@ -99,17 +67,18 @@ class ParcelCreate extends Component {
     }
 }
 
+const {object, func, bool} = React.PropTypes
 ParcelCreate.propTypes = {
-    user: React.PropTypes.object,
-    params: React.PropTypes.object,
-    dispatch: React.PropTypes.func,
-    location: React.PropTypes.object
+    user: object,
+    params: object,
+    dispatch: func,
+    location: object,
+    fetching: bool
 }
 
-const mapStateToProps = state => {
-    return {
-        user: state.user.user,
-    }
-}
+const mapStateToProps = ({user, parcels}) => ({
+    user: user.user,
+    fetching: Boolean(parcels.fetching)
+})
 
 export default connect(mapStateToProps, null)(ParcelCreate)

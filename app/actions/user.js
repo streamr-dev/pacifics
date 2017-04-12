@@ -1,5 +1,4 @@
 import axios from 'axios'
-import {push} from 'react-router-redux'
 import UrlBuilder from './util/urlBuilder.js'
 
 export const LOGIN_REQUEST = 'LOGIN_REQUEST'
@@ -18,18 +17,12 @@ const parseError = (res) => (res.data && res.data.error) || (res.response && res
 
 export const login = (email, password) => dispatch => {
     dispatch(loginRequest())
-    axios.post(urlBuilder.build('login'), {
+    return axios.post(urlBuilder.build('login'), {
         email,
         password
     })
-        .then(res => {
-            dispatch(loginSuccess(res.data))
-            // TODO: find a better way to do the redirection
-            dispatch(push('/'))
-        })
-        .catch(res => {
-            dispatch(loginFailure(parseError(res)))
-        })
+        .then(res => dispatch(loginSuccess(res.data)))
+        .catch(res => dispatch(loginFailure(parseError(res))))
 }
 
 export const signup = (formData) => dispatch => {

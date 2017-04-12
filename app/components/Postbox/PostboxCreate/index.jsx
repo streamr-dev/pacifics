@@ -11,18 +11,15 @@ class PostboxCreate extends Component {
         super()
         this.handleSubmit = this.handleSubmit.bind(this)
     }
-    componentWillReceiveProps(props) {
-        if (props.postbox) {
-            const url = this.props.location.query.parcelAddress ? `/parcels/${this.props.location.query.parcelAddress}/deliveries/create` : '/'
-            this.props.dispatch(replace(url))
-        }
-    }
     handleSubmit(e) {
         e.preventDefault()
         const form = serialize(e.target, {
             hash: true
         })
-        this.props.dispatch(createPostbox(form))
+        this.props.dispatch(createPostbox(form)).then(() => {
+            const url = this.props.location.query.parcelAddress ? `/parcels/${this.props.location.query.parcelAddress}/deliveries/create` : '/'
+            this.props.dispatch(replace(url))
+        })
     }
     render() {
         return (

@@ -1,7 +1,8 @@
-import React, {Component} from 'react'
+import React, {Component, PropTypes} from 'react'
 import {Row, Col, Button, Panel, Table} from 'react-bootstrap'
 import {Link} from 'react-router'
 import FontAwesome from 'react-fontawesome'
+import {DateLabel, AddressLabel} from '../../Util/Labels'
 import {connect} from 'react-redux'
 import commonStyles from '../../../commonStyles.pcss'
 
@@ -76,12 +77,20 @@ class ParcelShow extends Component {
                             </thead>
                             <tbody>
                             {/*TODO: change after solidity-getters:getIndexedPropAt works*/}
-                            {this.props.deliveries.map((d) => (
+                            {this.props.deliveries.map(d => (
                                 <tr key={d[1]}>
-                                    <td>{d[3].slice(0, 10)}</td>
-                                    <td>{d[4].slice(0, 10)}</td>
-                                    <td>{'' + new Date(+d[6])}</td>
-                                    <td>{'' + new Date(+d[7])}</td>
+                                    <td>
+                                        <AddressLabel address={d[3]}/>
+                                    </td>
+                                    <td>
+                                        <AddressLabel address={d[4]}/>
+                                    </td>
+                                    <td>
+                                        <DateLabel date={d[6]} />
+                                    </td>
+                                    <td>
+                                        <DateLabel date={d[7]} />
+                                    </td>
                                 </tr>
                             ))}
                             </tbody>
@@ -93,12 +102,13 @@ class ParcelShow extends Component {
     }
 }
 
+const {object, array, func} = PropTypes
 ParcelShow.propTypes = {
-    user: React.PropTypes.object,
-    params: React.PropTypes.object,
-    deliveries: React.PropTypes.array,
-    parcel: React.PropTypes.object,
-    dispatch: React.PropTypes.func
+    user: object,
+    params: object,
+    deliveries: array,
+    parcel: object,
+    dispatch: func
 }
 
 const mapStateToProps = (state, props) => ({

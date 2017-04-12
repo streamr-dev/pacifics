@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {Link} from 'react-router'
 import {Row, Col, FormGroup, Form, ControlLabel, FormControl, Button} from 'react-bootstrap'
+import FontAwesome from 'react-fontawesome'
 import {connect} from 'react-redux'
 import {replace} from 'react-router-redux'
 import {createDelivery} from '../../../actions/delivery'
@@ -59,13 +60,18 @@ class DeliveryCreate extends Component {
     handleSubmit(e) {
         e.preventDefault()
         this.props.dispatch(createDelivery(this.state, this.props.parcel.address))
+            .then(() => {
+                const url = this.props.location.query.parcelAddress ? `/parcels/${this.props.location.query.parcelAddress}/` : '/'
+                this.props.dispatch(replace(url))
+            })
     }
     
     render() {
         const createDatePicker = name => (
             <DateTime
                 inputProps={{
-                    name: name
+                    name: name,
+                    disabled: this.props.fetching
                 }}
                 defaultValue={moment(this.state[name])}
                 onChange={date => {
@@ -89,9 +95,9 @@ class DeliveryCreate extends Component {
                             </Col>
                             <Col xs={8}>
                                 {this.props.parcel &&
-                                    <Link to={`parcels/${this.props.parcel.address}`}>
-                                        {this.props.parcel.name}
-                                    </Link>
+                                <Link to={`parcels/${this.props.parcel.address}`}>
+                                    {this.props.parcel.name}
+                                </Link>
                                 }
                             </Col>
                         </Row>
@@ -106,7 +112,8 @@ class DeliveryCreate extends Component {
                             </Link>
                         </FormGroup>
                         <FormGroup>
-                            <FormControl componentClass="select" placeholder="select postbox">
+                            <FormControl componentClass="select" placeholder="select postbox"
+                                         disabled={this.props.fetching}>
                                 {this.props.postboxes.map((postbox) => (
                                     <option value={postbox.id} key={postbox.id}>{postbox.name}</option>
                                 ))}
@@ -119,6 +126,7 @@ class DeliveryCreate extends Component {
                                 onChange={this.handleInputChange}
                                 value={this.state.receiverAddress}
                                 placeholder="0x"
+                                disabled={this.props.fetching}
                             />
                         </FormGroup>
                         <FormGroup>
@@ -136,7 +144,7 @@ class DeliveryCreate extends Component {
                             </Link>
                         </FormGroup>
                         <FormGroup>
-                            <FormControl componentClass="select" placeholder="select postbox">
+                            <FormControl componentClass="select" placeholder="select postbox" disabled={this.props.fetching}>
                                 {this.props.postboxes.map((postbox) => (
                                     <option value={postbox.id} key={postbox.id}>{postbox.name}</option>
                                 ))}
@@ -151,6 +159,7 @@ class DeliveryCreate extends Component {
                                 min={0}
                                 step="any"
                                 type="number"
+                                disabled={this.props.fetching}
                             />
                         </FormGroup>
                         <FormGroup>
@@ -159,9 +168,26 @@ class DeliveryCreate extends Component {
                         </FormGroup>
                     </Col>
                     <Col xs={12}>
-                        <Button type="submit">
-                            Create
-                        </Button>
+                        {this.props.fetching ?
+                            <div>
+                                <FontAwesome
+                                    name="spinner"
+                                    size="3x"
+                                    pulse
+                                />
+                                <span style = {{
+                                    padding: '15px'
+                                }}>
+                                    Creating delivery
+                                </span>
+                            </div>
+                            :
+                            <FormGroup>
+                                <Button type="submit">
+                                    Create
+                                </Button>
+                            </FormGroup>
+                        }
                     </Col>
                 </Form>
             </Row>
@@ -169,21 +195,22 @@ class DeliveryCreate extends Component {
     }
 }
 
+const {object, func, arrayOf, bool} = React.PropTypes
 DeliveryCreate.propTypes = {
-    location: React.PropTypes.object,
-    dispatch: React.PropTypes.func,
-    user: React.PropTypes.object,
-    params: React.PropTypes.object,
-    postboxes: React.PropTypes.arrayOf(React.PropTypes.object),
-    parcel: React.PropTypes.object
+    location: object,
+    dispatch: func,
+    user: object,
+    params: object,
+    postboxes: arrayOf(object),
+    parcel: object,
+    fetching: bool
 }
 
-const mapStateToProps = (state, props) => {
-    return {
-        postboxes: state.postboxes ? state.postboxes.postboxes : [],
-        user: state.user.user,
-        parcel: state.parcels.list && state.parcels.list.find(p => p.address === props.params.address)
-    }
-}
+const mapStateToProps = ({postboxes, user, parcels, deliveries}, props) => ({
+    postboxes: postboxes ? postboxes.postboxes : [],
+    user: user.user,
+    parcel: parcels.list && parcels.list.find(p => p.address === props.params.address),
+    fetching: Boolean(deliveries.fetching)
+})
 
 export default connect(mapStateToProps, null)(DeliveryCreate)

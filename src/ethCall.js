@@ -6,12 +6,11 @@ import solidityCoder from 'web3/lib/solidity/coder'
 
 export function sendTransaction(abi, address, funcName, args) {
     const contract = web3.eth.contract(abi).at(address)
-    return new Promise(done => {
+    return new Promise((resolve, reject) => {
         contract[funcName](...args, (err, tx) => {
             if (err) {
-                throw err
+                reject(err)
             }
-            console.log(`Sending transaction https://testnet.etherscan.io/tx/${tx}`)
             const filter = web3.eth.filter('latest')
             filter.watch(function(error/*, blockHash*/) {
                 if (error) {
@@ -19,14 +18,13 @@ export function sendTransaction(abi, address, funcName, args) {
                 }
                 web3.eth.getTransactionReceipt(tx, (err, tr) => {
                     if (err) {
-                        throw err
+                        reject(err)
                     }
                     if (tr == null) {
                         return      // not yet...
                     }
                     filter.stopWatching()
-                    const events = getEventsFromLogs(tr.logs, abi)
-                    done(events)
+                    resolve(getEventsFromLogs(tr.logs, abi))
                 })
             })
         })

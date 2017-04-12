@@ -1,11 +1,12 @@
 import React, {Component} from 'react'
 import {Row, Col, Panel, Button, Table} from 'react-bootstrap'
 import {Link} from 'react-router'
+import Spinner from '../../Util/Spinner'
 import FontAwesome from 'react-fontawesome'
 import {connect} from 'react-redux'
 import styles from './parcelList.pcss'
 import commonStyles from '../../../commonStyles.pcss'
-import {ClickableTr, ClickableTd} from '../../ClickableTable'
+import {ClickableTr, ClickableTd} from '../../Util/ClickableTable'
 
 class ParcelList extends Component {
     render() {
@@ -43,15 +44,7 @@ class ParcelList extends Component {
                             ))}
                             </tbody>
                         </Table>
-                        {this.props.fetching && (
-                            <div className={styles.spinnerContainer}>
-                                <FontAwesome
-                                    name="spinner"
-                                    size='2x'
-                                    pulse
-                                />
-                            </div>
-                        )}
+                        <Spinner show={this.props.fetching} />
                     </Panel>
                 </Col>
             </Row>

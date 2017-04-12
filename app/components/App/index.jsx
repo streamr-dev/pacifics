@@ -29,11 +29,11 @@ App.propTypes = {
     errors: React.PropTypes.array
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = ({user, deliveries, parcels, postboxes}) => {
     return {
-        user: state.user.user,
+        user: user.user,
         // If no errors are defined, errors = []
-        errors: without([state.user.error, state.deliveries.error, state.parcels.error, state.postboxes.error], undefined, null)
+        errors: without([user.error, deliveries.error, parcels.error, postboxes.error], undefined, null)
     }
 }
 

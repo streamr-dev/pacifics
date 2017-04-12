@@ -9,12 +9,6 @@ import {getAll as solidityGetProperties} from './solidity-getters'
 
 let ParcelCreator
 
-const assertEqual = (a, b) => {
-    if (a !== b) {
-        console.error(`Expected ${JSON.stringify(a)} === ${JSON.stringify(b)}`)
-    }
-}
-
 const lastOf = arr => arr[arr.length - 1]
 
 // number of (parallel) fetches done at a time
@@ -118,9 +112,6 @@ export function createParcelContract(name = 'Parcel', description = 'Unnamed par
                         owner: responseArray[2],
                         name: responseArray[3]
                     }
-                    assertEqual(response.name, name)
-                    assertEqual(response.creator, ownerAddress)
-                    assertEqual(response.owner, ownerAddress)
                     done(response)
                 })
             })

@@ -2,7 +2,8 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {login} from '../../actions/user'
 import {Link} from 'react-router'
-import {Panel, Col, Button, FormGroup, ControlLabel, FormControl} from 'react-bootstrap'
+import {Panel, Col, Button, FormGroup, ControlLabel, FormControl, Alert} from 'react-bootstrap'
+import {push} from 'react-router-redux'
 
 class LoginPage extends Component {
     constructor(props) {
@@ -12,7 +13,9 @@ class LoginPage extends Component {
     
     handleSubmit(e) {
         e.preventDefault()
-        this.props.dispatch(login(this.emailInput.value, this.pwdInput.value))
+        this.props.dispatch(login(this.emailInput.value, this.pwdInput.value)).then(() => {
+            this.props.dispatch(push('/'))
+        })
     }
     
     render() {
@@ -21,6 +24,11 @@ class LoginPage extends Component {
                 <Col xs={12} md={8} mdOffset={2} lg={6} lgOffset={3} style={{
                     marginTop: '20px'
                 }}>
+                    {this.props.error && (
+                        <Alert bsStyle="danger">
+                            {this.props.error.message || this.props.error}
+                        </Alert>
+                    )}
                     <Panel header="Login" footer={<Link to='signup'>Sign up</Link>}>
                         <form id="registerForm" onSubmit={this.handleSubmit} className="form-horizontal">
                             <FormGroup>
@@ -47,7 +55,8 @@ class LoginPage extends Component {
                         </form>
                     </Panel>
                 </Col>
-            </div>)
+            </div>
+        )
     }
 }
 
@@ -55,10 +64,15 @@ LoginPage.propTypes = {
     user: React.PropTypes.object,
     router: React.PropTypes.object.isRequired,
     dispatch: React.PropTypes.func.isRequired,
+    error: React.PropTypes.oneOfType([
+        React.PropTypes.string,
+        React.PropTypes.object
+    ])
 }
 
 const mapStateToProps = state => ({
-    user: state.user.user
+    user: state.user.user,
+    error: state.user.error
 })
 
 export default connect(mapStateToProps)(LoginPage)

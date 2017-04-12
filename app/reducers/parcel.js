@@ -1,5 +1,6 @@
 
 import {
+    CREATE_PARCEL_REQUEST,
     CREATE_PARCEL_SUCCESS,
     CREATE_PARCEL_FAILURE,
     GET_ALL_PARCELS_REQUEST,
@@ -18,6 +19,7 @@ export default (state = {
     switch (action.type) {
         case GET_ALL_PARCELS_REQUEST:
         case GET_PARCEL_REQUEST:
+        case CREATE_PARCEL_REQUEST:
             return {
                 ...state,
                 error: undefined,
