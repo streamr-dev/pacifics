@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {Row, Col, Panel, Button, Table} from 'react-bootstrap'
 import {Link} from 'react-router'
 import Spinner from '../../Util/Spinner'
+import {AddressLabel} from '../../Util/Labels'
 import FontAwesome from 'react-fontawesome'
 import {connect} from 'react-redux'
 import styles from './parcelList.pcss'
@@ -12,11 +13,11 @@ class ParcelList extends Component {
     render() {
         return (
             <Row>
-                <Col xs={12}>
-                    <h1>My parcels</h1>
+                <Col xs={8}>
+                    <h1>Parcels in {this.props.user.service.name}</h1>
                 </Col>
-                <Col xs={12} className={commonStyles.buttonContainer}>
-                    <Link to="/parcels/create">
+                <Col xs={4} className={commonStyles.buttonContainer}>
+                    <Link to="/parcels/create" className="pull-right">
                         <Button>
                             <FontAwesome name="plus"/> New parcel
                         </Button>
@@ -36,10 +37,18 @@ class ParcelList extends Component {
                             <tbody>
                             {this.props.parcels.map(p => (
                                 <ClickableTr href={`/parcels/${p.address}`} key={p.address}>
-                                    <ClickableTd>{p.name}</ClickableTd>
-                                    <ClickableTd>{p.Owner.slice(0, 10)}</ClickableTd>
-                                    <ClickableTd>{p.TransmittedTo.slice(0, 10)}</ClickableTd>
-                                    <ClickableTd>{p.transmissionDate}</ClickableTd>
+                                    <ClickableTd>
+                                        {p.name}
+                                        </ClickableTd>
+                                    <ClickableTd>
+                                        <AddressLabel address={p.Owner} />
+                                    </ClickableTd>
+                                    <ClickableTd>
+                                        <AddressLabel address={p.TransmittedTo} />
+                                    </ClickableTd>
+                                    <ClickableTd>
+                                        {p.transmissionDate}
+                                    </ClickableTd>
                                 </ClickableTr>
                             ))}
                             </tbody>

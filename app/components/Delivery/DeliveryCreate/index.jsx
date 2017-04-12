@@ -79,7 +79,6 @@ class DeliveryCreate extends Component {
                 }}
                 dateFormat="MM-DD-YYYY"
                 timeFormat="HH:mm:ss z"
-                utc={true}
             />
         )
         const postboxCreateUrl = `/postboxes/create?parcelAddress=${this.props.parcel ? this.props.parcel.address : '' }`
@@ -102,15 +101,19 @@ class DeliveryCreate extends Component {
                             </Col>
                         </Row>
                     </Col>
-                    <Col xs={4}>
-                        <h4>From Postbox</h4>
-                        <FormGroup>
-                            <Link to={postboxCreateUrl}>
-                                <Button>
-                                    New Postbox
-                                </Button>
-                            </Link>
-                        </FormGroup>
+                    <Col xs={12} md={6}>
+                        <Row>
+                            <Col xs={6}>
+                                <h4>From Postbox</h4>
+                            </Col>
+                            <Col xs={6}>
+                                <Link to={postboxCreateUrl} className="pull-right">
+                                    <Button bsSize="small">
+                                        <FontAwesome name="plus" /> New Postbox
+                                    </Button>
+                                </Link>
+                            </Col>
+                        </Row>
                         <FormGroup>
                             <FormControl componentClass="select" placeholder="select postbox"
                                          disabled={this.props.fetching}>
@@ -134,15 +137,19 @@ class DeliveryCreate extends Component {
                             {createDatePicker('canStartAfter')}
                         </FormGroup>
                     </Col>
-                    <Col xs={4}>
-                        <h4>To Postbox</h4>
-                        <FormGroup>
-                            <Link to={postboxCreateUrl}>
-                                <Button>
-                                    New Postbox
-                                </Button>
-                            </Link>
-                        </FormGroup>
+                    <Col xs={12} md={6}>
+                        <Row>
+                            <Col xs={6}>
+                                <h4>To Postbox</h4>
+                            </Col>
+                            <Col xs={6}>
+                                <Link to={postboxCreateUrl} className="pull-right">
+                                    <Button bsSize="small">
+                                        <FontAwesome name="plus" /> New Postbox
+                                    </Button>
+                                </Link>
+                            </Col>
+                        </Row>
                         <FormGroup>
                             <FormControl componentClass="select" placeholder="select postbox" disabled={this.props.fetching}>
                                 {this.props.postboxes.map((postbox) => (

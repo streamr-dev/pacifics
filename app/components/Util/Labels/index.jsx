@@ -40,5 +40,5 @@ AddressLabel.propTypes = {
 }
 
 AddressLabel.defaultProps = {
-    visibleLength: 10
+    visibleLength: Infinity
 }

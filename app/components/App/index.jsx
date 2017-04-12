@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {Alert} from 'react-bootstrap'
+import {Alert, Navbar, NavbarBrand} from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'font-awesome/css/font-awesome.css'
 import styles from './app-styles.pcss'
@@ -9,15 +9,20 @@ import without from 'lodash/without'
 class App extends Component {
     render() {
         return (
-            <div className={['container', styles.appContainer].join(' ')}>
-                {/*Nav?*/}
-                {this.props.errors.map(e => (
-                    <Alert bsStyle="danger" key={Date.now() + e}>
-                        {e.message || e}
-                    </Alert>
-                ))}
-                {this.props.children}
-                {/*Footer?*/}
+            <div className={styles.contentWrapper}>
+                <Navbar className={styles.header}>
+                    <NavbarBrand>
+                        <img className={styles.navLogo} src="http://pacifics.org/uploads/s/l/4/e/l4ejxqrwsl3p/img/UMNNjRll.png" />
+                    </NavbarBrand>
+                </Navbar>
+                <div className={['container', styles.appContainer].join(' ')}>
+                    {this.props.errors.map(e => (
+                        <Alert bsStyle="danger" key={Date.now() + e}>
+                            {e.message || e}
+                        </Alert>
+                    ))}
+                    {this.props.children}
+                </div>
             </div>
         )
     }

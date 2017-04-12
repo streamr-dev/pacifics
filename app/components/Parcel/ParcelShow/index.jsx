@@ -10,23 +10,28 @@ class ParcelShow extends Component {
     render() {
         return (
             <Row>
-                <Col xs={12}>
+                <Col xs={8}>
                     <h1>{this.props.parcel.name}</h1>
+                </Col>
+                <Col xs={4} className={commonStyles.buttonContainer}>
+                    <Link to={`/parcels/${this.props.params.address}/track`} className="pull-right">
+                        <Button>
+                            <FontAwesome name="search" /> Track Parcel
+                        </Button>
+                    </Link>
                 </Col>
                 <Col xs={12}>
                     <Row>
                         <Col xs={2}>
                             <label>Description</label>
                         </Col>
-                        <Col xs={10}>
+                        <Col xs={4}>
                             <span>{this.props.parcel.description}</span>
                         </Col>
-                    </Row>
-                    <Row>
                         <Col xs={2}>
                             <label>Owner</label>
                         </Col>
-                        <Col xs={10}>
+                        <Col xs={4}>
                             <span>{this.props.parcel.Owner}</span>
                         </Col>
                     </Row>
@@ -34,31 +39,23 @@ class ParcelShow extends Component {
                         <Col xs={2}>
                             <label>Current holder</label>
                         </Col>
-                        <Col xs={10}>
+                        <Col xs={4}>
                             <span>{this.props.parcel.TransmittedTo}</span>
                         </Col>
-                    </Row>
-                    <Row>
                         <Col xs={2}>
                             <label>Temperature limit</label>
                         </Col>
-                        <Col xs={10}>
+                        <Col xs={4}>
                             <span>{this.props.parcel.TemperatureLimit}</span>
                         </Col>
                     </Row>
                 </Col>
-                <Col xs={12} className={commonStyles.buttonContainer}>
-                    <Link to={`/parcels/${this.props.params.address}/track`}>
-                        <Button>
-                            Track Parcel
-                        </Button>
-                    </Link>
-                </Col>
-                <Col xs={12}>
+                
+                <Col xs={8}>
                     <h1>Deliveries</h1>
                 </Col>
-                <Col xs={12} className={commonStyles.buttonContainer}>
-                    <Link to={`/parcels/${this.props.params.address}/deliveries/create`}>
+                <Col xs={4} className={commonStyles.buttonContainer}>
+                    <Link to={`/parcels/${this.props.params.address}/deliveries/create`} className="pull-right">
                         <Button>
                             <FontAwesome name="plus"/> New Delivery
                         </Button>
@@ -66,7 +63,7 @@ class ParcelShow extends Component {
                 </Col>
                 <Col xs={12}>
                     <Panel>
-                        <Table>
+                        <Table striped bordered hover>
                             <thead>
                             <tr>
                                 <th>From</th>
