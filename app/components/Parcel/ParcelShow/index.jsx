@@ -60,7 +60,7 @@ class ParcelShow extends Component {
                 </Col>
                 
                 <Col xs={8}>
-                    <h1>Deliveries</h1>
+                    <h2>Deliveries</h2>
                 </Col>
                 <Col xs={4} className={commonStyles.buttonContainer}>
                     <Link to={`/parcels/${this.props.params.address}/deliveries/create`} className="pull-right">
