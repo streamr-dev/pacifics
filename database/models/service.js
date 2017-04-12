@@ -21,6 +21,10 @@ const Service = connection.define('service', {
         type: Sequelize.STRING,
         allowNull: false,
         unique: true
+    },
+    eventManagerAddress: {
+        type: Sequelize.STRING,
+        allowNull: false
     }
 }, {
     timestamps: true
