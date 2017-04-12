@@ -31,7 +31,6 @@ export function updateParcels(oldParcels, step = DEFAULT_PARCEL_FETCH_STEP) {
 }
 
 export function getParcelRange(startId, endId) {
-    console.log(`Getting parcels ${startId}...${endId}`)
     const res = range(startId, endId).map(getParcelContract)
     return Promise.all(res)
 }

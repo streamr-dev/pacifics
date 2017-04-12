@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt-nodejs')
 const LocalStrategy = require('passport-local').Strategy
 const User = require('../database/models/user')
+const Service = require('../database/models/service')
 
 const LoginStrategy = new LocalStrategy({
     usernameField: 'email',
@@ -10,7 +11,8 @@ const LoginStrategy = new LocalStrategy({
     User.findOne({
         where: {
             email: email
-        }
+        },
+        include: [Service]
     })
         .then((user) => {
             let error

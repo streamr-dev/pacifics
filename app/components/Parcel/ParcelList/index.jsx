@@ -14,7 +14,7 @@ class ParcelList extends Component {
         return (
             <Row>
                 <Col xs={8}>
-                    <h1>Parcels in {this.props.user.service.name}</h1>
+                    <h1>Parcels in {this.props.user.service ? this.props.user.service.name : 'current service'}</h1>
                 </Col>
                 <Col xs={4} className={commonStyles.buttonContainer}>
                     <Link to="/parcels/create" className="pull-right">

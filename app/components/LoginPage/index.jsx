@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {login} from '../../actions/user'
 import {Link} from 'react-router'
-import {Panel, Col, Button, FormGroup, ControlLabel, FormControl, Alert} from 'react-bootstrap'
+import {Panel, Col, Button, FormGroup, ControlLabel, FormControl} from 'react-bootstrap'
 import {push} from 'react-router-redux'
 
 class LoginPage extends Component {
@@ -24,11 +24,6 @@ class LoginPage extends Component {
                 <Col xs={12} md={8} mdOffset={2} lg={6} lgOffset={3} style={{
                     marginTop: '20px'
                 }}>
-                    {this.props.error && (
-                        <Alert bsStyle="danger">
-                            {this.props.error.message || this.props.error}
-                        </Alert>
-                    )}
                     <Panel header="Login" footer={<Link to='signup'>Sign up</Link>}>
                         <form id="registerForm" onSubmit={this.handleSubmit} className="form-horizontal">
                             <FormGroup>
@@ -63,16 +58,11 @@ class LoginPage extends Component {
 LoginPage.propTypes = {
     user: React.PropTypes.object,
     router: React.PropTypes.object.isRequired,
-    dispatch: React.PropTypes.func.isRequired,
-    error: React.PropTypes.oneOfType([
-        React.PropTypes.string,
-        React.PropTypes.object
-    ])
+    dispatch: React.PropTypes.func.isRequired
 }
 
 const mapStateToProps = state => ({
-    user: state.user.user,
-    error: state.user.error
+    user: state.user.user
 })
 
 export default connect(mapStateToProps)(LoginPage)

@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {Alert, Navbar, NavbarBrand} from 'react-bootstrap'
+import {Alert, Navbar, Nav, NavItem, NavbarBrand} from 'react-bootstrap'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'font-awesome/css/font-awesome.css'
 import styles from './app-styles.pcss'
@@ -14,6 +14,13 @@ class App extends Component {
                     <NavbarBrand>
                         <img className={styles.navLogo} src="http://pacifics.org/uploads/s/l/4/e/l4ejxqrwsl3p/img/UMNNjRll.png" />
                     </NavbarBrand>
+                    {this.props.user && (
+                        <Nav className="pull-right">
+                            <NavItem href={`${baseUrl}/logout`} className={styles.navLink}>
+                                Log out
+                            </NavItem>
+                        </Nav>
+                    )}
                 </Navbar>
                 <div className={['container', styles.appContainer].join(' ')}>
                     {this.props.errors.map(e => (

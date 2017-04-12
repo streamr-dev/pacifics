@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {Col, Table, Panel, Button, FormGroup, ControlLabel, FormControl, Alert} from 'react-bootstrap'
+import {Col, Table, Panel, Button, FormGroup, ControlLabel, FormControl} from 'react-bootstrap'
 import {signup} from '../../actions/user.js'
 import {Link} from 'react-router'
 import serialize from 'form-serialize'
@@ -34,11 +34,6 @@ class SignupPage extends Component {
                 <Col xs={12} md={8} mdOffset={2} lg={6} lgOffset={3} style={{
                     marginTop: '20px'
                 }}>
-                    {this.props.error && (
-                        <Alert bsStyle="danger">
-                            {this.props.error.message || this.props.error}
-                        </Alert>
-                    )}
                     {this.props.user ?
                         <Panel header={`Thank you for registering, ${this.props.user.email}!`} bsStyle="success">
                             <Table striped bordered hover>
@@ -118,17 +113,12 @@ SignupPage.propTypes = {
     user: React.PropTypes.object,
     router: React.PropTypes.object,
     dispatch: React.PropTypes.func.isRequired,
-    services: React.PropTypes.array,
-    error: React.PropTypes.oneOfType([
-        React.PropTypes.string,
-        React.PropTypes.object
-    ])
+    services: React.PropTypes.array
 }
 
 const mapStateToProps = state => ({
     services: state.services.services || [],
-    user: state.user.user,
-    error: state.user.error
+    user: state.user.user
 })
 
 export default connect(mapStateToProps)(SignupPage)
