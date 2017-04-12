@@ -1,8 +1,8 @@
 /*eslint-disable quotes*/
 
-export const parcelCreatorAddress = "0x2ABd0fc72Aa43152693E3C96CCA2027bb7F5432a"
-export const postboxCreatorAddress = "0xFa9bda06D96Fe7fE5a6DcABeafEbf486a477924F"
-export const deliveryContractCreatorAddress = "0x3A5D686EC5b9b39617f105e6ec43f70b0Fa6d2Ff"
+export const parcelCreatorAddress = "0xea580861a66C25100002618B5D514184bF354349"
+export const postboxCreatorAddress = "0x0CDA2b75f8a8D76c597BDF7cc5fFDD6540Ad972b"
+export const deliveryContractCreatorAddress = "0x438dfC6f9f6C9937A14345e71451c01a432a6964"
 
 export const parcelCreatorABI = [
     {
