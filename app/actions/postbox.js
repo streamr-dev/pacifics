@@ -30,7 +30,7 @@ export const getPostbox = id => dispatch => {
 
 export const createPostbox = postbox => dispatch => {
     dispatch(createPostboxRequest())
-    createPostboxContract(postbox.name, postbox.description, postbox.location/*, postbox.minuteFee, postbox.minRent, postbox.maxDeposit*/)
+    return createPostboxContract(postbox.name, postbox.description, postbox.location/*, postbox.minuteFee, postbox.minRent, postbox.maxDeposit*/)
         .then(postbox => {
             dispatch(goBack())
             dispatch(createPostboxSuccess(postbox))
