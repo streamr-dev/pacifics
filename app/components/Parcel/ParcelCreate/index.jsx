@@ -16,7 +16,7 @@ class ParcelCreate extends Component {
         const form = serialize(e.target, {
             hash: true
         })
-        this.props.dispatch(createParcel(form)).then(({parcel}) => {
+        this.props.dispatch(createParcel(form)).then(parcel => {
             this.props.dispatch(replace(`/parcels/${parcel.address}`))
         })
     }

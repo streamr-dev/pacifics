@@ -23,7 +23,7 @@ export default (state = {
             }
         case CREATE_DELIVERY_SUCCESS:
             return {
-                list: [...state.list, action.list],
+                list: [...state.list, action.delivery],
                 error: undefined,
                 fetching: false
             }

@@ -1,6 +1,5 @@
-
 import store from '../store'
-import {getAllParcelContracts, getParcelContractAt, createParcelContract} from '../../src/parcel'
+import { getAllParcelContracts, getParcelContractAt, createParcelContract } from '../../src/parcel'
 
 export const GET_ALL_PARCELS_REQUEST = 'GET_ALL_PARCELS_REQUEST'
 export const GET_ALL_PARCELS_SUCCESS = 'GET_ALL_PARCELS_SUCCESS'
@@ -18,9 +17,17 @@ export const getAllParcels = () => dispatch => {
     const state = store.getState()
     const parcelCreatorAddress = state.user.user.service.parcelCreatorAddress
     dispatch(getAllParcelsRequest())
-    return getAllParcelContracts(parcelCreatorAddress)
-        .then(p => dispatch(getAllParcelsSuccess(p)))
-        .catch(e => dispatch(getAllParcelsFailure(e)))
+    return new Promise((resolve, reject) => {
+        getAllParcelContracts(parcelCreatorAddress)
+            .then(p => {
+                dispatch(getAllParcelsSuccess(p))
+                resolve(p)
+            })
+            .catch(e => {
+                dispatch(getAllParcelsFailure(e))
+                reject(e)
+            })
+    })
 }
 
 // TODO: name probably should be selectParcel (plus same changes everywhere)
@@ -32,20 +39,38 @@ export const getParcel = address => dispatch => {
     }
     
     dispatch(getParcelRequest())
-    return getParcelContractAt(address)
-        .then(p => dispatch(getParcelSuccess(Object.assign(p, {
-            address
-        }))))
-        .catch(e => dispatch(getParcelFailure(e)))
+    return new Promise((resolve, reject) => {
+        getParcelContractAt(address)
+            .then(p => {
+                p = {
+                    ...p,
+                    address
+                }
+                dispatch(getParcelSuccess(p))
+                resolve(p)
+            })
+            .catch(e => {
+                dispatch(getParcelFailure(e))
+                reject(e)
+            })
+    })
 }
 
 export const createParcel = parcel => dispatch => {
     const state = store.getState()
     const parcelCreatorAddress = state.user.user.service.parcelCreatorAddress
     dispatch(createParcelRequest())
-    return createParcelContract(parcel.name, parcel.description, parcel.temperatureLimit, parcelCreatorAddress)
-        .then(p => dispatch(createParcelSuccess(p)))
-        .catch(error => dispatch(createParcelFailure(error)))
+    return new Promise((resolve, reject) => {
+        createParcelContract(parcel.name, parcel.description, parcel.temperatureLimit, parcelCreatorAddress)
+            .then(p => {
+                dispatch(createParcelSuccess(p))
+                resolve(p)
+            })
+            .catch(e => {
+                dispatch(createParcelFailure(e))
+                reject(e)
+            })
+    })
 }
 
 const getAllParcelsRequest = () => ({

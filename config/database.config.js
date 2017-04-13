@@ -3,7 +3,7 @@
 module.exports = {
     dialect: 'mysql',
     host: 'dev.streamr',
-    database: 'pacifics_aapeli',
+    database: 'pacifics-jtakalai',
     user: 'root',
     password: 'Trez2tuV'
 }

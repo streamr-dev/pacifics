@@ -28,7 +28,7 @@ export default (state = {
         case GET_POSTBOX_SUCCESS:
         case CREATE_POSTBOX_SUCCESS:
             return {
-                list: [...state.list, action.list],
+                list: [...state.list, action.postbox],
                 error: undefined,
                 fetching: false
             }
