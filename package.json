@@ -4,7 +4,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "start": "node $NODE_DEBUG_OPTION server.js",
-    "build": "./node_modules/webpack/bin/webpack.js -p --config config/webpack.prod.config.js --progress",
+    "build": "./node_modules/webpack/bin/webpack.js -p --config config/webpack.config.js --progress",
     "lint": "./node_modules/bin/eslint.js -c ./config/.eslintrc.js .",
     "lint-fix": "./node_modules/bin/eslint.js -c ./config/.eslintrc.js . --fix"
   },
