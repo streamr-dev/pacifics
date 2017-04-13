@@ -15,8 +15,10 @@ export const CREATE_PARCEL_SUCCESS = 'CREATE_PARCEL_SUCCESS'
 export const CREATE_PARCEL_FAILURE = 'CREATE_PARCEL_FAILURE'
 
 export const getAllParcels = () => dispatch => {
+    const state = store.getState()
+    const parcelCreatorAddress = state.user.user.service.parcelCreatorAddress
     dispatch(getAllParcelsRequest())
-    return getAllParcelContracts()
+    return getAllParcelContracts(parcelCreatorAddress)
         .then(p => dispatch(getAllParcelsSuccess(p)))
         .catch(e => dispatch(getAllParcelsFailure(e)))
 }
@@ -24,12 +26,11 @@ export const getAllParcels = () => dispatch => {
 // TODO: name probably should be selectParcel (plus same changes everywhere)
 export const getParcel = address => dispatch => {
     const state = store.getState()
-    
     const foundParcel = state.parcels.list.find(i => i.address === address)
     if (foundParcel) {
         return Promise.resolve(dispatch(getParcelSuccess(foundParcel)))
     }
-
+    
     dispatch(getParcelRequest())
     return getParcelContractAt(address)
         .then(p => dispatch(getParcelSuccess(Object.assign(p, {
@@ -39,8 +40,10 @@ export const getParcel = address => dispatch => {
 }
 
 export const createParcel = parcel => dispatch => {
+    const state = store.getState()
+    const parcelCreatorAddress = state.user.user.service.parcelCreatorAddress
     dispatch(createParcelRequest())
-    return createParcelContract(parcel.name, parcel.description, parcel.temperatureLimit)
+    return createParcelContract(parcel.name, parcel.description, parcel.temperatureLimit, parcelCreatorAddress)
         .then(p => dispatch(createParcelSuccess(p)))
         .catch(error => dispatch(createParcelFailure(error)))
 }

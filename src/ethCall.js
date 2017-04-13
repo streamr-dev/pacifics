@@ -11,6 +11,7 @@ export function sendTransaction(abi, address, funcName, args) {
             if (err) {
                 reject(err)
             }
+            console.log(`Sending transaction https://testnet.etherscan.io/tx/${tx}`)    //eslint-disable-line no-console
             const filter = web3.eth.filter('latest')
             filter.watch(function(error/*, blockHash*/) {
                 if (error) {

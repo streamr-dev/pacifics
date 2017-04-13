@@ -1,4 +1,5 @@
 import {createDeliveryContract, getAllDeliveryContracts} from '../../src/deliveryContract'
+import store from '../store'
 
 export const GET_ALL_DELIVERIES_REQUEST = 'GET_ALL_DELIVERIES_REQUEST'
 export const GET_ALL_DELIVERIES_SUCCESS = 'GET_ALL_DELIVERIES_SUCCESS'
@@ -10,8 +11,9 @@ export const CREATE_DELIVERY_FAILURE = 'CREATE_DELIVERY_FAILURE'
 
 
 export const getAllDeliveries = () => dispatch => {
+    const deliveryCreatorAddress = store.getState().user.user.service.deliveryCreatorAddress
     dispatch(getAllDeliveriesRequest())
-    return getAllDeliveryContracts()
+    return getAllDeliveryContracts(deliveryCreatorAddress)
         .then(d => dispatch(getAllDeliveriesSuccess(d)))
         .catch(e => dispatch(getAllDeliveriesFailure(e)))
 }
@@ -27,8 +29,9 @@ export const createDelivery = (delivery, parcelAddress) => dispatch => {
     const minutes = Math.ceil((deadline - startDate) / 60)
     const depositETH = delivery.deposit
 
+    const deliveryCreatorAddress = store.getState().user.user.service.deliveryCreatorAddress
     dispatch(createDeliveryRequest())
-    return createDeliveryContract(parcelAddress, delivery.senderPostbox, delivery.receiverPostbox, delivery.receiverAddress, 0, depositETH, startDate, minutes)
+    return createDeliveryContract(parcelAddress, delivery.senderPostbox, delivery.receiverPostbox, delivery.receiverAddress, 0, depositETH, startDate, minutes, deliveryCreatorAddress)
         .then(d => dispatch(createDeliverySuccess(d)))
         .catch(e => dispatch(createDeliveryFailure(e)))
 }
