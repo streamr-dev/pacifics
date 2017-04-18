@@ -16,8 +16,10 @@ class ParcelCreate extends Component {
         const form = serialize(e.target, {
             hash: true
         })
-        this.props.dispatch(createParcel(form)).then(({parcel}) => {
-            this.props.dispatch(replace(`/parcels/${parcel.address}`))
+        this.props.dispatch(createParcel(form)).then(() => { //parcel => {
+            // TODO: replaced with return to parcel list page until NewParcel event argument address byte shift issue is resolved
+            this.props.dispatch(replace('/parcels'))
+            //this.props.dispatch(replace(`/parcels/${parcel.address}`))
         })
     }
     render() {

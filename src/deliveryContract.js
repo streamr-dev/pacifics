@@ -2,7 +2,7 @@
 import web3 from './web3-wrapper.js'
 import _ from 'lodash'
 
-import {deliveryContractCreatorABI, deliveryContractCreatorAddress, deliveryContractABI} from './abi'
+import {deliveryContractCreatorABI, deliveryContractABI} from './abi'
 import {getAll as solidityGetProperties, at as solidityGetBy} from './solidity-getters'
 //import {getAll as solidityGetProperties, getIndexedPropAt as solidityGetBy} from './solidity-getters'
 import {sendTransaction} from './ethCall'
@@ -14,32 +14,33 @@ const lastOf = arr => arr[arr.length - 1]
 const DEFAULT_DELIVERY_FETCH_STEP = 10
 
 // drop already known deliveryContracts and fetch all a-fresh
-export const getAllDeliveryContracts = updateDeliveryContracts.bind(null, [])
+export function getAllDeliveryContracts(deliveryContractCreatorAddress) {
+    return updateDeliveryContracts([], DEFAULT_DELIVERY_FETCH_STEP, deliveryContractCreatorAddress)
+}
 
-// parcel address, will be zero not non-existent
+// parcel address, will be zero if non-existent
 const isValid = d => d && d[1] !== '0x'
 
 // this can be used to fetch only deliveryContracts newer than those we already have
-export function updateDeliveryContracts(oldDeliveryContracts, step = DEFAULT_DELIVERY_FETCH_STEP) {
+export function updateDeliveryContracts(oldDeliveryContracts, step, deliveryContractCreatorAddress) {
     const startId = 1 + oldDeliveryContracts.length   // deliveryContracts are mapped with running id, starting from 1
-    return getDeliveryRange(startId, startId + step).then(newDeliveryContracts => {
+    return getDeliveryRange(startId, startId + step, deliveryContractCreatorAddress).then(newDeliveryContracts => {
         const deliveryContracts = oldDeliveryContracts.concat(newDeliveryContracts)
         if (isValid(lastOf(newDeliveryContracts))) {
-            return updateDeliveryContracts(deliveryContracts, step)
+            return updateDeliveryContracts(deliveryContracts, step, deliveryContractCreatorAddress)
         } else {
             return _.filter(deliveryContracts, isValid)
         }
     })
 }
 
-export function getDeliveryRange(startId, endId) {
-    const res = _.range(startId, endId).map(getDeliveryMetadata)
+export function getDeliveryRange(startId, endId, deliveryContractCreatorAddress) {
+    const res = _.range(startId, endId, deliveryContractCreatorAddress).map(i => getDeliveryMetadata(i, deliveryContractCreatorAddress))
     return Promise.all(res)
 }
 
-let deliveryContractCreator
-export const getDeliveryMetadata = id => {
-    deliveryContractCreator = deliveryContractCreator || web3.eth.contract(deliveryContractCreatorABI).at(deliveryContractCreatorAddress)
+export function getDeliveryMetadata(id, deliveryContractCreatorAddress) {
+    const deliveryContractCreator = web3.eth.contract(deliveryContractCreatorABI).at(deliveryContractCreatorAddress)
     return solidityGetBy(id, deliveryContractCreator, 'contracts')
 }
 
@@ -56,13 +57,15 @@ export const getDeliveryContract = id => getDeliveryMetadata(id).then(d => solid
  * @param minutes how many minutes from now must the delivery arrive
  * @returns {Promise.<string>} created contract's address
  */
-export const createDeliveryContract = (parcelAddress, senderPostbox, receiverPostbox, receiver, endDate, depositETH, startDate, minutes) => {
+export function createDeliveryContract(parcelAddress, senderPostbox, receiverPostbox, receiver, endDate, depositETH, startDate, minutes, deliveryContractCreatorAddress) {
     const deposit = web3.toWei(depositETH, 'ether')
+    //console.log(`Creating delivery contract ${senderPostbox} -> ${receiverPostbox} in ${minutes} minutes`)
     return sendTransaction(deliveryContractCreatorABI, deliveryContractCreatorAddress, 'createDeliveryContract', [parcelAddress, senderPostbox, receiverPostbox, receiver, endDate, deposit, startDate, minutes]).then(events => {
         const responseArray = events.NewContract
         if (!responseArray) {
             throw new Error('NewContract event not sent from Solidity')
         }
+        //console.log('Created delivery contract', responseArray)
         return {
             creator: responseArray[0],
             address: responseArray[1]

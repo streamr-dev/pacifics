@@ -14,9 +14,18 @@ const parseError = (res) => (res.data && res.data.error) || (res.response && res
 
 export const getAllServices = () => dispatch => {
     dispatch(getAllServicesRequest())
-    axios.get(urlBuilder.build('services'))
-        .then(res => dispatch(getAllServicesSuccess(res.data)))
-        .catch(res => dispatch(getAllServicesFailure(parseError(res))))
+    return new Promise((resolve, reject) => {
+        axios.get(urlBuilder.build('services'))
+            .then(res => {
+                dispatch(getAllServicesSuccess(res.data))
+                resolve(res.data)
+            })
+            .catch(res => {
+                const e = parseError(res)
+                dispatch(getAllServicesFailure(e))
+                reject(e)
+            })
+    })
 }
 
 const getAllServicesRequest = () => ({

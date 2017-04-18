@@ -16,6 +16,8 @@ router.post('/', (req, res, next) => {
         error = 'Email required!'
     } else if (!req.body.password) {
         error = 'Password required!'
+    } else if (!req.body.serviceId) {
+        error = 'Service required!'
     } else {
         for (const input in req.body) {
             const value = req.body[input]
@@ -48,7 +50,12 @@ router.post('/', (req, res, next) => {
                 return next(err)
             }
         }
-        res.send(user)
+	    req.logIn(user, err => {
+		    if (err) {
+			    return next(err)
+		    }
+		    res.send(user)
+	    })
     })(req, res, next)
 })
 

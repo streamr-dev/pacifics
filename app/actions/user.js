@@ -17,23 +17,37 @@ const parseError = (res) => (res.data && res.data.error) || (res.response && res
 
 export const login = (email, password) => dispatch => {
     dispatch(loginRequest())
-    return axios.post(urlBuilder.build('login'), {
-        email,
-        password
+    return new Promise((resolve, reject) => {
+        axios.post(urlBuilder.build('login'), {
+            email,
+            password
+        })
+            .then(res => {
+                dispatch(loginSuccess(res.data))
+                resolve(res.data)
+            })
+            .catch(res => {
+                const e = parseError(res)
+                dispatch(loginFailure(e))
+                reject(e)
+            })
     })
-        .then(res => dispatch(loginSuccess(res.data)))
-        .catch(res => dispatch(loginFailure(parseError(res))))
 }
 
 export const signup = (formData) => dispatch => {
     dispatch(signupRequest())
-    axios.post(urlBuilder.build('signup'), formData)
-        .then(res => {
-            dispatch(signupSuccess(res.data))
-        })
-        .catch(res => {
-            dispatch(signupFailure(parseError(res)))
-        })
+    return new Promise((resolve, reject) => {
+        axios.post(urlBuilder.build('signup'), formData)
+            .then(res => {
+                dispatch(signupSuccess(res.data))
+                resolve(res.data)
+            })
+            .catch(res => {
+                const e = parseError(res)
+                dispatch(signupFailure(e))
+                reject(e)
+            })
+    })
 }
 
 export const logout = () => ({

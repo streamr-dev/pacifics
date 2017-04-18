@@ -1,11 +1,11 @@
 
 import web3 from './web3-wrapper.js'
-import {postboxCreatorABI, postboxCreatorAddress, postboxABI} from './abi'
+import filter from 'lodash/filter'
+import range from 'lodash/range'
+
+import {postboxCreatorABI, postboxABI} from './abi'
 import {getEventsFromLogs} from './ethCall'
 import {getAll as solidityGetProperties, get as solidityGet} from './solidity-getters'
-import _ from 'lodash'
-
-let PostboxCreator
 
 const lastOf = arr => arr[arr.length - 1]
 
@@ -13,28 +13,30 @@ const lastOf = arr => arr[arr.length - 1]
 const DEFAULT_POSTBOX_FETCH_STEP = 10
 
 // drop already known postboxes and fetch all a-fresh
-export const getAllPostboxContracts = updatePostboxes.bind(null, [])
+export function getAllPostboxContracts(postboxCreatorAddress) {
+    return updatePostboxes([], DEFAULT_POSTBOX_FETCH_STEP, postboxCreatorAddress)
+}
 
 // this can be used to fetch only postboxes newer than those we already have
-export function updatePostboxes(oldPostboxes, step = DEFAULT_POSTBOX_FETCH_STEP) {
+export function updatePostboxes(oldPostboxes, step, postboxCreatorAddress) {
     const startId = 1 + oldPostboxes.length   // postboxes are mapped with running id, starting from 1
-    return getPostboxRange(startId, startId + step).then(newPostboxes => {
+    return getPostboxRange(startId, startId + step, postboxCreatorAddress).then(newPostboxes => {
         const postboxes = oldPostboxes.concat(newPostboxes)
         if (lastOf(newPostboxes)) {
-            return updatePostboxes(postboxes, step)
+            return updatePostboxes(postboxes, step, postboxCreatorAddress)
         } else {
-            return _.filter(postboxes)
+            return filter(postboxes)
         }
     })
 }
 
-export function getPostboxRange(startId, endId) {
-    const res = _.range(startId, endId).map(getPostboxMetadata)
+export function getPostboxRange(startId, endId, postboxCreatorAddress) {
+    const res = range(startId, endId).map(i => getPostboxMetadata(i, postboxCreatorAddress))
     return Promise.all(res)
 }
 
-export function getPostboxMetadata(id) {
-    PostboxCreator = PostboxCreator || web3.eth.contract(postboxCreatorABI).at(postboxCreatorAddress)
+export function getPostboxMetadata(id, postboxCreatorAddress) {
+    const PostboxCreator = web3.eth.contract(postboxCreatorABI).at(postboxCreatorAddress)
     return new Promise(done => {
         PostboxCreator.postboxCreations(id, (err, result) => {
             if (!result) {
@@ -53,8 +55,8 @@ export function getPostboxMetadata(id) {
 
 export const getPostboxContract = id => getPostboxMetadata(id).then(postbox => solidityGetProperties(postboxABI, postbox.address))
 
-export const getPostboxCount = () => {
-    PostboxCreator = PostboxCreator || web3.eth.contract(postboxCreatorABI).at(postboxCreatorAddress)
+export const getPostboxCount = postboxCreatorAddress => {
+    const PostboxCreator = web3.eth.contract(postboxCreatorABI).at(postboxCreatorAddress)
     solidityGet(PostboxCreator, 'numberOfPostboxes')
 }
 
@@ -66,10 +68,10 @@ export const getPostboxCount = () => {
  * @param maxDeposit Maximum deposit insurance provided by the postbox (for public postboxes)
  * @returns {Promise.<string>} created contract's address
  */
-export const createPostboxContract = (name = 'Postbox', description = 'Unnamed postbox', location = 'Unknown'/*, minuteFee=0, minRent=0, maxDeposit=0*/, ownerAddress = web3.eth.coinbase) => {
+export const createPostboxContract = (name, description, location, postboxCreatorAddress, ownerAddress = web3.eth.coinbase) => {
     //console.log('Creating postbox ' + name)
     // TODO: write using ethCall:sendTransaction
-    PostboxCreator = PostboxCreator || web3.eth.contract(postboxCreatorABI).at(postboxCreatorAddress)
+    const PostboxCreator = web3.eth.contract(postboxCreatorABI).at(postboxCreatorAddress)
     return new Promise(done => {
         PostboxCreator.createPostbox(ownerAddress, name, description, location, 0, 0, 0 /*minuteFee, minRent, maxDeposit*/, (err, tx) => {
             if (err) {

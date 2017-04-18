@@ -1,6 +1,7 @@
 
 import React, {Component, PropTypes} from 'react'
 import moment from 'moment'
+import commonStyles from '../../../commonStyles.pcss'
 
 export class DateLabel extends Component {
     render() {
@@ -27,8 +28,8 @@ DateLabel.defaultProps = {
 export class AddressLabel extends Component {
     render() {
         return (
-            <span title={this.props.address}>
-                {this.props.name || this.props.address.slice(0, this.props.visibleLength)}
+            <span title={this.props.address} className={commonStyles.addressLabel}>
+                {this.props.name || this.props.address && this.props.address.slice(0, this.props.visibleLength) || '(unknown)'}
             </span>
         )
     }

@@ -13,9 +13,9 @@ class LoginPage extends Component {
     
     handleSubmit(e) {
         e.preventDefault()
-        this.props.dispatch(login(this.emailInput.value, this.pwdInput.value)).then(() => {
-            this.props.dispatch(push('/'))
-        })
+        this.props.dispatch(login(this.emailInput.value, this.pwdInput.value))
+            .then(() => this.props.dispatch(push('/')))
+            .catch(() => {})
     }
     
     render() {

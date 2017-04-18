@@ -35,8 +35,8 @@ class ParcelList extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                            {this.props.parcels.map(p => (
-                                <ClickableTr href={`/parcels/${p.address}`} key={p.address}>
+                            {this.props.parcels.map((p, i) => (
+                                <ClickableTr href={`/parcels/${p.address}`} key={`${p.address}-${i}`}>
                                     <ClickableTd>
                                         {p.name}
                                         </ClickableTd>

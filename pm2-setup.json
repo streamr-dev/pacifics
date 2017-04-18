@@ -1,10 +1,10 @@
 {
-  "name": "streamr-frontend-starter-kit",
+  "name": "pacifics",
   "script": "server.js",
   "env": {
     "NODE_ENV": "production",
     "BASE_URL": "",
-    "PORT": 3600
+    "PORT": 3002
   },
   "args": ""
 }

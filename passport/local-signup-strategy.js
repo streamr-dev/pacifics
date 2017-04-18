@@ -10,7 +10,16 @@ const SignupStrategy = new LocalStrategy({
     User.create(Object.assign({}, req.body, {
         password: bcrypt.hashSync(password)
     }))
-        .then(user => done(null, user.toJSON()))
+        .then(user => {
+            user.getService()
+                .then(service => {
+                    done(null, Object.assign({}, user.toJSON(), {
+                        service: service.get({
+                            plain: true
+                        })
+                    }))
+                })
+        })
         .catch(e => done(e))
 })
 

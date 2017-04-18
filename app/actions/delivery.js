@@ -1,4 +1,5 @@
-import {createDeliveryContract, getAllDeliveryContracts} from '../../src/deliveryContract'
+import { createDeliveryContract, getAllDeliveryContracts } from '../../src/deliveryContract'
+import store from '../store'
 
 export const GET_ALL_DELIVERIES_REQUEST = 'GET_ALL_DELIVERIES_REQUEST'
 export const GET_ALL_DELIVERIES_SUCCESS = 'GET_ALL_DELIVERIES_SUCCESS'
@@ -8,12 +9,20 @@ export const CREATE_DELIVERY_REQUEST = 'CREATE_DELIVERY_REQUEST'
 export const CREATE_DELIVERY_SUCCESS = 'CREATE_DELIVERY_SUCCESS'
 export const CREATE_DELIVERY_FAILURE = 'CREATE_DELIVERY_FAILURE'
 
-
 export const getAllDeliveries = () => dispatch => {
+    const deliveryCreatorAddress = store.getState().user.user.service.deliveryCreatorAddress
     dispatch(getAllDeliveriesRequest())
-    return getAllDeliveryContracts()
-        .then(d => dispatch(getAllDeliveriesSuccess(d)))
-        .catch(e => dispatch(getAllDeliveriesFailure(e)))
+    return new Promise((resolve, reject) => {
+        getAllDeliveryContracts(deliveryCreatorAddress)
+            .then(d => {
+                dispatch(getAllDeliveriesSuccess(d))
+                resolve(d)
+            })
+            .catch(e => {
+                dispatch(getAllDeliveriesFailure(e))
+                reject(e)
+            })
+    })
 }
 
 // js Date.getTime is ms, Solidity epoch is seconds
@@ -26,11 +35,20 @@ export const createDelivery = (delivery, parcelAddress) => dispatch => {
     const deadline = dateToSeconds(delivery.deliveryDeadline)
     const minutes = Math.ceil((deadline - startDate) / 60)
     const depositETH = delivery.deposit
-
+    
+    const deliveryCreatorAddress = store.getState().user.user.service.deliveryCreatorAddress
     dispatch(createDeliveryRequest())
-    return createDeliveryContract(parcelAddress, delivery.senderPostbox, delivery.receiverPostbox, delivery.receiverAddress, 0, depositETH, startDate, minutes)
-        .then(d => dispatch(createDeliverySuccess(d)))
-        .catch(e => dispatch(createDeliveryFailure(e)))
+    return new Promise((resolve, reject) => {
+        createDeliveryContract(parcelAddress, delivery.senderPostbox, delivery.receiverPostbox, delivery.receiverAddress, 0, depositETH, startDate, minutes, deliveryCreatorAddress)
+            .then(d => {
+                dispatch(createDeliverySuccess(d))
+                resolve(d)
+            })
+            .catch(e => {
+                dispatch(createDeliveryFailure(e))
+                reject(e)
+            })
+    })
 }
 
 const getAllDeliveriesRequest = () => ({
