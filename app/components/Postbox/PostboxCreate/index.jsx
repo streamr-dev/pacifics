@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {Row, Col, FormGroup, Form, ControlLabel, FormControl, Button, Breadcrumb} from 'react-bootstrap'
 import {connect} from 'react-redux'
+import {Link} from 'react-router'
 import {createPostbox} from '../../../actions/postbox'
 import serialize from 'form-serialize'
 import {replace} from 'react-router-redux'
@@ -10,6 +11,12 @@ class PostboxCreate extends Component {
     constructor() {
         super()
         this.handleSubmit = this.handleSubmit.bind(this)
+        this.state = {}
+    }
+    componentDidMount() {
+        this.setState({
+            url: this.props.location.query.parcelAddress ? `/parcels/${this.props.location.query.parcelAddress}/deliveries/create` : '/'
+        })
     }
     handleSubmit(e) {
         e.preventDefault()
@@ -17,8 +24,7 @@ class PostboxCreate extends Component {
             hash: true
         })
         this.props.dispatch(createPostbox(form)).then(() => {
-            const url = this.props.location.query.parcelAddress ? `/parcels/${this.props.location.query.parcelAddress}/deliveries/create` : '/'
-            this.props.dispatch(replace(url))
+            this.props.dispatch(replace(this.url))
         })
     }
     render() {
@@ -63,8 +69,15 @@ class PostboxCreate extends Component {
                                 </span>
                             </Col>
                             :
-                            <FormGroup>
-                                <Button type="submit">
+                            <FormGroup className="pull-right">
+                                <Link to={this.state.url} style={{
+                                    marginRight: '10px'
+                                }}>
+                                    <Button>
+                                        Cancel
+                                    </Button>
+                                </Link>
+                                <Button type="submit" bsStyle="primary">
                                     Create
                                 </Button>
                             </FormGroup>

@@ -3,6 +3,7 @@ import {Row, Col, FormGroup, Form, ControlLabel, FormControl, Button, Breadcrumb
 import FontAwesome from 'react-fontawesome'
 import {connect} from 'react-redux'
 import {replace} from 'react-router-redux'
+import {Link} from 'react-router'
 import {createParcel} from '../../../actions/parcel'
 import serialize from 'form-serialize'
 
@@ -64,8 +65,15 @@ class ParcelCreate extends Component {
                                 </span>
                             </Col>
                             :
-                            <FormGroup>
-                                <Button type="submit">
+                            <FormGroup className="pull-right">
+                                <Link to="/parcels" style={{
+                                    marginRight: '10px'
+                                }}>
+                                    <Button>
+                                        Cancel
+                                    </Button>
+                                </Link>
+                                <Button type="submit" bsStyle="primary">
                                     Create
                                 </Button>
                             </FormGroup>

@@ -203,8 +203,15 @@ class DeliveryCreate extends Component {
                                 </span>
                             </div>
                             :
-                            <FormGroup>
-                                <Button type="submit">
+                            <FormGroup className="pull-right">
+                                <Link to={`/parcels/${this.props.parcel.address}`} style={{
+                                    marginRight: '10px'
+                                }}>
+                                    <Button>
+                                        Cancel
+                                    </Button>
+                                </Link>
+                                <Button type="submit" bsStyle="primary">
                                     Create
                                 </Button>
                             </FormGroup>
