@@ -17,7 +17,6 @@ module.exports = {
         filename: 'bundle.js'
     },
     module: {
-        // Comment out the loaders you don't need
         rules: [
             {
                 test: /\.jsx?$/,

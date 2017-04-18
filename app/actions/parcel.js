@@ -14,6 +14,8 @@ export const CREATE_PARCEL_REQUEST = 'CREATE_PARCEL_REQUEST'
 export const CREATE_PARCEL_SUCCESS = 'CREATE_PARCEL_SUCCESS'
 export const CREATE_PARCEL_FAILURE = 'CREATE_PARCEL_FAILURE'
 
+export const ADD_EVENT = 'ADD_EVENT'
+
 export const getAllParcels = () => dispatch => {
     dispatch(getAllParcelsRequest())
     return getAllParcelContracts()
@@ -43,6 +45,14 @@ export const createParcel = parcel => dispatch => {
     return createParcelContract(parcel.name, parcel.description, parcel.temperatureLimit)
         .then(p => dispatch(createParcelSuccess(p)))
         .catch(error => dispatch(createParcelFailure(error)))
+}
+
+export const addEvent = (parcelAddress, event) => dispatch => {
+    dispatch({
+        type: ADD_EVENT,
+        event,
+        parcelAddress
+    })
 }
 
 const getAllParcelsRequest = () => ({

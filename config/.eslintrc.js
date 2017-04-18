@@ -12,7 +12,7 @@ module.exports = exports = {
         'baseUrl': true
     },
     
-    root: true,
+    global: true,
     
     parserOptions: {
         ecmaVersion: 6,
