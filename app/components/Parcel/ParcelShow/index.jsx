@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react'
-import {Row, Col, Button, Panel, Table} from 'react-bootstrap'
+import {Row, Col, Button, Panel, Table, Breadcrumb} from 'react-bootstrap'
 import {Link} from 'react-router'
 import FontAwesome from 'react-fontawesome'
 import {DateLabel, AddressLabel} from '../../Util/Labels'
@@ -10,6 +10,14 @@ class ParcelShow extends Component {
     render() {
         return (
             <Row>
+                <Breadcrumb>
+                    <Breadcrumb.Item href="/">
+                        Parcels
+                    </Breadcrumb.Item>
+                    <Breadcrumb.Item active>
+                        {this.props.parcel.address}
+                    </Breadcrumb.Item>
+                </Breadcrumb>
                 <Col xs={8}>
                     <h1>{this.props.parcel.name}</h1>
                 </Col>

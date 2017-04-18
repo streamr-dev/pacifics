@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
-import {Alert, Navbar, Nav, NavItem, NavbarBrand} from 'react-bootstrap'
+import {Alert, Navbar, Nav, NavItem, NavbarBrand, Row} from 'react-bootstrap'
+import {Link} from 'react-router'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'font-awesome/css/font-awesome.css'
 import styles from './app-styles.pcss'
@@ -12,7 +13,9 @@ class App extends Component {
             <div className={styles.contentWrapper}>
                 <Navbar className={styles.header}>
                     <NavbarBrand>
-                        <img className={styles.navLogo} src="http://pacifics.org/uploads/s/l/4/e/l4ejxqrwsl3p/img/UMNNjRll.png" />
+                        <Link to="/" className={styles.navLogo}>
+                            <img src="http://pacifics.org/uploads/s/l/4/e/l4ejxqrwsl3p/img/UMNNjRll.png" />
+                        </Link>
                     </NavbarBrand>
                     {this.props.user && (
                         <Nav className="pull-right">
@@ -24,9 +27,11 @@ class App extends Component {
                 </Navbar>
                 <div className={['container', styles.appContainer].join(' ')}>
                     {this.props.errors.map(e => (
-                        <Alert bsStyle="danger" key={Date.now() + e}>
-                            {e.message || e}
-                        </Alert>
+                        <Row key={Date.now() + e}>
+                            <Alert bsStyle="danger">
+                                {e.message || e}
+                            </Alert>
+                        </Row>
                     ))}
                     {this.props.children}
                 </div>

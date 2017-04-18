@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Row, Col, FormGroup, Form, ControlLabel, FormControl, Button} from 'react-bootstrap'
+import {Row, Col, FormGroup, Form, ControlLabel, FormControl, Button, Breadcrumb} from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
 import {connect} from 'react-redux'
 import {replace} from 'react-router-redux'
@@ -25,6 +25,14 @@ class ParcelCreate extends Component {
     render() {
         return (
             <Row>
+                <Breadcrumb>
+                    <Breadcrumb.Item href="/">
+                        Parcels
+                    </Breadcrumb.Item>
+                    <Breadcrumb.Item active>
+                        Create
+                    </Breadcrumb.Item>
+                </Breadcrumb>
                 <Col xs={12}>
                     <h2>New Parcel</h2>
                 </Col>

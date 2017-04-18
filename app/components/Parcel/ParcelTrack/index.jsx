@@ -1,6 +1,6 @@
 import React, {Component, PropTypes} from 'react'
 import moment from 'moment'
-import {Row, Col, Panel, Table} from 'react-bootstrap'
+import {Row, Col, Panel, Table, Breadcrumb} from 'react-bootstrap'
 import {addEvent} from '../../../actions/parcel'
 import {connect} from 'react-redux'
 
@@ -46,6 +46,17 @@ class ParcelTrack extends Component {
         const events = this.props.parcel.events ? this.props.parcel.events.sort((a, b) => b.time.getTime() - a.time.getTime()) : []
         return (
             <Row>
+                <Breadcrumb>
+                    <Breadcrumb.Item href="/">
+                        Parcels
+                    </Breadcrumb.Item>
+                    <Breadcrumb.Item href={`/parcels/${this.props.parcel.address}`}>
+                        {this.props.parcel.address}
+                    </Breadcrumb.Item>
+                    <Breadcrumb.Item active>
+                        Track
+                    </Breadcrumb.Item>
+                </Breadcrumb>
                 <Col xs={12}>
                     <h1>{this.props.parcel.name || ''}</h1>
                 </Col>

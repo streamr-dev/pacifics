@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Row, Col, Panel, Button, Table} from 'react-bootstrap'
+import {Row, Col, Panel, Button, Table, Breadcrumb} from 'react-bootstrap'
 import {Link} from 'react-router'
 import Spinner from '../../Util/Spinner'
 import {AddressLabel} from '../../Util/Labels'
@@ -13,6 +13,11 @@ class ParcelList extends Component {
     render() {
         return (
             <Row>
+                <Breadcrumb>
+                    <Breadcrumb.Item href="/" active>
+                        Parcels
+                    </Breadcrumb.Item>
+                </Breadcrumb>
                 <Col xs={8}>
                     <h1>Parcels in {this.props.user.service ? this.props.user.service.name : 'current service'}</h1>
                 </Col>
