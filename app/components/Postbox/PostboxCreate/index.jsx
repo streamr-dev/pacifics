@@ -24,7 +24,7 @@ class PostboxCreate extends Component {
             hash: true
         })
         this.props.dispatch(createPostbox(form)).then(() => {
-            this.props.dispatch(replace(this.url))
+            this.props.dispatch(replace(this.state.url))
         })
     }
     render() {
