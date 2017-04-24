@@ -30,6 +30,22 @@ const Service = connection.define('service', {
     eventManagerAddress: {
         type: Sequelize.STRING,
         allowNull: false
+    },
+    trackingStreamId: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    trackingStreamKey: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    photoStreamId: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    photoStreamKey: {
+        type: Sequelize.STRING,
+        allowNull: false
     }
 }, {
     timestamps: true
