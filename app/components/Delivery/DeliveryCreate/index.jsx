@@ -13,9 +13,9 @@ class DeliveryCreate extends Component {
     constructor() {
         super()
         this.state = {
-            senderPostbox: '0x3878376aEB446B70066eE8F58db9942B4b11D01F',    // TODO: get post box address
-            receiverPostbox: '0xa1B20149df843f9aB57f5C8D142a18c2f5587f0c',  // TODO: get post box address
-            receiverAddress: '0x26aa20a3ca450537f1bb5b037facd513c723153b',
+            senderPostbox: '',    // TODO: get post box address
+            receiverPostbox: '',  // TODO: get post box address
+            receiverAddress: '',
             canStartAfter: new Date(),
             deposit: 0,
             deliveryDeadline: new Date()
