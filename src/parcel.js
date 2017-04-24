@@ -4,7 +4,7 @@ import filter from 'lodash/filter'
 import range from 'lodash/range'
 
 import {parcelCreatorABI, parcelABI} from './abi'
-import {getEventsFromLogs} from './ethCall'
+import {getEventsFromLogs, sendTransaction} from './ethCall'
 import {getAll as solidityGetProperties} from './solidity-getters'
 
 const lastOf = arr => arr[arr.length - 1]
