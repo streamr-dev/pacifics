@@ -60,10 +60,7 @@ class DeliveryCreate extends Component {
     handleSubmit(e) {
         e.preventDefault()
         this.props.dispatch(createDelivery(this.state, this.props.parcel.address))
-            .then(() => {
-                const url = this.props.location.query.parcelAddress ? `/parcels/${this.props.location.query.parcelAddress}/` : '/'
-                this.props.dispatch(replace(url))
-            })
+            .then(() => this.props.dispatch(replace(`/parcels/${this.props.params.address || ''}`)))
     }
     
     render() {
