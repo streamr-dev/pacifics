@@ -40,10 +40,12 @@ export const createDelivery = (delivery, parcelAddress) => dispatch => {
     dispatch(createDeliveryRequest())
     return new Promise((resolve, reject) => {
         createDeliveryContract(parcelAddress, delivery.senderPostbox, delivery.receiverPostbox, delivery.receiverAddress, 0, depositETH, startDate, minutes, deliveryCreatorAddress)
-            .then(d => {
+        // Timeout is a hack for a bug, where if deliveries are fetched right after creating a new one, the new one is not returned
+        // TODO: remove
+            .then(d => setTimeout(() => {
                 dispatch(createDeliverySuccess(d))
                 resolve(d)
-            })
+            }), 5000)
             .catch(e => {
                 dispatch(createDeliveryFailure(e))
                 reject(e)

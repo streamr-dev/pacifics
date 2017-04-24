@@ -18,9 +18,9 @@ class ParcelCreate extends Component {
             hash: true
         })
         this.props.dispatch(createParcel(form)).then(() => { //parcel => {
-            // TODO: replaced with return to parcel list page until NewParcel event argument address byte shift issue is resolved
-            this.props.dispatch(replace('/parcels'))
+            //TODO: replaced with return to parcel list page until NewParcel event argument address byte shift issue is resolved
             //this.props.dispatch(replace(`/parcels/${parcel.address}`))
+            this.props.dispatch(replace('/parcels'))
         })
     }
     render() {

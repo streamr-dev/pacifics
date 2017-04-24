@@ -64,10 +64,12 @@ export const createParcel = parcel => dispatch => {
     dispatch(createParcelRequest())
     return new Promise((resolve, reject) => {
         createParcelContract(parcel.name, parcel.description, parcel.temperatureLimit, parcelCreatorAddress)
-            .then(p => {
+        // Timeout is a hack for a bug, where if parcels are fetched right after creating a new one, the new one is not returned
+        // TODO: remove
+            .then(p => setTimeout(() => {
                 dispatch(createParcelSuccess(p))
                 resolve(p)
-            })
+            }), 2000)
             .catch(e => {
                 dispatch(createParcelFailure(e))
                 reject(e)

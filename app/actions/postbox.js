@@ -52,10 +52,12 @@ export const createPostbox = postbox => dispatch => {
     dispatch(createPostboxRequest())
     return new Promise((resolve, reject) => {
         createPostboxContract(postbox.name, postbox.description, postbox.location, postboxCreatorAddress)
-            .then(p => {
+        // Timeout is a hack for a bug, where if postboxes are fetched right after creating a new one, the new one is not returned
+        // TODO: remove
+            .then(p => setTimeout(() => {
                 dispatch(createPostboxSuccess(p))
                 resolve(p)
-            })
+            }, 2000))
             .catch(e => {
                 dispatch(createPostboxFailure(e))
                 reject(e)

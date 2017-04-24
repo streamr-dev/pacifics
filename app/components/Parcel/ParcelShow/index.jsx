@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react'
 import {Row, Col, Button, Panel, Table, Breadcrumb} from 'react-bootstrap'
 import {Link} from 'react-router'
+import Spinner from '../../Util/Spinner'
 import FontAwesome from 'react-fontawesome'
 import {DateLabel, AddressLabel} from '../../Util/Labels'
 import {connect} from 'react-redux'
@@ -112,6 +113,7 @@ class ParcelShow extends Component {
                             ))}
                             </tbody>
                         </Table>
+                        <Spinner show={this.props.fetchingDeliveries} />
                     </Panel>
                 </Col>
             </Row>
@@ -119,21 +121,23 @@ class ParcelShow extends Component {
     }
 }
 
-const {object, array, func} = PropTypes
+const {object, array, func, bool} = PropTypes
 ParcelShow.propTypes = {
     user: object,
     params: object,
     deliveries: array,
     parcel: object,
     dispatch: func,
-    postboxes: array
+    postboxes: array,
+    fetchingDeliveries: bool
 }
 
 const mapStateToProps = ({user, postboxes, parcels, deliveries}, props) => ({
     user: user.user,
     deliveries: deliveries.list ? deliveries.list.filter(d => d[2] === props.params.address) : [], // TODO: change after solidity-getters:getIndexedPropAt works
     parcel: parcels.list && parcels.list.find(p => p.address === props.params.address) || {},
-    postboxes: postboxes.list || []
+    postboxes: postboxes.list || [],
+    fetchingDeliveries: deliveries.fetching
 })
 
 export default connect(mapStateToProps, null)(ParcelShow)
