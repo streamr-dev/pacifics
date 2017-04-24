@@ -1,46 +1,9 @@
 import React, {Component, PropTypes} from 'react'
 import moment from 'moment'
 import {Row, Col, Panel, Table, Breadcrumb} from 'react-bootstrap'
-import {addEvent} from '../../../actions/parcel'
 import {connect} from 'react-redux'
 
 class ParcelTrack extends Component {
-    
-    
-    // TODO: REMOVE THIS
-    componentDidMount() {
-        const items = [{
-            event: 'Sent',
-            time: new Date('2017-03-15 14:30:31'),
-            address: 'test'
-        },{
-            event: 'Taken',
-            time: new Date('2017-04-15 14:31:31'),
-            address: 'test2'
-        },{
-            event: 'Delivered',
-            time: new Date('2017-03-16 14:31:31'),
-            address: 'test3'
-        },{
-            event: 'Photo added',
-            time: new Date('2017-03-17 14:31:31'),
-            address: 'test4'
-        }]
-        const add = i => setTimeout(() => {
-            if (i < items.length) {
-                if (this.props.parcel && this.props.parcel.address) {
-                    this.props.dispatch(addEvent(this.props.parcel.address, items[i]))
-                    add(i + 1)
-                } else {
-                    add(i)
-                }
-            }
-        }, 2000)
-        add(0)
-    }
-    // TODO: REMOVE THIS
-    
-    
     
     render() {
         const events = this.props.parcel.events ? this.props.parcel.events.sort((a, b) => b.time.getTime() - a.time.getTime()) : []

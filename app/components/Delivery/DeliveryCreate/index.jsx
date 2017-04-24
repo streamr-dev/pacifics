@@ -132,7 +132,7 @@ class DeliveryCreate extends Component {
                             <FormControl componentClass="select" placeholder="select postbox"
                                          disabled={this.props.fetching}>
                                 {this.props.postboxes.map((postbox) => (
-                                    <option value={postbox.id} key={postbox.id}>{postbox.name}</option>
+                                    <option value={postbox.id} key={postbox.address}>{postbox.name}</option>
                                 ))}
                             </FormControl>
                         </FormGroup>
@@ -167,7 +167,7 @@ class DeliveryCreate extends Component {
                         <FormGroup>
                             <FormControl componentClass="select" placeholder="select postbox" disabled={this.props.fetching}>
                                 {this.props.postboxes.map((postbox) => (
-                                    <option value={postbox.id} key={postbox.id}>{postbox.name}</option>
+                                    <option value={postbox.id} key={postbox.address}>{postbox.name}</option>
                                 ))}
                             </FormControl>
                         </FormGroup>
@@ -237,7 +237,7 @@ DeliveryCreate.propTypes = {
 const mapStateToProps = ({postboxes, user, parcels, deliveries}, props) => ({
     postboxes: postboxes.list || [],
     user: user.user,
-    parcel: parcels.list && parcels.list.find(p => p.address === props.params.address),
+    parcel: parcels.list ? (parcels.list.find(p => p.address === props.params.address) || {}) : {},
     fetching: Boolean(deliveries.fetching)
 })
 
