@@ -118,3 +118,20 @@ export function createParcelContract(name, description, temperatureLimit, parcel
         })
     })
 }
+
+// TODO: untested atm
+export function setStreamsOnParcel(parcelAddress, trackingStreamId, trackingStreamKey, photoStreamId, photoStreamKey) {
+    return sendTransaction(parcelABI, parcelAddress, 'setStreams', [trackingStreamId, trackingStreamKey, photoStreamId, photoStreamKey]).then(events => {
+        const responseArray = events.StreamsSet
+        if (!responseArray) {
+            throw new Error('StreamsSet event not sent from Solidity')
+        }
+        console.log('Streams set', responseArray)
+        return {
+            trackingStreamId: responseArray[0],
+            trackingStreamKey: responseArray[1],
+            photoStreamId: responseArray[2],
+            photoStreamKey: responseArray[3]
+        }
+    })
+}
