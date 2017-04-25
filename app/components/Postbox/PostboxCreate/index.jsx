@@ -6,6 +6,7 @@ import {createPostbox} from '../../../actions/postbox'
 import serialize from 'form-serialize'
 import {replace} from 'react-router-redux'
 import FontAwesome from 'react-fontawesome'
+import {getAddress} from '../../../../src/user'
 
 class PostboxCreate extends Component {
     constructor() {
@@ -43,6 +44,10 @@ class PostboxCreate extends Component {
                 </Col>
                 <Col xs={4}>
                     <Form onSubmit={this.handleSubmit}>
+                        <FormGroup>
+                            <ControlLabel>Owner</ControlLabel>
+                            <FormControl name="owner" disabled={this.props.fetching} placeholder="0x" defaultValue={getAddress()}/>
+                        </FormGroup>
                         <FormGroup>
                             <ControlLabel>Name</ControlLabel>
                             <FormControl name="name" disabled={this.props.fetching}/>

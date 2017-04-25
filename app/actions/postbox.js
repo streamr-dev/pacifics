@@ -51,7 +51,7 @@ export const createPostbox = postbox => dispatch => {
     const postboxCreatorAddress = state.user.user.service.postboxCreatorAddress
     dispatch(createPostboxRequest())
     return new Promise((resolve, reject) => {
-        createPostboxContract(postbox.name, postbox.description, postbox.location, postboxCreatorAddress)
+        createPostboxContract(postbox.name, postbox.description, postbox.location, postboxCreatorAddress, postbox.owner)
         // Timeout is a hack for a bug, where if postboxes are fetched right after creating a new one, the new one is not returned
         // TODO: remove
             .then(p => setTimeout(() => {
