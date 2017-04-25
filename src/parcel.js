@@ -95,8 +95,7 @@ export function createParcelContract(name, description, temperatureLimit, parcel
                     if (err) {
                         return reject(err)
                     }
-                    waitForEvent('StreamsSet', newParcelEvent.ParcelAddress, parcelABI, tx2).then(event2 => {
-                        console.log('Streams set', event2.args)
+                    waitForEvent('StreamsSet', newParcelEvent.ParcelAddress, parcelABI, tx2).then(() => {
                         resolve(newParcelEvent)
                     })
                 }))

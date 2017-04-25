@@ -119,7 +119,7 @@ class ParcelShow extends Component {
                                         <DateLabel date={d[7]} />
                                     </td>
                                     <td>
-                                        <Button onClick={(e) => this.signDelivery(d[1])}>
+                                        <Button onClick={() => this.signDelivery(d[1])}>
                                             Sign
                                         </Button>
                                         <a className="btn btn-default" target="_blank" href={`http://www.qr-code-generator.com/phpqrcode/getCode.php?cht=qr&chl=${d[1]}&chs=180x180&choe=UTF-8&chld=L%7C0`}><FontAwesome name="print" /> QR&#8209;code</a>

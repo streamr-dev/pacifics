@@ -1,9 +1,9 @@
 import React, {Component, PropTypes} from 'react'
 import {Row, Col, Panel, Table, Breadcrumb} from 'react-bootstrap'
 import {addEvents, getParcel} from '../../../actions/parcel'
-import {getAllDeliveries} from '../../../actions/delivery'
+//import {getAllDeliveries} from '../../../actions/delivery'
 import {connect} from 'react-redux'
-import {getParcelEvents, getDeliveryEvents, unCamelCase} from '../../../../src/eventLog'
+import {getParcelEvents, /*getDeliveryEvents, */unCamelCase} from '../../../../src/eventLog'
 
 class ParcelTrack extends Component {
 
@@ -31,19 +31,19 @@ class ParcelTrack extends Component {
 
         const parcelP = getParcelEvents(address).then(transformAndAddEvents)
 
-        const deliveries = this.props.deliveries
-        const getDeliveriesP = deliveries && deliveries.length ? Promise.resolve(deliveries) : this.props.dispatch(getAllDeliveries())
-        const deliveryP = getDeliveriesP.then(ds => Promise.all(ds.map(d => {
-            const deliveryAddress = d[1] // TODO: changes after solidity-getters:getIndexedPropAt works
-            return getDeliveryEvents(deliveryAddress).then(transformAndAddEvents)
-        })))
+        // const deliveries = this.props.deliveries
+        // const getDeliveriesP = deliveries && deliveries.length ? Promise.resolve(deliveries) : this.props.dispatch(getAllDeliveries())
+        // const deliveryP = getDeliveriesP.then(ds => Promise.all(ds.map(d => {
+        //     const deliveryAddress = d[1] // TODO: changes after solidity-getters:getIndexedPropAt works
+        //     return getDeliveryEvents(deliveryAddress).then(transformAndAddEvents)
+        // })))
 
         // All parcel events: "PostboxCreated", "DeliveryContractCreated", "ContractSigned", "StreamsSet", "ParcelSent", "ParcelTaken", "ParcelDelivered", "ParcelReceived"
         //this.watcherList.push(watchParcelEvent(address, 'ParcelSent', (...args) => {
         //    console.log(args)
         //}))
 
-        Promise.all([parcelP, deliveryP, getParcelP]).catch(e => {
+        Promise.all([getParcelP, parcelP/*, deliveryP*/]).catch(e => {
             console.error(e)
         })
     }
