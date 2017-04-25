@@ -4,7 +4,7 @@ import filter from 'lodash/filter'
 import range from 'lodash/range'
 
 import {parcelCreatorABI, parcelABI} from './abi'
-import {getEventsFromLogs, sendTransaction} from './ethCall'
+import {sendTransaction, waitForEvent} from './ethCall'
 import {getAll as solidityGetProperties} from './solidity-getters'
 
 const lastOf = arr => arr[arr.length - 1]
@@ -83,37 +83,13 @@ export function getParcelContractAt(address) {
 export function createParcelContract(name, description, temperatureLimit, parcelCreatorAddress, ownerAddress = web3.eth.coinbase) {
     // TODO: write using ethCall:sendTransaction
     const ParcelCreator = web3.eth.contract(parcelCreatorABI).at(parcelCreatorAddress)
-    return new Promise(done => {
+    return new Promise((resolve, reject) => {
         ParcelCreator.createParcel(ownerAddress, ownerAddress, name, description, temperatureLimit, (err, tx) => {
             if (err) {
-                throw err
+                return reject(err)
             }
-            const filter = web3.eth.filter('latest')
-            filter.watch(function(error, blockHash) {   //eslint-disable-line no-unused-vars
-                if (error) {
-                    throw error
-                }
-                web3.eth.getTransactionReceipt(tx, (err, tr) => {
-                    if (err) {
-                        throw err
-                    }
-                    if (tr == null) {
-                        return      // not yet...
-                    }
-                    filter.stopWatching()
-                    const events = getEventsFromLogs(tr.logs, parcelCreatorABI)
-                    const responseArray = events.NewParcel
-                    if (!responseArray) {
-                        throw new Error('NewParcel event not sent from Solidity')
-                    }
-                    const response = {
-                        creator: responseArray[0],
-                        address: responseArray[1],
-                        owner: responseArray[2],
-                        name: responseArray[3]
-                    }
-                    done(response)
-                })
+            waitForEvent('NewParcel', parcelCreatorAddress, parcelCreatorABI, tx).then(event => {
+                resolve(event.args)
             })
         })
     })
@@ -126,7 +102,7 @@ export function setStreamsOnParcel(parcelAddress, trackingStreamId, trackingStre
         if (!responseArray) {
             throw new Error('StreamsSet event not sent from Solidity')
         }
-        console.log('Streams set', responseArray)
+        //console.log('Streams set', responseArray)
         return {
             trackingStreamId: responseArray[0],
             trackingStreamKey: responseArray[1],

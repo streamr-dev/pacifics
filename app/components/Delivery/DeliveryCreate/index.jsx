@@ -82,20 +82,24 @@ class DeliveryCreate extends Component {
         
         return (
             <Row>
-                <Breadcrumb>
-                    <Breadcrumb.Item href="/">
-                        Parcels
-                    </Breadcrumb.Item>
-                    <Breadcrumb.Item href={`/parcels/${this.props.parcel.address}`}>
-                        {this.props.parcel.address}
-                    </Breadcrumb.Item>
-                    <Breadcrumb.Item>
-                        Deliveries
-                    </Breadcrumb.Item>
-                    <Breadcrumb.Item active>
-                        Create
-                    </Breadcrumb.Item>
-                </Breadcrumb>
+                {this.props.parcel ?
+                    <Breadcrumb>
+                        <Breadcrumb.Item href="/">
+                            Parcels
+                        </Breadcrumb.Item>
+                        <Breadcrumb.Item href={`/parcels/${this.props.parcel.address}`}>
+                            {this.props.parcel.address}
+                        </Breadcrumb.Item>
+                        <Breadcrumb.Item>
+                            Deliveries
+                        </Breadcrumb.Item>
+                        <Breadcrumb.Item active>
+                            Create
+                        </Breadcrumb.Item>
+                    </Breadcrumb>
+                :
+                    <Breadcrumb></Breadcrumb>
+                }
                 <Form onSubmit={this.handleSubmit}>
                     <Col xs={12}>
                         <h2>New Delivery</h2>
@@ -189,7 +193,7 @@ class DeliveryCreate extends Component {
                         </FormGroup>
                     </Col>
                     <Col xs={12}>
-                        {this.props.fetching ?
+                        {this.props.fetching || !this.props.parcel ?
                             <div>
                                 <FontAwesome
                                     name="spinner"

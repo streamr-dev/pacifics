@@ -13,7 +13,7 @@ export const CREATE_PARCEL_REQUEST = 'CREATE_PARCEL_REQUEST'
 export const CREATE_PARCEL_SUCCESS = 'CREATE_PARCEL_SUCCESS'
 export const CREATE_PARCEL_FAILURE = 'CREATE_PARCEL_FAILURE'
 
-export const ADD_EVENT = 'ADD_EVENT'
+export const ADD_EVENTS = 'ADD_EVENTS'
 
 export const getAllParcels = () => dispatch => {
     const state = store.getState()
@@ -41,21 +41,16 @@ export const getParcel = address => dispatch => {
     }
     
     dispatch(getParcelRequest())
-    return new Promise((resolve, reject) => {
-        getParcelContractAt(address)
-            .then(p => {
-                p = {
-                    ...p,
-                    address
-                }
-                dispatch(getParcelSuccess(p))
-                resolve(p)
-            })
-            .catch(e => {
-                dispatch(getParcelFailure(e))
-                reject(e)
-            })
-    })
+    return getParcelContractAt(address)
+        .then(p => {
+            p.address = address
+            dispatch(getParcelSuccess(p))
+            return p
+        })
+        .catch(e => {
+            dispatch(getParcelFailure(e))
+            throw e
+        })
 }
 
 export const createParcel = parcel => dispatch => {
@@ -63,13 +58,13 @@ export const createParcel = parcel => dispatch => {
     const parcelCreatorAddress = state.user.user.service.parcelCreatorAddress
     dispatch(createParcelRequest())
     return new Promise((resolve, reject) => {
-        createParcelContract(parcel.name, parcel.description, parcel.temperatureLimit, parcelCreatorAddress)
         // Timeout is a hack for a bug, where if parcels are fetched right after creating a new one, the new one is not returned
-        // TODO: remove
-            .then(p => setTimeout(() => {
-                dispatch(createParcelSuccess(p))
-                resolve(p)
-            }), 2000)
+        // Possible reason was that maybe INFURA backends are not in sync, so when one reports the NewParcel event, another maybe can't give the parcel when later requested; resolve for now by waiting for a while (extra 1s in addition to mining time isn't noticeable)
+        createParcelContract(parcel.name, parcel.description, parcel.temperatureLimit, parcelCreatorAddress)
+            .then(newParcelEvent => setTimeout(() => {
+                dispatch(createParcelSuccess())
+                resolve(newParcelEvent)
+            }), 2000)// TODO: remove
             .catch(e => {
                 dispatch(createParcelFailure(e))
                 reject(e)
@@ -77,10 +72,10 @@ export const createParcel = parcel => dispatch => {
     })
 }
 
-export const addEvent = (parcelAddress, event) => dispatch => {
+export const addEvents = (parcelAddress, events) => dispatch => {
     dispatch({
-        type: ADD_EVENT,
-        event,
+        type: ADD_EVENTS,
+        events,
         parcelAddress
     })
 }
@@ -117,9 +112,8 @@ const createParcelRequest = () => ({
     type: CREATE_PARCEL_REQUEST
 })
 
-const createParcelSuccess = parcel => ({
-    type: CREATE_PARCEL_SUCCESS,
-    parcel
+const createParcelSuccess = () => ({
+    type: CREATE_PARCEL_SUCCESS
 })
 
 const createParcelFailure = error => ({
