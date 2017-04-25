@@ -35,7 +35,7 @@ const enhance = raw => isArray(raw) ? raw.map(enhancePrimitive) : enhancePrimiti
 
 function enhancePrimitive(raw) {
     // BigIntegers
-    if (raw.toFixed) {
+    if (raw && raw.toFixed) {
         return raw.toFixed()
     }
     return raw
