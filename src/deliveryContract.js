@@ -57,16 +57,16 @@ export const getDeliveryContract = id => getDeliveryMetadata(id).then(d => solid
  * @param minutes how many minutes from now must the delivery arrive
  * @returns {Promise.<string>} created contract's address
  */
-export function createDeliveryContract(parcelAddress, senderPostbox, receiverPostbox, receiver, endDate, depositETH, startDate, minutes, deliveryContractCreatorAddress) {
+export function createDeliveryContract(parcelAddress, senderPostbox, receiverPostbox, receiver, endDate, depositETH, startDate, minutes) {
     const deposit = web3.toWei(depositETH, 'ether')
     //console.log(`Creating delivery contract ${senderPostbox} -> ${receiverPostbox} in ${minutes} minutes`)
-    const DeliveryContractCreator = web3.eth.contract(deliveryContractCreatorABI).at(deliveryContractCreatorAddress)
+    const Parcel = web3.eth.contract(parcelABI).at(parcelAddress)
     return new Promise((resolve, reject) => {
-        DeliveryContractCreator.createDeliveryContract(parcelAddress, senderPostbox, receiverPostbox, receiver, endDate, deposit, startDate, minutes, (err, tx) => {
+        Parcel.createDeliveryContract(senderPostbox, receiverPostbox, receiver, endDate, deposit, startDate, minutes, (err, tx) => {
             if (err) {
                 return reject(err)
             }
-            waitForEvent('NewContract', deliveryContractCreatorAddress, deliveryContractCreatorABI, tx).then(event => {
+            waitForEvent('DeliveryContractCreated', parcelAddress, parcelABI, tx).then(event => {
                 resolve(event.args)
             })
         })
