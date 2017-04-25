@@ -1,10 +1,9 @@
 import React, {Component, PropTypes} from 'react'
-import moment from 'moment'
 import {Row, Col, Panel, Table, Breadcrumb} from 'react-bootstrap'
 import {addEvents, getParcel} from '../../../actions/parcel'
 import {getAllDeliveries} from '../../../actions/delivery'
 import {connect} from 'react-redux'
-import {getParcelEvents, watchParcelEvent, unCamelCase} from '../../../../src/eventLog'
+import {getParcelEvents, getDeliveryEvents, watchParcelEvent, unCamelCase} from '../../../../src/eventLog'
 
 class ParcelTrack extends Component {
 
@@ -14,34 +13,37 @@ class ParcelTrack extends Component {
     }
 
     componentDidMount() {
-        //debugger
-        /*const address = this.props.parcel && this.props.parcel.address
-        const getParcelP = address ? Promise.resolve(address) : this.props.dispatch(getParcel(this.props.location.pathname.split('/')[1])).then(p => p.address)
-        const parcelP = getParcelP.then(getParcelEvents).then(events => {
-        */
-        const address = this.props.location.pathname.split('/')[1]
-        const parcelP = getParcelEvents(address).then(events => {
+        // pick event properties that are used in render()
+        const transformAndAddEvents = events => {
             const ev = events.map(e => ({
                 id: e.transactionHash + e.transactionIndex,
                 blockNumber: parseInt(e.blockNumber),
-                event: unCamelCase(e.name)
+                event: unCamelCase(e.event)
             }))
             console.log(ev)
             this.props.dispatch(addEvents(address, ev))
-        })
+        }
+
+        //debugger
+        //const address = this.props.parcel && this.props.parcel.address || this.props.location.pathname.split('/')[1]
+        const address = this.props.location.pathname.split('/')[1]
+        const getParcelP = this.props.dispatch(getParcel(address))      // needed in render()
+
+        const parcelP = getParcelEvents(address).then(transformAndAddEvents)
 
         const deliveries = this.props.deliveries
-        const deliveryP = deliveries ? Promise.resolve(deliveries) : this.props.dispatch(getAllDeliveries())
-        deliveryP.then(ds => {
-            console.log(ds)
-        })
+        const getDeliveriesP = deliveries && deliveries.length ? Promise.resolve(deliveries) : this.props.dispatch(getAllDeliveries())
+        const deliveryP = getDeliveriesP.then(ds => Promise.all(ds.map(d => {
+            const deliveryAddress = d[1] // TODO: changes after solidity-getters:getIndexedPropAt works
+            return getDeliveryEvents(deliveryAddress).then(transformAndAddEvents)
+        })))
 
         // All parcel events: "PostboxCreated", "DeliveryContractCreated", "ContractSigned", "StreamsSet", "ParcelSent", "ParcelTaken", "ParcelDelivered", "ParcelReceived"
         this.watcherList.push(watchParcelEvent(address, 'ParcelSent', (...args) => {
             console.log(args)
         }))
 
-        Promise.all([parcelP, deliveryP]).catch(e => {
+        Promise.all([parcelP, deliveryP, getParcelP]).catch(e => {
             console.error(e)
         })
     }

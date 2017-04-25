@@ -1,5 +1,3 @@
-/*global Web3*/
-
 import web3 from './web3-wrapper.js'
 const Promise = require('bluebird')
 import {parcelABI, deliveryContractABI} from './abi'
@@ -7,8 +5,7 @@ import {decodeEvent} from './ethCall'
 import fromPairs from 'lodash/fromPairs'
 import SolidityEvent from 'web3/lib/web3/event'
 
-const provider = new Web3.providers.HttpProvider('http://localhost:8545')
-//const send = Promise.promisify(provider.sendAsync)
+const provider = web3.currentProvider
 function send(msg) {
     return new Promise((done, fail) => {
         provider.sendAsync(msg, (err, res) => {
@@ -20,8 +17,6 @@ function send(msg) {
         })
     })
 }
-
-let requestId = 0
 
 function decodeLogs(abi, response) {
     if (response.error) {
@@ -47,28 +42,56 @@ function decodeLogs(abi, response) {
         return {
             ...rawEvent,
             ...eventABI,
+            event: eventABI.name,
             args: decodeEvent(rawEvent, eventABI)
         }
     }).filter(x => x)
 }
 
-export function _getParcelEvents(parcelAddress) {
+export function getParcelEvents(parcelAddress) {
     if (!parcelAddress) {
         return Promise.resolve([])
     }
     const Parcel = web3.eth.contract(parcelABI).at(parcelAddress)
     const filter = Parcel.allEvents({
-        fromBlock: '0x0',
+        fromBlock: 0,
         toBlock: 'latest'
     })
-    return Promise.promisify(filter.get)()
-    /*
+    //return Promise.promisify(filter.get)()
     return new Promise((done, fail) => {
-        filter.get()
-    })*/
+        filter.get((err, result) => {
+            if (err) {
+                fail(err)
+            } else {
+                done(result)
+            }
+        })
+    })
 }
 
-export function getParcelEvents(parcelAddress) {
+export function getDeliveryEvents(deliveryAddress) {
+    if (!deliveryAddress) {
+        return Promise.resolve([])
+    }
+    const Delivery = web3.eth.contract(deliveryContractABI).at(deliveryAddress)
+    const filter = Delivery.allEvents({
+        fromBlock: 0,
+        toBlock: 'latest'
+    })
+    //return Promise.promisify(filter.get)()
+    return new Promise((done, fail) => {
+        filter.get((err, result) => {
+            if (err) {
+                fail(err)
+            } else {
+                done(result)
+            }
+        })
+    })
+}
+
+let requestId = 0
+export function _getParcelEvents(parcelAddress) {
     if (!parcelAddress) {
         return Promise.resolve([])
     }
@@ -90,7 +113,7 @@ export function watchParcelEvent(parcelAddress, eventName, callback) {
     return event.watch(callback)
 }
 
-export function getDeliveryEvents(deliveryAddressList) {
+export function _getDeliveryEvents(deliveryAddressList) {
     // TODO when web3.js 1.0 is out (and implemented by metamask...), use web3.eth.getPastLogs
     return Promise.all(deliveryAddressList.map(address => send({
         id: requestId++,
