@@ -5,6 +5,22 @@ import SolidityEvent from 'web3/lib/web3/event'
 import solidityCoder from 'web3/lib/solidity/coder'
 import fromPairs from 'lodash/fromPairs'
 
+export function waitForEvent(eventName, contractAddress, contractABI, transactionHash) {
+    const contract = web3.eth.contract(contractABI).at(contractAddress)
+    return new Promise((resolve, reject) => {
+        const event = contract[eventName]()
+        const watcherId = event.watch(function(err, event) {
+            debugger
+            resolve(event)
+        })
+        /*
+        setTimeout(function () {
+            watcherId.stopWatching()
+        }, TIMEOUT)
+        */
+    })
+}
+
 export function sendTransaction(abi, address, funcName, args) {
     const contract = web3.eth.contract(abi).at(address)
     return new Promise((resolve, reject) => {

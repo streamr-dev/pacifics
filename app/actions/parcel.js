@@ -58,13 +58,13 @@ export const createParcel = parcel => dispatch => {
     const parcelCreatorAddress = state.user.user.service.parcelCreatorAddress
     dispatch(createParcelRequest())
     return new Promise((resolve, reject) => {
-        createParcelContract(parcel.name, parcel.description, parcel.temperatureLimit, parcelCreatorAddress)
         // Timeout is a hack for a bug, where if parcels are fetched right after creating a new one, the new one is not returned
-        // TODO: remove
-            .then(p => setTimeout(() => {
-                dispatch(createParcelSuccess(p))
-                resolve(p)
-            }), 2000)
+        // Possible reason was that maybe INFURA backends are not in sync, so when one reports the NewParcel event, another maybe can't give the parcel when later requested; resolve for now by waiting for a while (extra 1s in addition to mining time isn't noticeable)
+        createParcelContract(parcel.name, parcel.description, parcel.temperatureLimit, parcelCreatorAddress)
+            .then(newParcelEvent => setTimeout(() => {
+                dispatch(createParcelSuccess())
+                resolve(newParcelEvent)
+            }), 2000)// TODO: remove
             .catch(e => {
                 dispatch(createParcelFailure(e))
                 reject(e)
@@ -112,9 +112,8 @@ const createParcelRequest = () => ({
     type: CREATE_PARCEL_REQUEST
 })
 
-const createParcelSuccess = parcel => ({
-    type: CREATE_PARCEL_SUCCESS,
-    parcel
+const createParcelSuccess = () => ({
+    type: CREATE_PARCEL_SUCCESS
 })
 
 const createParcelFailure = error => ({

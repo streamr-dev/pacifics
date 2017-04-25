@@ -3,7 +3,7 @@ import {Row, Col, Panel, Table, Breadcrumb} from 'react-bootstrap'
 import {addEvents, getParcel} from '../../../actions/parcel'
 import {getAllDeliveries} from '../../../actions/delivery'
 import {connect} from 'react-redux'
-import {getParcelEvents, getDeliveryEvents, watchParcelEvent, unCamelCase} from '../../../../src/eventLog'
+import {getParcelEvents, getDeliveryEvents, unCamelCase} from '../../../../src/eventLog'
 
 class ParcelTrack extends Component {
 
@@ -39,9 +39,9 @@ class ParcelTrack extends Component {
         })))
 
         // All parcel events: "PostboxCreated", "DeliveryContractCreated", "ContractSigned", "StreamsSet", "ParcelSent", "ParcelTaken", "ParcelDelivered", "ParcelReceived"
-        this.watcherList.push(watchParcelEvent(address, 'ParcelSent', (...args) => {
-            console.log(args)
-        }))
+        //this.watcherList.push(watchParcelEvent(address, 'ParcelSent', (...args) => {
+        //    console.log(args)
+        //}))
 
         Promise.all([parcelP, deliveryP, getParcelP]).catch(e => {
             console.error(e)

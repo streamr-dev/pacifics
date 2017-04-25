@@ -4,7 +4,7 @@ import filter from 'lodash/filter'
 import range from 'lodash/range'
 
 import {parcelCreatorABI, parcelABI} from './abi'
-import {getEventsFromLogs, sendTransaction} from './ethCall'
+import {getEventsFromLogs, sendTransaction, waitForEvent} from './ethCall'
 import {getAll as solidityGetProperties} from './solidity-getters'
 
 const lastOf = arr => arr[arr.length - 1]
@@ -88,32 +88,8 @@ export function createParcelContract(name, description, temperatureLimit, parcel
             if (err) {
                 throw err
             }
-            const filter = web3.eth.filter('latest')
-            filter.watch(function(error, blockHash) {   //eslint-disable-line no-unused-vars
-                if (error) {
-                    throw error
-                }
-                web3.eth.getTransactionReceipt(tx, (err, tr) => {
-                    if (err) {
-                        throw err
-                    }
-                    if (tr == null) {
-                        return      // not yet...
-                    }
-                    filter.stopWatching()
-                    const events = getEventsFromLogs(tr.logs, parcelCreatorABI)
-                    const responseArray = events.NewParcel
-                    if (!responseArray) {
-                        throw new Error('NewParcel event not sent from Solidity')
-                    }
-                    const response = {
-                        creator: responseArray[0],
-                        address: responseArray[1],
-                        owner: responseArray[2],
-                        name: responseArray[3]
-                    }
-                    done(response)
-                })
+            waitForEvent('NewParcel', parcelCreatorAddress, parcelCreatorABI, tx).then(event => {
+                done(event.args)
             })
         })
     })
