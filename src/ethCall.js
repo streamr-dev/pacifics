@@ -10,7 +10,6 @@ export function waitForEvent(eventName, contractAddress, contractABI, transactio
     return new Promise((resolve, reject) => {
         const event = contract[eventName]()
         const watcherId = event.watch(function(err, event) {
-            debugger
             resolve(event)
         })
         /*
