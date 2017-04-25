@@ -5,7 +5,7 @@ import _ from 'lodash'
 import {deliveryContractCreatorABI, deliveryContractABI, parcelABI} from './abi'
 import {getAll as solidityGetProperties, at as solidityGetBy} from './solidity-getters'
 //import {getAll as solidityGetProperties, getIndexedPropAt as solidityGetBy} from './solidity-getters'
-import {waitForEvent} from './ethCall'
+import {waitForEvent, sendTransaction} from './ethCall'
 
 
 const lastOf = arr => arr[arr.length - 1]
