@@ -4,7 +4,7 @@ import filter from 'lodash/filter'
 import range from 'lodash/range'
 
 import {postboxCreatorABI, postboxABI} from './abi'
-import {getEventsFromLogs} from './ethCall'
+import {getEventsFromLogs, waitForEvent} from './ethCall'
 import {getAll as solidityGetProperties, get as solidityGet} from './solidity-getters'
 
 const lastOf = arr => arr[arr.length - 1]
@@ -43,7 +43,6 @@ export function getPostboxMetadata(id, postboxCreatorAddress) {
                 done()
             } else {
                 done({
-                    id,
                     creator: result[0],
                     address: result[1],
                     name: result[2]
@@ -72,36 +71,16 @@ export const createPostboxContract = (name, description, location, postboxCreato
     console.log('Creating postbox ', name, 'owned by ', ownerAddress)
     // TODO: write using ethCall:sendTransaction
     const PostboxCreator = web3.eth.contract(postboxCreatorABI).at(postboxCreatorAddress)
-    return new Promise(done => {
+    return new Promise((resolve, reject) => {
         PostboxCreator.createPostbox(ownerAddress, name, description, location, 0, 0, 0 /*minuteFee, minRent, maxDeposit*/, (err, tx) => {
             if (err) {
-                throw err
+                reject(err)
             }
-            const filter = web3.eth.filter('latest')
-            filter.watch(function(error, blockHash) {       //eslint-disable-line no-unused-vars
-                if (error) {
-                    throw error
-                }
-                web3.eth.getTransactionReceipt(tx, (err, tr) => {
-                    if (err) {
-                        throw err
-                    }
-                    if (tr == null) {
-                        return      // not yet...
-                    }
-                    filter.stopWatching()
-                    const events = getEventsFromLogs(tr.logs, postboxCreatorABI)
-                    const responseArray = events.NewPostbox
-                    if (!responseArray) {
-                        throw new Error('NewPostbox event not sent from Solidity')
-                    }
-                    const response = {
-                        creator: responseArray[0],
-                        owner: responseArray[1],
-                        name: responseArray[2],
-                        address: responseArray[3]
-                    }
-                    done(response)
+            waitForEvent('NewPostbox', postboxCreatorAddress, postboxCreatorABI, tx).then(event => {
+                resolve({
+                    creator: event.args.Creator,
+                    address: event.args.PostboxAddress,
+                    name: event.args.Name
                 })
             })
         })

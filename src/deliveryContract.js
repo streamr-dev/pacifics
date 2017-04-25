@@ -5,7 +5,7 @@ import _ from 'lodash'
 import {deliveryContractCreatorABI, deliveryContractABI} from './abi'
 import {getAll as solidityGetProperties, at as solidityGetBy} from './solidity-getters'
 //import {getAll as solidityGetProperties, getIndexedPropAt as solidityGetBy} from './solidity-getters'
-import {sendTransaction} from './ethCall'
+import {waitForEvent} from './ethCall'
 
 
 const lastOf = arr => arr[arr.length - 1]
@@ -60,15 +60,15 @@ export const getDeliveryContract = id => getDeliveryMetadata(id).then(d => solid
 export function createDeliveryContract(parcelAddress, senderPostbox, receiverPostbox, receiver, endDate, depositETH, startDate, minutes, deliveryContractCreatorAddress) {
     const deposit = web3.toWei(depositETH, 'ether')
     //console.log(`Creating delivery contract ${senderPostbox} -> ${receiverPostbox} in ${minutes} minutes`)
-    return sendTransaction(deliveryContractCreatorABI, deliveryContractCreatorAddress, 'createDeliveryContract', [parcelAddress, senderPostbox, receiverPostbox, receiver, endDate, deposit, startDate, minutes]).then(events => {
-        const responseArray = events.NewContract
-        if (!responseArray) {
-            throw new Error('NewContract event not sent from Solidity')
-        }
-        //console.log('Created delivery contract', responseArray)
-        return {
-            creator: responseArray[0],
-            address: responseArray[1]
-        }
+    const DeliveryContractCreator = web3.eth.contract(deliveryContractCreatorABI).at(deliveryContractCreatorAddress)
+    return new Promise((resolve, reject) => {
+        DeliveryContractCreator.createDeliveryContract(parcelAddress, senderPostbox, receiverPostbox, receiver, endDate, deposit, startDate, minutes, (err, tx) => {
+            if (err) {
+                reject(err)
+            }
+            waitForEvent('NewContract', deliveryContractCreatorAddress, deliveryContractCreatorABI, tx).then(event => {
+                resolve(event.args)
+            })
+        })
     })
 }

@@ -38,17 +38,17 @@ export const createDelivery = (delivery, parcelAddress) => dispatch => {
     
     const deliveryCreatorAddress = store.getState().user.user.service.deliveryCreatorAddress
     dispatch(createDeliveryRequest())
+    
+    // Timeout is a hack for a bug, where if deliveries are fetched right after creating a new one, the new one is not returned
     return new Promise((resolve, reject) => {
         createDeliveryContract(parcelAddress, delivery.senderPostbox, delivery.receiverPostbox, delivery.receiverAddress, 0, depositETH, startDate, minutes, deliveryCreatorAddress)
-        // Timeout is a hack for a bug, where if deliveries are fetched right after creating a new one, the new one is not returned
-        // TODO: remove
-            .then(d => setTimeout(() => {
-                dispatch(createDeliverySuccess(d))
-                resolve(d)
-            }), 5000)
-            .catch(e => {
-                dispatch(createDeliveryFailure(e))
-                reject(e)
+            .then(event => setTimeout(() => {
+                dispatch(createDeliverySuccess())
+                resolve(event)
+            }), 5000) // TODO: remove
+            .catch(error => {
+                dispatch(createDeliveryFailure(error))
+                reject(error)
             })
     })
 }
@@ -71,9 +71,8 @@ const createDeliveryRequest = () => ({
     type: CREATE_DELIVERY_REQUEST
 })
 
-const createDeliverySuccess = delivery => ({
-    type: CREATE_DELIVERY_SUCCESS,
-    delivery
+const createDeliverySuccess = () => ({
+    type: CREATE_DELIVERY_SUCCESS
 })
 
 const createDeliveryFailure = error => ({

@@ -83,13 +83,13 @@ export function getParcelContractAt(address) {
 export function createParcelContract(name, description, temperatureLimit, parcelCreatorAddress, ownerAddress = web3.eth.coinbase) {
     // TODO: write using ethCall:sendTransaction
     const ParcelCreator = web3.eth.contract(parcelCreatorABI).at(parcelCreatorAddress)
-    return new Promise(done => {
+    return new Promise((resolve, reject) => {
         ParcelCreator.createParcel(ownerAddress, ownerAddress, name, description, temperatureLimit, (err, tx) => {
             if (err) {
-                throw err
+                reject(err)
             }
             waitForEvent('NewParcel', parcelCreatorAddress, parcelCreatorABI, tx).then(event => {
-                done(event.args)
+                resolve(event.args)
             })
         })
     })
