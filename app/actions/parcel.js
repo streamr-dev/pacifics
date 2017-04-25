@@ -13,7 +13,7 @@ export const CREATE_PARCEL_REQUEST = 'CREATE_PARCEL_REQUEST'
 export const CREATE_PARCEL_SUCCESS = 'CREATE_PARCEL_SUCCESS'
 export const CREATE_PARCEL_FAILURE = 'CREATE_PARCEL_FAILURE'
 
-export const ADD_EVENT = 'ADD_EVENT'
+export const ADD_EVENTS = 'ADD_EVENTS'
 
 export const getAllParcels = () => dispatch => {
     const state = store.getState()
@@ -41,21 +41,16 @@ export const getParcel = address => dispatch => {
     }
     
     dispatch(getParcelRequest())
-    return new Promise((resolve, reject) => {
-        getParcelContractAt(address)
-            .then(p => {
-                p = {
-                    ...p,
-                    address
-                }
-                dispatch(getParcelSuccess(p))
-                resolve(p)
-            })
-            .catch(e => {
-                dispatch(getParcelFailure(e))
-                reject(e)
-            })
-    })
+    return getParcelContractAt(address)
+        .then(p => {
+            p.address = address
+            dispatch(getParcelSuccess(p))
+            return p
+        })
+        .catch(e => {
+            dispatch(getParcelFailure(e))
+            throw e
+        })
 }
 
 export const createParcel = parcel => dispatch => {
@@ -77,10 +72,10 @@ export const createParcel = parcel => dispatch => {
     })
 }
 
-export const addEvent = (parcelAddress, event) => dispatch => {
+export const addEvents = (parcelAddress, events) => dispatch => {
     dispatch({
-        type: ADD_EVENT,
-        event,
+        type: ADD_EVENTS,
+        events,
         parcelAddress
     })
 }

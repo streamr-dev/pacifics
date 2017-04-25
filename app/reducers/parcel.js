@@ -8,7 +8,7 @@ import {
     GET_PARCEL_REQUEST,
     GET_PARCEL_SUCCESS,
     GET_PARCEL_FAILURE,
-    ADD_EVENT
+    ADD_EVENTS
 } from '../actions/parcel.js'
 
 import _ from 'lodash'
@@ -52,7 +52,7 @@ export default (state = {
                 fetching: false
             }
         }
-        case ADD_EVENT: {
+        case ADD_EVENTS: {
             const parcel = state.list.find(p => p.address === action.parcelAddress)
             const error = !parcel ? `No parcel found with parcelAddress ${action.parcelAddress}!` : undefined
             return {
@@ -61,10 +61,11 @@ export default (state = {
                 list: [
                     ...(_.reject(state.list, p => p.address === action.parcelAddress)),
                     {
+                        address: action.parcelAddress,
                         ...parcel,
                         events: [
-                            ...(parcel.events || []),
-                            action.event
+                            ...(parcel && parcel.events || []),
+                            ...action.events
                         ]
                     }
                 ]

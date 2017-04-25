@@ -45,9 +45,7 @@ export default class ReactRouter extends Component {
                             store.dispatch(getAllDeliveries())
                             store.dispatch(getAllPostboxes())
                         }}/>
-                        <Route path="/parcels/:address/track" component={ParcelsTrack} onEnter={location =>
-                            store.dispatch(getParcel(location.params.address))
-                        }/>
+                        <Route path="/parcels/:address/track" component={ParcelsTrack} />
                         <Route path="/parcels/:address/deliveries/create" components={DeliveryCreate} onEnter={location => {
                             store.dispatch(getParcel(location.params.address))
                             store.dispatch(getAllPostboxes())
