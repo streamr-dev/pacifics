@@ -2,7 +2,7 @@
 import web3 from './web3-wrapper.js'
 import _ from 'lodash'
 
-import {deliveryContractCreatorABI, deliveryContractABI} from './abi'
+import {deliveryContractCreatorABI, deliveryContractABI, parcelABI} from './abi'
 import {getAll as solidityGetProperties, at as solidityGetBy} from './solidity-getters'
 //import {getAll as solidityGetProperties, getIndexedPropAt as solidityGetBy} from './solidity-getters'
 import {sendTransaction} from './ethCall'
@@ -69,6 +69,23 @@ export function createDeliveryContract(parcelAddress, senderPostbox, receiverPos
         return {
             creator: responseArray[0],
             address: responseArray[1]
+        }
+    })
+}
+
+export function signDeliveryContract(parcelAddress, deliveryAddress, userFee, deflationRate, temperaturePenalty) {
+    return sendTransaction(parcelABI, parcelAddress, 'signContract', [deliveryAddress, userFee, deflationRate, temperaturePenalty]).then(events => {
+        const responseArray = events.ContractSigned
+        if (!responseArray) {
+            throw new Error('ContractSigned event not sent from Solidity')
+        }
+        //console.log('Created delivery contract', responseArray)
+        return {
+            parcelAddress: parcelAddress,
+            deliveryAddress: deliveryAddress,
+            userFee: responseArray[0],
+            deflationRate: responseArray[1],
+            temperaturePenalty: responseArray[2]
         }
     })
 }

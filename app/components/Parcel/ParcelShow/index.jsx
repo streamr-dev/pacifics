@@ -6,8 +6,16 @@ import FontAwesome from 'react-fontawesome'
 import {DateLabel, AddressLabel} from '../../Util/Labels'
 import {connect} from 'react-redux'
 import commonStyles from '../../../commonStyles.pcss'
+import {signDelivery} from '../../../actions/delivery'
+import {getAllDeliveries} from '../../../actions/delivery'
 
 class ParcelShow extends Component {
+
+    signDelivery(deliveryAddress) {
+        this.props.dispatch(signDelivery(this.props.params.address, deliveryAddress, 0, 0, 0)) // TODO: remove hard-coded zeros when signing view is done
+            .then(() => this.props.dispatch(getAllDeliveries()))
+    }
+    
     render() {
         return (
             <Row>
@@ -111,6 +119,9 @@ class ParcelShow extends Component {
                                         <DateLabel date={d[7]} />
                                     </td>
                                     <td>
+                                        <Button onClick={(e) => this.signDelivery(d[1])}>
+                                            Sign
+                                        </Button>
                                         <a className="btn btn-default" target="_blank" href={`http://www.qr-code-generator.com/phpqrcode/getCode.php?cht=qr&chl=${d[1]}&chs=180x180&choe=UTF-8&chld=L%7C0`}><FontAwesome name="print" /> QR&#8209;code</a>
                                     </td>
                                 </tr>

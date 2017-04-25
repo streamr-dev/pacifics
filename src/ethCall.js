@@ -10,24 +10,25 @@ export function sendTransaction(abi, address, funcName, args) {
         contract[funcName](...args, (err, tx) => {
             if (err) {
                 reject(err)
-            }
-            console.log(`Sending transaction https://testnet.etherscan.io/tx/${tx}`)    //eslint-disable-line no-console
-            const filter = web3.eth.filter('latest')
-            filter.watch(function(error/*, blockHash*/) {
-                if (error) {
-                    throw error
-                }
-                web3.eth.getTransactionReceipt(tx, (err, tr) => {
-                    if (err) {
-                        reject(err)
+            } else {
+                console.log(`Sending transaction https://testnet.etherscan.io/tx/${tx}`)    //eslint-disable-line no-console
+                const filter = web3.eth.filter('latest')
+                filter.watch(function(error/*, blockHash*/) {
+                    if (error) {
+                        throw error
                     }
-                    if (tr == null) {
-                        return      // not yet...
-                    }
-                    filter.stopWatching()
-                    resolve(getEventsFromLogs(tr.logs, abi))
+                    web3.eth.getTransactionReceipt(tx, (err, tr) => {
+                        if (err) {
+                            reject(err)
+                        }
+                        if (tr == null) {
+                            return      // not yet...
+                        }
+                        filter.stopWatching()
+                        resolve(getEventsFromLogs(tr.logs, abi))
+                    })
                 })
-            })
+            }
         })
     })
 }

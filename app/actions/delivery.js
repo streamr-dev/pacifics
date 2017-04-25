@@ -1,4 +1,4 @@
-import { createDeliveryContract, getAllDeliveryContracts } from '../../src/deliveryContract'
+import { createDeliveryContract, getAllDeliveryContracts, signDeliveryContract } from '../../src/deliveryContract'
 import store from '../store'
 
 export const GET_ALL_DELIVERIES_REQUEST = 'GET_ALL_DELIVERIES_REQUEST'
@@ -8,6 +8,10 @@ export const GET_ALL_DELIVERIES_FAILURE = 'GET_ALL_DELIVERIES_FAILURE'
 export const CREATE_DELIVERY_REQUEST = 'CREATE_DELIVERY_REQUEST'
 export const CREATE_DELIVERY_SUCCESS = 'CREATE_DELIVERY_SUCCESS'
 export const CREATE_DELIVERY_FAILURE = 'CREATE_DELIVERY_FAILURE'
+
+export const SIGN_DELIVERY_REQUEST = 'SIGN_DELIVERY_REQUEST'
+export const SIGN_DELIVERY_SUCCESS = 'SIGN_DELIVERY_SUCCESS'
+export const SIGN_DELIVERY_FAILURE = 'SIGN_DELIVERY_FAILURE'
 
 export const getAllDeliveries = () => dispatch => {
     const deliveryCreatorAddress = store.getState().user.user.service.deliveryCreatorAddress
@@ -53,6 +57,24 @@ export const createDelivery = (delivery, parcelAddress) => dispatch => {
     })
 }
 
+export const signDelivery = (parcelAddress, deliveryAddress, userFee, deflationRate, temperaturePenalty) => dispatch => {
+    dispatch(signDeliveryRequest())
+    return new Promise((resolve, reject) => {
+        signDeliveryContract(parcelAddress, deliveryAddress, userFee, deflationRate, temperaturePenalty)
+        // Timeout is a hack for a bug, where if deliveries are fetched right after creating a new one, the new one is not returned
+        // TODO: remove
+            .then(d => setTimeout(() => {
+                dispatch(signDeliverySuccess(d))
+                resolve(d)
+            }), 5000)
+            .catch(e => {
+                dispatch(signDeliveryFailure(e))
+                reject(e)
+            })
+    })
+}
+
+
 const getAllDeliveriesRequest = () => ({
     type: GET_ALL_DELIVERIES_REQUEST
 })
@@ -78,5 +100,19 @@ const createDeliverySuccess = delivery => ({
 
 const createDeliveryFailure = error => ({
     type: CREATE_DELIVERY_FAILURE,
+    error
+})
+
+const signDeliveryRequest = () => ({
+    type: SIGN_DELIVERY_REQUEST
+})
+
+const signDeliverySuccess = delivery => ({
+    type: SIGN_DELIVERY_SUCCESS,
+    delivery
+})
+
+const signDeliveryFailure = error => ({
+    type: SIGN_DELIVERY_FAILURE,
     error
 })
