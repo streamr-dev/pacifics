@@ -1,7 +1,9 @@
 import React, {Component, PropTypes} from 'react'
+import moment from 'moment'
 import {Row, Col, Panel, Table, Breadcrumb} from 'react-bootstrap'
 import {addEvents, getParcel} from '../../../actions/parcel'
 //import {getAllDeliveries} from '../../../actions/delivery'
+import {getBlockDate} from '../../../../src/block'
 import {connect} from 'react-redux'
 import {getParcelEvents, /*getDeliveryEvents, */unCamelCase} from '../../../../src/eventLog'
 
@@ -15,16 +17,15 @@ class ParcelTrack extends Component {
     componentDidMount() {
         // pick event properties that are used in render()
         const transformAndAddEvents = events => {
-            const ev = events.map(e => ({
+            const eventsP = events.map(e => getBlockDate(parseInt(e.blockNumber)).then(blockDate => ({
                 id: e.transactionHash + e.transactionIndex,
-                blockNumber: parseInt(e.blockNumber),
+                time: new Date(blockDate * 1000),
                 event: unCamelCase(e.event)
-            }))
+            })))
             //console.info(ev)
-            this.props.dispatch(addEvents(address, ev))
+            Promise.all(eventsP).then(ev => this.props.dispatch(addEvents(address, ev)))
         }
 
-        //debugger
         //const address = this.props.parcel && this.props.parcel.address || this.props.location.pathname.split('/')[1]
         const address = this.props.location.pathname.split('/')[1]
         const getParcelP = this.props.dispatch(getParcel(address))      // needed in render()
@@ -56,7 +57,7 @@ class ParcelTrack extends Component {
     }
 
     render() {
-        const events = this.props.parcel.events ? this.props.parcel.events.sort((a, b) => b.blockNumber - a.blockNumber) : []
+        const events = this.props.parcel.events ? this.props.parcel.events.sort((a, b) => b.time.getTime() - a.time.getTime()) : []
         return (
             <Row>
                 <Breadcrumb>
@@ -78,14 +79,14 @@ class ParcelTrack extends Component {
                         <Table>
                             <thead>
                                 <tr>
-                                    <th>Block #</th>
+                                    <th>Time</th>
                                     <th>Event</th>
                                 </tr>
                             </thead>
                             <tbody>
                             {events.map(e => (
                                 <tr key={e.id}>
-                                    <td>{e.blockNumber}</td>
+                                    <td>{moment.duration(moment().diff(moment(e.time))).asDays() < 5 ? moment(e.time).fromNow() : moment(e.time).format('MM-DD-YYYY HH:mm')}</td>
                                     <td>{e.event}</td>
                                 </tr>
                             ))}
