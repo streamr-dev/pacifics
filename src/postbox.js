@@ -4,7 +4,7 @@ import filter from 'lodash/filter'
 import range from 'lodash/range'
 
 import {postboxCreatorABI, postboxABI} from './abi'
-import {getEventsFromLogs, waitForEvent} from './ethCall'
+import {waitForEvent} from './ethCall'
 import {getAll as solidityGetProperties, get as solidityGet} from './solidity-getters'
 
 const lastOf = arr => arr[arr.length - 1]
@@ -68,13 +68,11 @@ export const getPostboxCount = postboxCreatorAddress => {
  * @returns {Promise.<string>} created contract's address
  */
 export const createPostboxContract = (name, description, location, postboxCreatorAddress, ownerAddress = web3.eth.coinbase) => {
-    console.log('Creating postbox ', name, 'owned by ', ownerAddress)
-    // TODO: write using ethCall:sendTransaction
     const PostboxCreator = web3.eth.contract(postboxCreatorABI).at(postboxCreatorAddress)
     return new Promise((resolve, reject) => {
         PostboxCreator.createPostbox(ownerAddress, name, description, location, 0, 0, 0 /*minuteFee, minRent, maxDeposit*/, (err, tx) => {
             if (err) {
-                reject(err)
+                return reject(err)
             }
             waitForEvent('NewPostbox', postboxCreatorAddress, postboxCreatorABI, tx).then(event => {
                 resolve({

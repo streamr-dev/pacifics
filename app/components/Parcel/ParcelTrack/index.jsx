@@ -20,7 +20,7 @@ class ParcelTrack extends Component {
                 blockNumber: parseInt(e.blockNumber),
                 event: unCamelCase(e.event)
             }))
-            console.log(ev)
+            //console.info(ev)
             this.props.dispatch(addEvents(address, ev))
         }
 

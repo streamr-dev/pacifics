@@ -4,7 +4,7 @@ import filter from 'lodash/filter'
 import range from 'lodash/range'
 
 import {parcelCreatorABI, parcelABI} from './abi'
-import {getEventsFromLogs, sendTransaction, waitForEvent} from './ethCall'
+import {sendTransaction, waitForEvent} from './ethCall'
 import {getAll as solidityGetProperties} from './solidity-getters'
 
 const lastOf = arr => arr[arr.length - 1]
@@ -86,7 +86,7 @@ export function createParcelContract(name, description, temperatureLimit, parcel
     return new Promise((resolve, reject) => {
         ParcelCreator.createParcel(ownerAddress, ownerAddress, name, description, temperatureLimit, (err, tx) => {
             if (err) {
-                reject(err)
+                return reject(err)
             }
             waitForEvent('NewParcel', parcelCreatorAddress, parcelCreatorABI, tx).then(event => {
                 resolve(event.args)
@@ -102,7 +102,7 @@ export function setStreamsOnParcel(parcelAddress, trackingStreamId, trackingStre
         if (!responseArray) {
             throw new Error('StreamsSet event not sent from Solidity')
         }
-        console.log('Streams set', responseArray)
+        //console.log('Streams set', responseArray)
         return {
             trackingStreamId: responseArray[0],
             trackingStreamKey: responseArray[1],

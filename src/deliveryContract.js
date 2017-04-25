@@ -64,7 +64,7 @@ export function createDeliveryContract(parcelAddress, senderPostbox, receiverPos
     return new Promise((resolve, reject) => {
         DeliveryContractCreator.createDeliveryContract(parcelAddress, senderPostbox, receiverPostbox, receiver, endDate, deposit, startDate, minutes, (err, tx) => {
             if (err) {
-                reject(err)
+                return reject(err)
             }
             waitForEvent('NewContract', deliveryContractCreatorAddress, deliveryContractCreatorABI, tx).then(event => {
                 resolve(event.args)
