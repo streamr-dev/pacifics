@@ -69,7 +69,7 @@ export const getPostboxCount = postboxCreatorAddress => {
  * @returns {Promise.<string>} created contract's address
  */
 export const createPostboxContract = (name, description, location, postboxCreatorAddress, ownerAddress = web3.eth.coinbase) => {
-    //console.log('Creating postbox ' + name)
+    console.log('Creating postbox ', name, 'owned by ', ownerAddress)
     // TODO: write using ethCall:sendTransaction
     const PostboxCreator = web3.eth.contract(postboxCreatorABI).at(postboxCreatorAddress)
     return new Promise(done => {

@@ -126,10 +126,12 @@ class DeliveryCreate extends Component {
                             </Col>
                         </Row>
                         <FormGroup>
-                            <FormControl componentClass="select" placeholder="select postbox"
+                            <FormControl name="senderPostbox" componentClass="select" onChange={this.handleInputChange}
+                                         placeholder="select postbox"
                                          disabled={this.props.fetching}>
+                                <option>Please select &gt;&gt;</option>
                                 {this.props.postboxes.map((postbox) => (
-                                    <option value={postbox.id} key={postbox.address}>{postbox.name}</option>
+                                    <option value={postbox.address} key={postbox.address}>{postbox.name}</option>
                                 ))}
                             </FormControl>
                         </FormGroup>
@@ -162,9 +164,10 @@ class DeliveryCreate extends Component {
                             </Col>
                         </Row>
                         <FormGroup>
-                            <FormControl componentClass="select" placeholder="select postbox" disabled={this.props.fetching}>
+                            <FormControl name="receiverPostbox" componentClass="select" placeholder="select postbox" disabled={this.props.fetching} onChange={this.handleInputChange}>
+                                <option>Please select &gt;&gt;</option>
                                 {this.props.postboxes.map((postbox) => (
-                                    <option value={postbox.id} key={postbox.address}>{postbox.name}</option>
+                                    <option value={postbox.address} key={postbox.address}>{postbox.name}</option>
                                 ))}
                             </FormControl>
                         </FormGroup>

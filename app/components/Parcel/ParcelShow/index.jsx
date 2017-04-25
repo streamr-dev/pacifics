@@ -83,6 +83,7 @@ class ParcelShow extends Component {
                         <Table striped bordered hover>
                             <thead>
                             <tr>
+                                <th>Address</th>
                                 <th>From</th>
                                 <th>To</th>
                                 <th>Start</th>
@@ -94,6 +95,9 @@ class ParcelShow extends Component {
                             {/*TODO: change after solidity-getters:getIndexedPropAt works*/}
                             {this.props.deliveries.map(d => (
                                 <tr key={d[1]}>
+                                    <td>
+                                        <AddressLabel address={d[1]} />
+                                    </td>
                                     <td>
                                         <AddressLabel address={d[3]} name={(this.props.postboxes.find(i => i.address === d[3]) || {}).name}/>
                                     </td>
