@@ -13,6 +13,7 @@ export function waitForEvent(eventName, contractAddress, contractABI/*, transact
             if (err) {
                 return reject(err)
             }
+            // if (event.transactionHash !== transactionHash) { return }
             watcher.stopWatching()
             resolve(event)
         })
@@ -29,33 +30,32 @@ export function sendTransaction(abi, address, funcName, args) {
     return new Promise((resolve, reject) => {
         contract[funcName](...args, (err, tx) => {
             if (err) {
-                reject(err)
-            } else {
-                console.log(`Sending transaction https://testnet.etherscan.io/tx/${tx}`)    //eslint-disable-line no-console
-                const filter = web3.eth.filter('latest')
-                filter.watch(function(error/*, blockHash*/) {
-                    if (error) {
-                        throw error
-                    }
-                    web3.eth.getTransactionReceipt(tx, (err, tr) => {
-                        if (err) {
-                            reject(err)
-                        }
-                        if (tr == null) {
-                            return      // not yet...
-                        }
-                        filter.stopWatching()
-                        resolve(getEventsFromLogs(tr.logs, abi))
-                    })
-                })
+                return reject(err)
             }
+            console.log(`Sending transaction https://testnet.etherscan.io/tx/${tx}`)    //eslint-disable-line no-console
+            const filter = web3.eth.filter('latest')
+            filter.watch(function(error/*, blockHash*/) {
+                if (error) {
+                    throw error
+                }
+                web3.eth.getTransactionReceipt(tx, (err, tr) => {
+                    if (err) {
+                        return reject(err)
+                    }
+                    if (tr == null) {
+                        return      // not yet...
+                    }
+                    filter.stopWatching()
+                    resolve(getEventsFromLogs(tr.logs, abi))
+                })
+            })
         })
     })
 }
 
 // optionally filter by address
 export function getEventsFromLogs(logs, abi, address) {
-    if (!logs.length) {
+    if (!logs || !logs.length) {
         console.log('Received empty/undefined "logs" for getEventsFromLogs')      //eslint-disable-line no-console
         return []
     }

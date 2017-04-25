@@ -4,7 +4,7 @@ import filter from 'lodash/filter'
 import range from 'lodash/range'
 
 import {parcelCreatorABI, parcelABI} from './abi'
-import {sendTransaction, waitForEvent} from './ethCall'
+import {waitForEvent} from './ethCall'
 import {getAll as solidityGetProperties} from './solidity-getters'
 
 const lastOf = arr => arr[arr.length - 1]
@@ -80,7 +80,7 @@ export function getParcelContractAt(address) {
  * @param temperatureLimit The maximum temperature in degrees celcius allowed for the parcel
  * @returns {Promise.<string>} created contract's address
  */
-export function createParcelContract(name, description, temperatureLimit, parcelCreatorAddress, ownerAddress = web3.eth.coinbase) {
+export function createParcelContract(name, description, temperatureLimit, parcelCreatorAddress, trackingStreamId, trackingStreamKey, photoStreamId, photoStreamKey, ownerAddress = web3.eth.coinbase) {
     // TODO: write using ethCall:sendTransaction
     const ParcelCreator = web3.eth.contract(parcelCreatorABI).at(parcelCreatorAddress)
     return new Promise((resolve, reject) => {
@@ -89,25 +89,18 @@ export function createParcelContract(name, description, temperatureLimit, parcel
                 return reject(err)
             }
             waitForEvent('NewParcel', parcelCreatorAddress, parcelCreatorABI, tx).then(event => {
-                resolve(event.args)
+                const newParcelEvent = event.args
+                const newParcel = web3.eth.contract(parcelABI).at(newParcelEvent.ParcelAddress)
+                newParcel.setStreams(trackingStreamId, trackingStreamKey, photoStreamId, photoStreamKey, (err, tx2 => {
+                    if (err) {
+                        return reject(err)
+                    }
+                    waitForEvent('StreamsSet', newParcelEvent.ParcelAddress, parcelABI, tx2).then(event2 => {
+                        console.log('Streams set', event2.args)
+                        resolve(newParcelEvent)
+                    })
+                }))
             })
         })
-    })
-}
-
-// TODO: untested atm
-export function setStreamsOnParcel(parcelAddress, trackingStreamId, trackingStreamKey, photoStreamId, photoStreamKey) {
-    return sendTransaction(parcelABI, parcelAddress, 'setStreams', [trackingStreamId, trackingStreamKey, photoStreamId, photoStreamKey]).then(events => {
-        const responseArray = events.StreamsSet
-        if (!responseArray) {
-            throw new Error('StreamsSet event not sent from Solidity')
-        }
-        //console.log('Streams set', responseArray)
-        return {
-            trackingStreamId: responseArray[0],
-            trackingStreamKey: responseArray[1],
-            photoStreamId: responseArray[2],
-            photoStreamKey: responseArray[3]
-        }
     })
 }
