@@ -17,7 +17,7 @@ class DeliveryCreate extends Component {
             receiverPostbox: '',  // TODO: get post box address
             receiverAddress: '',
             canStartAfter: new Date(),
-            deposit: 0,
+            deposit: '0',
             deliveryDeadline: new Date()
         }
         this.handleInputChange = this.handleInputChange.bind(this)
@@ -179,11 +179,9 @@ class DeliveryCreate extends Component {
                             <ControlLabel>Deposit (ETH)</ControlLabel>
                             <FormControl
                                 name="deposit"
-                                value={this.state.deposit}
                                 onChange={this.handleInputChange}
-                                min={0}
-                                step="any"
-                                type="number"
+                                value={this.state.deposit}
+                                placeholder="0"
                                 disabled={this.props.fetching}
                             />
                         </FormGroup>

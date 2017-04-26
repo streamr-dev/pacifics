@@ -38,7 +38,7 @@ export const createDelivery = (delivery, parcelAddress) => dispatch => {
     const startDate = dateToSeconds(delivery.canStartAfter)
     const deadline = dateToSeconds(delivery.deliveryDeadline)
     const minutes = Math.ceil((deadline - startDate) / 60)
-    const depositETH = delivery.deposit
+    const depositETH = delivery.deposit ? parseFloat(delivery.deposit.replace(',', '.')) : 0
     
     const deliveryCreatorAddress = store.getState().user.user.service.deliveryCreatorAddress
     dispatch(createDeliveryRequest())
