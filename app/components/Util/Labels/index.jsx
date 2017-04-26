@@ -22,7 +22,7 @@ DateLabel.propTypes = {
 
 DateLabel.defaultProps = {
     inputFormat: 'X',
-    outputFormat: 'MM-DD-YYYY HH:mm:ss z'
+    outputFormat: 'YYYY-MM-DD HH:mm:ss z'
 }
 
 export class AddressLabel extends Component {

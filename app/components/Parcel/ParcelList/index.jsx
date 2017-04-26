@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {Row, Col, Panel, Button, Table, Breadcrumb} from 'react-bootstrap'
 import {Link} from 'react-router'
 import Spinner from '../../Util/Spinner'
-import {AddressLabel} from '../../Util/Labels'
+import {AddressLabel, DateLabel} from '../../Util/Labels'
 import FontAwesome from 'react-fontawesome'
 import {connect} from 'react-redux'
 import styles from './parcelList.pcss'
@@ -52,7 +52,7 @@ class ParcelList extends Component {
                                         <AddressLabel address={p.TransmittedTo} />
                                     </ClickableTd>
                                     <ClickableTd>
-                                        {p.transmissionDate}
+                                        {p.transmissionDate > 0 ? <DateLabel date={p.transmissionDate}/> : '-'}
                                     </ClickableTd>
                                 </ClickableTr>
                             ))}
