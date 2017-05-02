@@ -2,6 +2,7 @@
 const connection = require('./connection')
 
 const User = require('./models/user')
+const EncryptedImage = require('./models/encrypted_image')
 const Service = require('./models/service')
 
 const initDependencies = () => {
