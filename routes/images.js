@@ -1,6 +1,7 @@
 const aes = require('aes-cross')
 const crypto = require('crypto')
 const express = require('express')
+const fs = require('fs')
 const fetch = require('node-fetch')
 const http = require('http')
 const router = express.Router()
@@ -19,8 +20,9 @@ router.get('/', (req, res) => {
     Promise.all([encryptedImageLoading, keyGenerating])
         .then((results) => {
             const [encryptedByteResult, secretKey] = results
-            const a = decryptBytes(encryptedByteResult, secretKey, initialVector)
-            console.log(a)
+            const imageBytes = decryptBytes(encryptedByteResult, secretKey, initialVector)
+            res.contentType('image/jpeg')
+            res.end(imageBytes, 'binary')
         }).catch(console.error)
 })
 
@@ -42,7 +44,24 @@ function fetchEncryptedBytes(ipfsHash) {
 }
 
 function decryptBytes(encryptedBytes, secretKey, initialVector) {
-    return aes.decBytes(new Buffer(encryptedBytes), secretKey, initialVector)
+    return decBytes(new Buffer(encryptedBytes), secretKey, initialVector)
+}
+
+function decBytes(buff, key, iv) {
+    checkKey(key);
+    const decipher = crypto.createDecipheriv('AES-256-CTR', key, iv);
+    decipher.setAutoPadding(true);
+    const out = Buffer.concat([decipher.update(buff), decipher.final()]);
+    return out
+}
+
+function checkKey(key) {
+    if (!key) {
+        throw 'AES.checkKey error: key is null ';
+    }
+    if (key.length !== (256 / 8)) {
+        throw 'AES.checkKey error: key length is not ' + (keySize / 8) + ': ' + key.length;
+    }
 }
 
 module.exports = router
