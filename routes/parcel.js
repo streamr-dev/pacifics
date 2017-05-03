@@ -19,9 +19,7 @@ router.get('/:parcelAddress/photos/latest', (req, res) => {
     fetchDecryptAndRespond(fetchOptions, res)
 })
 
-router.use(authenticateUser)
-
-router.get('/:parcelAddress/photos', (req, res) => {
+router.get('/:parcelAddress/photos', authenticateUser, (req, res) => {
     const parcelAddress = req.params.parcelAddress
 
     EncryptedImage.findAll({
@@ -36,7 +34,7 @@ router.get('/:parcelAddress/photos', (req, res) => {
     })
 })
 
-router.get('/:parcelAddress/photos/:ipfsHash', (req, res) => {
+router.get('/:parcelAddress/photos/:ipfsHash', authenticateUser, (req, res) => {
     const parcelAddress = req.params.parcelAddress
     const ipfsHash = req.params.ipfsHash
     const fetchOptions = {
