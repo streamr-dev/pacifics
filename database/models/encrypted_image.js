@@ -8,10 +8,13 @@ const EncryptedImage = connection.define('encryptedImage', {
         primaryKey: true,
         autoIncrement: true
     },
+    parcel: {
+      type: Sequelize.STRING,
+        allowNull: false
+    },
     hash: {
         type: Sequelize.STRING,
-        allowNull: false,
-        unique: true
+        allowNull: false
     },
     salt: {
         type: Sequelize.STRING,

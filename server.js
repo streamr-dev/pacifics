@@ -82,7 +82,7 @@ app.use('/services', require('./routes/service'))
 app.use('/login', require('./routes/login'))
 app.use('/signup', require('./routes/signup'))
 app.use('/logout', require('./routes/logout'))
-app.use('/images', require('./routes/images'))
+app.use('/parcels', require('./routes/parcels'))
 
 app.use('/', require('./routes/index'))
 

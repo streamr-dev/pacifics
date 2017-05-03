@@ -8,9 +8,26 @@ const EncryptedImage = require('../database/models/encrypted_image')
 
 const router = express.Router()
 
-router.get('/', (req, res) => {
+router.get('/:parcelAddress/photos', (req, res) => {
+    const parcelAddress = req.query.parcelAddress
+
+    EncryptedImage.findAll({
+        where: { parcel:  parcelAddress}
+    }).then((encryptedImages) => {
+        res.json(encryptedImages)
+    })
+})
+
+router.get('/:parcelAddress/photos/:ipfsHash', (req, res) => {
+    const parcelAddress = req.query.parcelAddress
     const ipfsHash = req.query.ipfsHash
-    EncryptedImage.findOne({ where: { hash: ipfsHash }}).then((encryptedImage) => {
+
+    EncryptedImage.findOne({
+        where: {
+            parcel: parcelAddress,
+            hash: ipfsHash
+        }
+    }).then((encryptedImage) => {
         const initialVector = new Buffer(encryptedImage.initialVector, 'hex')
         const salt = new Buffer(encryptedImage.salt, 'hex')
         const streamAuthKey = 'kl84S28SRXqqfajeUifCcg'
