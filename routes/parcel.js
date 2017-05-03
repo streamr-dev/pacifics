@@ -1,28 +1,10 @@
 const crypto = require('crypto')
 const express = require('express')
-const fs = require('fs')
 const fetch = require('node-fetch')
-const http = require('http')
 const EncryptedImage = require('../database/models/encrypted_image')
+const authenticateUser = require('../middleware/authenticate')
 
 const router = express.Router()
-
-router.get('/:parcelAddress/photos', (req, res) => {
-    const parcelAddress = req.params.parcelAddress
-
-    EncryptedImage.findAll({
-        where: {
-            parcel:  parcelAddress
-        }
-    }).then((encryptedImages) => {
-        res.json(encryptedImages.map((image) => {
-            return {
-                ipfsHash: image.hash,
-                createdAt: image.createdAt
-            }
-        }))
-    })
-})
 
 router.get('/:parcelAddress/photos/latest', (req, res) => {
     const parcelAddress = req.params.parcelAddress
@@ -35,6 +17,23 @@ router.get('/:parcelAddress/photos/latest', (req, res) => {
         ]
     }
     fetchDecryptAndRespond(fetchOptions, res)
+})
+
+router.use(authenticateUser)
+
+router.get('/:parcelAddress/photos', (req, res) => {
+    const parcelAddress = req.params.parcelAddress
+
+    EncryptedImage.findAll({
+        where: {
+            parcel:  parcelAddress
+        }
+    }).then((encryptedImages) => {
+        res.json(encryptedImages.map(image => ({
+            ipfsHash: image.hash,
+            createdAt: image.createdAt
+        })))
+    })
 })
 
 router.get('/:parcelAddress/photos/:ipfsHash', (req, res) => {

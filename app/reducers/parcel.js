@@ -8,15 +8,18 @@ import {
     GET_PARCEL_REQUEST,
     GET_PARCEL_SUCCESS,
     GET_PARCEL_FAILURE,
-    ADD_EVENTS
+    ADD_EVENT,
+    ADD_PHOTOS
 } from '../actions/parcel.js'
 
-import _ from 'lodash'
+import {reject} from 'lodash'
 
 export default (state = {
     list: [],
     fetching: false,
-    error: undefined
+    error: undefined,
+    events: [],
+    photos: []
 }, action) => {
     switch (action.type) {
         case GET_ALL_PARCELS_REQUEST:
@@ -57,20 +60,37 @@ export default (state = {
                 fetching: false
             }
         }
-        case ADD_EVENTS: {
+        case ADD_EVENT: {
             const parcel = state.list.find(p => p.address === action.parcelAddress)
-            const error = !parcel ? `No parcel found with parcelAddress ${action.parcelAddress}!` : undefined
+            const list = reject(state.list, item => item.address === action.parcelAddress)
             return {
                 ...state,
-                error,
                 list: [
-                    ...(_.reject(state.list, p => p.address === action.parcelAddress)),
+                    list,
                     {
                         address: action.parcelAddress,
-                        ...parcel,
+                        ...(parcel || {}),
                         events: [
                             ...(parcel && parcel.events || []),
-                            ...action.events
+                            action.event
+                        ]
+                    }
+                ]
+            }
+        }
+        case ADD_PHOTOS: {
+            const parcel = state.list.find(p => p.address === action.parcelAddress)
+            const list = reject(state.list, item => item.address === action.parcelAddress)
+            return {
+                ...state,
+                list: [
+                    list,
+                    {
+                        address: action.parcelAddress,
+                        ...(parcel || {}),
+                        photos: [
+                            ...(parcel && parcel.photos || []),
+                            ...action.photos
                         ]
                     }
                 ]

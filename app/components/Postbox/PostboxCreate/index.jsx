@@ -12,12 +12,9 @@ class PostboxCreate extends Component {
     constructor() {
         super()
         this.handleSubmit = this.handleSubmit.bind(this)
-        this.state = {}
-    }
-    componentDidMount() {
-        this.setState({
+        this.state = {
             url: this.props.location.query.parcelAddress ? `/parcels/${this.props.location.query.parcelAddress}/deliveries/create` : '/'
-        })
+        }
     }
     handleSubmit(e) {
         e.preventDefault()

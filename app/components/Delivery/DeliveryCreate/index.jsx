@@ -59,6 +59,7 @@ class DeliveryCreate extends Component {
     
     handleSubmit(e) {
         e.preventDefault()
+        e.target.checkValidity()
         this.props.dispatch(createDelivery(this.state, this.props.parcel.address))
             .then(() => this.props.dispatch(replace(`/parcels/${this.props.params.address || ''}`)))
     }
@@ -78,6 +79,26 @@ class DeliveryCreate extends Component {
                 timeFormat="HH:mm:ss z"
             />
         )
+        const createSelect = name => {
+            const defaultValue = 'default'
+            return (
+                <select
+                    name={name}
+                    className="form-control"
+                    onChange={this.handleInputChange}
+                    placeholder="select postbox"
+                    disabled={this.props.fetching}
+                    value={this.state[name] || defaultValue}
+                >
+                    <option disabled style={{
+                        display: 'none'
+                    }} value={defaultValue}>Please select &gt;&gt;</option>
+                    {this.props.postboxes.map((postbox) => (
+                        <option value={postbox.address} key={postbox.address}>{postbox.name}</option>
+                    ))}
+                </select>
+            )
+        }
         const postboxCreateUrl = `/postboxes/create?parcelAddress=${this.props.parcel ? this.props.parcel.address : '' }`
         
         return (
@@ -98,7 +119,7 @@ class DeliveryCreate extends Component {
                         </Breadcrumb.Item>
                     </Breadcrumb>
                 :
-                    <Breadcrumb></Breadcrumb>
+                    <Breadcrumb/>
                 }
                 <Form onSubmit={this.handleSubmit}>
                     <Col xs={12}>
@@ -130,14 +151,7 @@ class DeliveryCreate extends Component {
                             </Col>
                         </Row>
                         <FormGroup>
-                            <FormControl name="senderPostbox" componentClass="select" onChange={this.handleInputChange}
-                                         placeholder="select postbox"
-                                         disabled={this.props.fetching}>
-                                <option>Please select &gt;&gt;</option>
-                                {this.props.postboxes.map((postbox) => (
-                                    <option value={postbox.address} key={postbox.address}>{postbox.name}</option>
-                                ))}
-                            </FormControl>
+                            {createSelect('senderPostbox')}
                         </FormGroup>
                         <FormGroup>
                             <ControlLabel>Receiver address</ControlLabel>
@@ -168,12 +182,7 @@ class DeliveryCreate extends Component {
                             </Col>
                         </Row>
                         <FormGroup>
-                            <FormControl name="receiverPostbox" componentClass="select" placeholder="select postbox" disabled={this.props.fetching} onChange={this.handleInputChange}>
-                                <option>Please select &gt;&gt;</option>
-                                {this.props.postboxes.map((postbox) => (
-                                    <option value={postbox.address} key={postbox.address}>{postbox.name}</option>
-                                ))}
-                            </FormControl>
+                            {createSelect('receiverPostbox')}
                         </FormGroup>
                         <FormGroup>
                             <ControlLabel>Deposit (ETH)</ControlLabel>

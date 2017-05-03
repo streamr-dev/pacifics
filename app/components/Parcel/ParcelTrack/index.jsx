@@ -1,63 +1,14 @@
 import React, {Component, PropTypes} from 'react'
 import moment from 'moment'
-import {Row, Col, Panel, Table, Breadcrumb} from 'react-bootstrap'
-import {addEvents, getParcel} from '../../../actions/parcel'
-//import {getAllDeliveries} from '../../../actions/delivery'
-import {getBlockDate} from '../../../../src/block'
+import {Row, Col, Panel, Table, Breadcrumb, ListGroup, ListGroupItem} from 'react-bootstrap'
 import {connect} from 'react-redux'
-import {getParcelEvents, /*getDeliveryEvents, */unCamelCase} from '../../../../src/eventLog'
 
 class ParcelTrack extends Component {
 
-    constructor(props) {
-        super(props)
-        this.watcherList = []
-    }
-
-    componentDidMount() {
-        // pick event properties that are used in render()
-        const transformAndAddEvents = events => {
-            const eventsP = events.map(e => getBlockDate(parseInt(e.blockNumber)).then(blockDate => ({
-                id: e.transactionHash + e.transactionIndex,
-                time: new Date(blockDate * 1000),
-                event: unCamelCase(e.event)
-            })))
-            //console.info(ev)
-            Promise.all(eventsP).then(ev => this.props.dispatch(addEvents(address, ev)))
-        }
-
-        //const address = this.props.parcel && this.props.parcel.address || this.props.location.pathname.split('/')[1]
-        const address = this.props.location.pathname.split('/')[1]
-        const getParcelP = this.props.dispatch(getParcel(address))      // needed in render()
-
-        const parcelP = getParcelEvents(address).then(transformAndAddEvents)
-
-        // const deliveries = this.props.deliveries
-        // const getDeliveriesP = deliveries && deliveries.length ? Promise.resolve(deliveries) : this.props.dispatch(getAllDeliveries())
-        // const deliveryP = getDeliveriesP.then(ds => Promise.all(ds.map(d => {
-        //     const deliveryAddress = d[1] // TODO: changes after solidity-getters:getIndexedPropAt works
-        //     return getDeliveryEvents(deliveryAddress).then(transformAndAddEvents)
-        // })))
-
-        // All parcel events: "PostboxCreated", "DeliveryContractCreated", "ContractSigned", "StreamsSet", "ParcelSent", "ParcelTaken", "ParcelDelivered", "ParcelReceived"
-        //this.watcherList.push(watchParcelEvent(address, 'ParcelSent', (...args) => {
-        //    console.log(args)
-        //}))
-
-        Promise.all([getParcelP, parcelP/*, deliveryP*/]).catch(e => {
-            console.error(e)
-        })
-    }
-
-    componentWillUnmount() {
-        this.watcherList.forEach(w => {
-            w.stopWatching()
-        })
-        this.watcherList = []
-    }
-
     render() {
         const events = this.props.parcel.events ? this.props.parcel.events.sort((a, b) => b.time.getTime() - a.time.getTime()) : []
+        const photos = this.props.parcel.photos || []
+        const formatTime = time => moment.duration(moment().diff(moment(time))).asDays() < 5 ? moment(time).fromNow() : moment(time).format('MM-DD-YYYY HH:mm')
         return (
             <Row>
                 <Breadcrumb>
@@ -72,7 +23,9 @@ class ParcelTrack extends Component {
                     </Breadcrumb.Item>
                 </Breadcrumb>
                 <Col xs={12}>
-                    <h1>{this.props.parcel.name || ''}</h1>
+                    <h1>
+                        {this.props.parcel.name || ''}
+                    </h1>
                 </Col>
                 <Col xs={12} md={6}>
                     <Panel header="Event log">
@@ -86,7 +39,7 @@ class ParcelTrack extends Component {
                             <tbody>
                             {events.map(e => (
                                 <tr key={e.id}>
-                                    <td>{moment.duration(moment().diff(moment(e.time))).asDays() < 5 ? moment(e.time).fromNow() : moment(e.time).format('MM-DD-YYYY HH:mm')}</td>
+                                    <td>{formatTime(e.time)}</td>
                                     <td>{e.event}</td>
                                 </tr>
                             ))}
@@ -99,7 +52,18 @@ class ParcelTrack extends Component {
                         <streamr-map url={'https://eth.streamr.com/api/v1/canvases/Zac64v1SQzy7QlHIAm6ecA4a-0NYa5S2ShGkfSQazLAw/modules/1/keys/' + this.props.params.address + '/modules/2'} />
                     </Panel>
                 </Col>
-                <Col xs={12}>
+                <Col xs={12} md={6}>
+                    <Panel header="Parcel images">
+                        <ListGroup>
+                            {photos.map(img => (
+                                <ListGroupItem href={`/parcels/${this.props.parcel.address}/photos/${img.ipfsHash}`} key={img.ipfsHash}>
+                                    {formatTime(img.createdAt)}
+                                </ListGroupItem>
+                            ))}
+                        </ListGroup>
+                    </Panel>
+                </Col>
+                <Col xs={12} md={6}>
                     <Panel header="Parcel metrics">
                         <streamr-chart url={'https://eth.streamr.com/api/v1/canvases/Zac64v1SQzy7QlHIAm6ecA4a-0NYa5S2ShGkfSQazLAw/modules/1/keys/' + this.props.params.address + '/modules/1'} />
                     </Panel>

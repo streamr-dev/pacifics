@@ -16,7 +16,7 @@ import SignupPage from './components/SignupPage'
 import LoginPage from './components/LoginPage'
 import store, {history} from './store.js'
 
-import {getParcel, getAllParcels} from './actions/parcel'
+import {getParcel, getAllParcels, getEvents, getPhotos} from './actions/parcel'
 import {getAllServices} from './actions/service'
 import {getAllDeliveries} from './actions/delivery'
 import {getAllPostboxes} from './actions/postbox'
@@ -45,7 +45,11 @@ export default class ReactRouter extends Component {
                             store.dispatch(getAllDeliveries())
                             store.dispatch(getAllPostboxes())
                         }}/>
-                        <Route path="/parcels/:address/track" component={ParcelsTrack} />
+                        <Route path="/parcels/:address/track" component={ParcelsTrack} onEnter={location => {
+                            store.dispatch(getParcel(location.params.address))
+                            store.dispatch(getEvents(location.params.address))
+                            store.dispatch(getPhotos(location.params.address))
+                        }}/>
                         <Route path="/parcels/:address/deliveries/create" components={DeliveryCreate} onEnter={location => {
                             store.dispatch(getParcel(location.params.address))
                             store.dispatch(getAllPostboxes())

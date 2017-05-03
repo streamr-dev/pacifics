@@ -1,5 +1,10 @@
 import store from '../store'
+import axios from 'axios'
+import UrlBuilder from './util/urlBuilder.js'
+import path from 'path'
 import { getAllParcelContracts, getParcelContractAt, createParcelContract } from '../../src/parcel'
+import {getParcelEvents, unCamelCase} from '../../src/eventLog'
+import {getBlockDate} from '../../src/block'
 
 export const GET_ALL_PARCELS_REQUEST = 'GET_ALL_PARCELS_REQUEST'
 export const GET_ALL_PARCELS_SUCCESS = 'GET_ALL_PARCELS_SUCCESS'
@@ -13,7 +18,10 @@ export const CREATE_PARCEL_REQUEST = 'CREATE_PARCEL_REQUEST'
 export const CREATE_PARCEL_SUCCESS = 'CREATE_PARCEL_SUCCESS'
 export const CREATE_PARCEL_FAILURE = 'CREATE_PARCEL_FAILURE'
 
-export const ADD_EVENTS = 'ADD_EVENTS'
+export const ADD_EVENT = 'ADD_EVENT'
+export const ADD_PHOTOS = 'ADD_PHOTOS'
+
+const urlBuilder = new UrlBuilder()
 
 export const getAllParcels = () => dispatch => {
     const state = store.getState()
@@ -73,10 +81,39 @@ export const createParcel = parcel => dispatch => {
     })
 }
 
-export const addEvents = (parcelAddress, events) => dispatch => {
+export const getEvents = parcelAddress => dispatch => {
+    // pick event properties that are used
+    getParcelEvents(parcelAddress).then(events => {
+        events.forEach(e => {
+            getBlockDate(parseInt(e.blockNumber))
+                .then(blockDate => {
+                    dispatch(addEvent(parcelAddress, {
+                        id: e.transactionHash + e.transactionIndex,
+                        time: new Date(blockDate * 1000),
+                        event: unCamelCase(e.event)
+                    }))
+                })
+        })
+    })
+}
+
+export const getPhotos = parcelAddress => dispatch => {
+    axios.get(urlBuilder.build(path.resolve('parcels', parcelAddress, 'photos')))
+        .then(res => dispatch(addPhotos(parcelAddress, res.data)))
+}
+
+export const addPhotos = (parcelAddress, photos) => dispatch => {
     dispatch({
-        type: ADD_EVENTS,
-        events,
+        type: ADD_PHOTOS,
+        parcelAddress,
+        photos
+    })
+}
+
+export const addEvent = (parcelAddress, event) => dispatch => {
+    dispatch({
+        type: ADD_EVENT,
+        event,
         parcelAddress
     })
 }

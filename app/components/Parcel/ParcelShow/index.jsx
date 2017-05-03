@@ -96,7 +96,8 @@ class ParcelShow extends Component {
                                 <th>To</th>
                                 <th>Start</th>
                                 <th>Deadline</th>
-                                <th></th>
+                                <th/>
+                                <th/>
                             </tr>
                             </thead>
                             <tbody>
@@ -122,6 +123,8 @@ class ParcelShow extends Component {
                                         <Button onClick={() => this.signDelivery(d[1])}>
                                             Sign
                                         </Button>
+                                    </td>
+                                    <td>
                                         <a className="btn btn-default" target="_blank" href={`http://www.qr-code-generator.com/phpqrcode/getCode.php?cht=qr&chl=${d[1]}&chs=180x180&choe=UTF-8&chld=L%7C0`}><FontAwesome name="print" /> QR&#8209;code</a>
                                     </td>
                                 </tr>
