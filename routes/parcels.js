@@ -26,12 +26,27 @@ router.get('/:parcelAddress/photos/:ipfsHash', (req, res) => {
     const parcelAddress = req.params.parcelAddress
     const ipfsHash = req.params.ipfsHash
 
-    EncryptedImage.findOne({
-        where: {
-            parcel: parcelAddress,
-            hash: ipfsHash
+    var fetchOptions = {}
+
+    if (ipfsHash === 'latest') {
+        fetchOptions = {
+            where: {
+                parcel: parcelAddress,
+            },
+            order: [
+                ['updatedAt', 'DESC']
+            ]
         }
-    }).then((encryptedImage) => {
+    } else {
+        fetchOptions = {
+            where: {
+                parcel: parcelAddress,
+                hash: ipfsHash
+            }
+        }
+    }
+
+    EncryptedImage.findOne(fetchOptions).then((encryptedImage) => {
         if (encryptedImage) {
             const initialVector = new Buffer(encryptedImage.initialVector, 'hex')
             const salt = new Buffer(encryptedImage.salt, 'hex')
