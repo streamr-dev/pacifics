@@ -9,18 +9,23 @@ const EncryptedImage = require('../database/models/encrypted_image')
 const router = express.Router()
 
 router.get('/:parcelAddress/photos', (req, res) => {
-    const parcelAddress = req.query.parcelAddress
+    const parcelAddress = req.params.parcelAddress
 
     EncryptedImage.findAll({
         where: { parcel:  parcelAddress}
     }).then((encryptedImages) => {
-        res.json(encryptedImages)
+        res.json(encryptedImages.map((image) => {
+            return {
+                ipfsHash: image.hash,
+                createdAt: image.createdAt
+            }
+        }))
     })
 })
 
 router.get('/:parcelAddress/photos/:ipfsHash', (req, res) => {
-    const parcelAddress = req.query.parcelAddress
-    const ipfsHash = req.query.ipfsHash
+    const parcelAddress = req.params.parcelAddress
+    const ipfsHash = req.params.ipfsHash
 
     EncryptedImage.findOne({
         where: {
@@ -28,20 +33,24 @@ router.get('/:parcelAddress/photos/:ipfsHash', (req, res) => {
             hash: ipfsHash
         }
     }).then((encryptedImage) => {
-        const initialVector = new Buffer(encryptedImage.initialVector, 'hex')
-        const salt = new Buffer(encryptedImage.salt, 'hex')
-        const streamAuthKey = 'kl84S28SRXqqfajeUifCcg'
+        if (encryptedImage) {
+            const initialVector = new Buffer(encryptedImage.initialVector, 'hex')
+            const salt = new Buffer(encryptedImage.salt, 'hex')
+            const streamAuthKey = 'kl84S28SRXqqfajeUifCcg'
 
-        const encryptedImageLoading = fetchEncryptedBytes(ipfsHash)
-        const keyGenerating = deriveKey(streamAuthKey, salt, 32)
+            const encryptedImageLoading = fetchEncryptedBytes(ipfsHash)
+            const keyGenerating = deriveKey(streamAuthKey, salt, 32)
 
-        Promise.all([encryptedImageLoading, keyGenerating])
-            .then((results) => {
-                const [encryptedByteResult, secretKey] = results
-                const imageBytes = decryptBytes(encryptedByteResult, secretKey, initialVector)
-                res.contentType('image/jpeg')
-                res.end(imageBytes, 'binary')
-            }).catch(console.error)
+            Promise.all([encryptedImageLoading, keyGenerating])
+                .then((results) => {
+                    const [encryptedByteResult, secretKey] = results
+                    const imageBytes = decryptBytes(encryptedByteResult, secretKey, initialVector)
+                    res.contentType('image/jpeg')
+                    res.end(imageBytes, 'binary')
+                }).catch(console.error)
+        } else {
+            res.status(404).send("Not found.")
+        }
     }).catch(console.error)
 })
 
