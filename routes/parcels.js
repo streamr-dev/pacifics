@@ -52,7 +52,7 @@ router.get('/:parcelAddress/photos/:ipfsHash', (req, res) => {
             const salt = new Buffer(encryptedImage.salt, 'hex')
             const streamAuthKey = 'kl84S28SRXqqfajeUifCcg'
 
-            const encryptedImageLoading = fetchEncryptedBytes(ipfsHash)
+            const encryptedImageLoading = fetchEncryptedBytes(encryptedImage.hash)
             const keyGenerating = deriveKey(streamAuthKey, salt, 32)
 
             Promise.all([encryptedImageLoading, keyGenerating])
