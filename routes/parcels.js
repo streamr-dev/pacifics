@@ -11,7 +11,9 @@ router.get('/:parcelAddress/photos', (req, res) => {
     const parcelAddress = req.params.parcelAddress
 
     EncryptedImage.findAll({
-        where: { parcel:  parcelAddress}
+        where: {
+            parcel:  parcelAddress
+        }
     }).then((encryptedImages) => {
         res.json(encryptedImages.map((image) => {
             return {
@@ -61,11 +63,13 @@ router.get('/:parcelAddress/photos/:ipfsHash', (req, res) => {
                     const imageBytes = decryptBytes(encryptedByteResult, secretKey, initialVector)
                     res.contentType('image/jpeg')
                     res.end(imageBytes, 'binary')
-                }).catch(console.error)
+                })
+                .catch(console.error)
         } else {
-            res.status(404).send("Not found.")
+            res.status(404).send('Not found.')
         }
-    }).catch(console.error)
+    })
+        .catch(console.error)
 })
 
 function deriveKey(authKey, salt, keyLen) {
@@ -91,10 +95,10 @@ function decryptBytes(encryptedBytes, secretKey, initialVector) {
 
 function decBytes(buff, key, iv) {
     if (!key) {
-        throw 'AES.checkKey error: key is null ';
+        throw 'AES.checkKey error: key is null '
     }
     if (key.length !== 32) {
-        throw 'AES.checkKey error: key length is not 32' + ': ' + key.length;
+        throw 'AES.checkKey error: key length is not 32' + ': ' + key.length
     }
 
     const decipher = crypto.createDecipheriv('AES-256-CTR', key, iv)
