@@ -24,30 +24,32 @@ router.get('/:parcelAddress/photos', (req, res) => {
     })
 })
 
+router.get('/:parcelAddress/photos/latest', (req, res) => {
+    const parcelAddress = req.params.parcelAddress
+    const fetchOptions = {
+        where: {
+            parcel: parcelAddress,
+        },
+        order: [
+            ['updatedAt', 'DESC']
+        ]
+    }
+    fetchDecryptAndRespond(fetchOptions, res)
+})
+
 router.get('/:parcelAddress/photos/:ipfsHash', (req, res) => {
     const parcelAddress = req.params.parcelAddress
     const ipfsHash = req.params.ipfsHash
-
-    var fetchOptions = {}
-
-    if (ipfsHash === 'latest') {
-        fetchOptions = {
-            where: {
-                parcel: parcelAddress,
-            },
-            order: [
-                ['updatedAt', 'DESC']
-            ]
-        }
-    } else {
-        fetchOptions = {
-            where: {
-                parcel: parcelAddress,
-                hash: ipfsHash
-            }
+    const fetchOptions = {
+        where: {
+            parcel: parcelAddress,
+            hash: ipfsHash
         }
     }
+    fetchDecryptAndRespond(fetchOptions, res)
+})
 
+function fetchDecryptAndRespond(fetchOptions, res) {
     EncryptedImage.findOne(fetchOptions).then((encryptedImage) => {
         if (encryptedImage) {
             const initialVector = new Buffer(encryptedImage.initialVector, 'hex')
@@ -70,7 +72,7 @@ router.get('/:parcelAddress/photos/:ipfsHash', (req, res) => {
         }
     })
         .catch(console.error)
-})
+}
 
 function deriveKey(authKey, salt, keyLen) {
     return new Promise((resolve, reject) => {
