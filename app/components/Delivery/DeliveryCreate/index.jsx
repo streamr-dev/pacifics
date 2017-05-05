@@ -18,7 +18,7 @@ class DeliveryCreate extends Component {
             receiverAddress: '',
             canStartAfter: new Date(),
             deposit: '0',
-            deliveryDeadline: new Date()
+            deliveryDeadline: new Date(Date.now() + 20 * 60 * 1000)
         }
         this.handleInputChange = this.handleInputChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
@@ -65,20 +65,22 @@ class DeliveryCreate extends Component {
     }
     
     render() {
-        const createDatePicker = name => (
-            <DateTime
-                inputProps={{
-                    name: name,
-                    disabled: this.props.fetching
-                }}
-                defaultValue={moment(this.state[name])}
-                onChange={date => {
-                    this.handleDateChange(name, date)
-                }}
-                dateFormat="MM-DD-YYYY"
-                timeFormat="HH:mm:ss z"
-            />
-        )
+        const createDatePicker = name => {
+            return (
+                <DateTime
+                    inputProps={{
+                        name: name,
+                        disabled: this.props.fetching
+                    }}
+                    defaultValue={moment(this.state[name])}
+                    onChange={date => {
+                        this.handleDateChange(name, date)
+                    }}
+                    dateFormat="MM-DD-YYYY"
+                    timeFormat="HH:mm:ss z"
+                />
+            )
+        }
         const createSelect = name => {
             const defaultValue = 'default'
             return (
