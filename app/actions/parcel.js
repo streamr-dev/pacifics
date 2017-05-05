@@ -2,9 +2,9 @@ import store from '../store'
 import axios from 'axios'
 import UrlBuilder from './util/urlBuilder.js'
 import path from 'path'
-import { getAllParcelContracts, getParcelContractAt, createParcelContract } from '../../src/parcel'
-import {getParcelEvents, unCamelCase} from '../../src/eventLog'
-import {getBlockDate} from '../../src/block'
+import { getAllParcelContracts, getParcelContractAt, createParcelContract } from '../src/parcel'
+import {getParcelEvents, unCamelCase} from '../src/eventLog'
+import {getBlockDate} from '../src/block'
 
 export const GET_ALL_PARCELS_REQUEST = 'GET_ALL_PARCELS_REQUEST'
 export const GET_ALL_PARCELS_SUCCESS = 'GET_ALL_PARCELS_SUCCESS'
@@ -97,9 +97,16 @@ export const getEvents = parcelAddress => dispatch => {
     })
 }
 
-export const getPhotos = parcelAddress => dispatch => {
-    axios.get(urlBuilder.build(path.resolve('parcels', parcelAddress, 'photos')))
+export const getPhotos = (parcelAddress, dontTryAgain) => dispatch => {
+    axios.get(urlBuilder.build(path.resolve('parcel', parcelAddress, 'photos')))
         .then(res => dispatch(addPhotos(parcelAddress, res.data)))
+        .catch(e => {
+            if (e.response.status === 403 && !dontTryAgain) {
+                setTimeout(() => getPhotos(parcelAddress, true), 1000)
+            } else {
+                throw e
+            }
+        })
 }
 
 export const addPhotos = (parcelAddress, photos) => dispatch => {

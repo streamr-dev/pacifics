@@ -6,14 +6,14 @@ import {createPostbox} from '../../../actions/postbox'
 import serialize from 'form-serialize'
 import {replace} from 'react-router-redux'
 import FontAwesome from 'react-fontawesome'
-import {getAddress} from '../../../../src/user'
+import {getAddress} from '../../../src/user'
 
 class PostboxCreate extends Component {
-    constructor() {
-        super()
+    constructor(props) {
+        super(props)
         this.handleSubmit = this.handleSubmit.bind(this)
         this.state = {
-            url: this.props.location.query.parcelAddress ? `/parcels/${this.props.location.query.parcelAddress}/deliveries/create` : '/'
+            url: props.location.query.parcelAddress ? `/parcels/${props.location.query.parcelAddress}/deliveries/create` : '/'
         }
     }
     handleSubmit(e) {

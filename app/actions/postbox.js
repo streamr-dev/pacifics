@@ -1,6 +1,6 @@
 
 import store from '../store'
-import {getAllPostboxContracts, getPostboxContract, createPostboxContract} from '../../src/postbox'
+import {getAllPostboxContracts, getPostboxContract, createPostboxContract} from '../src/postbox'
 
 export const GET_ALL_POSTBOXES_REQUEST = 'GET_ALL_POSTBOXES_REQUEST'
 export const GET_ALL_POSTBOXES_SUCCESS = 'GET_ALL_POSTBOXES_SUCCESS'

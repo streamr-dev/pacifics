@@ -1,4 +1,4 @@
-import { createDeliveryContract, getAllDeliveryContracts, signDeliveryContract } from '../../src/deliveryContract'
+import { createDeliveryContract, getAllDeliveryContracts, signDeliveryContract } from '../src/deliveryContract'
 import store from '../store'
 
 export const GET_ALL_DELIVERIES_REQUEST = 'GET_ALL_DELIVERIES_REQUEST'
