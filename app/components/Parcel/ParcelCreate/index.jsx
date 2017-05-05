@@ -12,15 +12,18 @@ class ParcelCreate extends Component {
         super()
         this.handleSubmit = this.handleSubmit.bind(this)
     }
+    
     handleSubmit(e) {
         e.preventDefault()
         const form = serialize(e.target, {
             hash: true
         })
-        this.props.dispatch(createParcel(form)).then(newParcelEvent => {
-            this.props.dispatch(replace(`/parcels/${newParcelEvent.ParcelAddress}`))
-        })
+        this.props.dispatch(createParcel(form))
+            .then(newParcelEvent => {
+                this.props.dispatch(replace(`/parcels/${newParcelEvent.ParcelAddress}`))
+            })
     }
+    
     render() {
         return (
             <Row>
@@ -32,52 +35,59 @@ class ParcelCreate extends Component {
                         Create
                     </Breadcrumb.Item>
                 </Breadcrumb>
-                <Col xs={12}>
-                    <h2>New Parcel</h2>
-                </Col>
-                <Col xs={4}>
-                    <Form onSubmit={this.handleSubmit}>
-                        <FormGroup>
-                            <ControlLabel>Name</ControlLabel>
-                            <FormControl name="name" disabled={this.props.fetching}/>
-                        </FormGroup>
-                        <FormGroup>
-                            <ControlLabel>Description</ControlLabel>
-                            <FormControl name="description" disabled={this.props.fetching}/>
-                        </FormGroup>
-                        <FormGroup>
-                            <ControlLabel>Temperature limit</ControlLabel>
-                            <FormControl type="number" name="temperatureLimit" disabled={this.props.fetching}/>
-                        </FormGroup>
-                        {this.props.fetching ?
-                            <Col xs={12}>
-                                <FontAwesome
-                                    name="spinner"
-                                    size="3x"
-                                    pulse
-                                />
-                                <span style={{
-                                    padding: '15px'
-                                }}>
+                <Row>
+                    <Col xs={12} md={6}>
+                        <h2>New Parcel</h2>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col xs={12} md={6}>
+                        <Form onSubmit={this.handleSubmit}>
+                            <FormGroup>
+                                <ControlLabel>Name</ControlLabel>
+                                <FormControl name="name" disabled={this.props.fetching}/>
+                            </FormGroup>
+                            <FormGroup>
+                                <ControlLabel>Description</ControlLabel>
+                                <textarea className="form-control" name="description" disabled={this.props.fetching} style={{
+                                    resize: 'vertical',
+                                    minHeight: '100px'
+                                }} />
+                            </FormGroup>
+                            <FormGroup>
+                                <ControlLabel>Temperature limit</ControlLabel>
+                                <FormControl type="number" name="temperatureLimit" disabled={this.props.fetching}/>
+                            </FormGroup>
+                            {this.props.fetching ?
+                                <Col xs={12}>
+                                    <FontAwesome
+                                        name="spinner"
+                                        size="3x"
+                                        pulse
+                                    />
+                                    <span style={{
+                                        padding: '15px'
+                                    }}>
                                     Creating parcel
                                 </span>
-                            </Col>
-                            :
-                            <FormGroup className="pull-right">
-                                <Link to="/parcels" style={{
-                                    marginRight: '10px'
-                                }}>
-                                    <Button>
-                                        Cancel
+                                </Col>
+                                :
+                                <FormGroup className="pull-right">
+                                    <Link to="/parcels" style={{
+                                        marginRight: '10px'
+                                    }}>
+                                        <Button>
+                                            Cancel
+                                        </Button>
+                                    </Link>
+                                    <Button type="submit" bsStyle="primary">
+                                        Create
                                     </Button>
-                                </Link>
-                                <Button type="submit" bsStyle="primary">
-                                    Create
-                                </Button>
-                            </FormGroup>
-                        }
-                    </Form>
-                </Col>
+                                </FormGroup>
+                            }
+                        </Form>
+                    </Col>
+                </Row>
             </Row>
         )
     }
