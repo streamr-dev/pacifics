@@ -105,7 +105,9 @@ class ParcelShow extends Component {
                             {this.props.deliveries.map(d => (
                                 <tr key={d[1]}>
                                     <td>
-                                        <AddressLabel address={d[1]} />
+                                        <a href={`https://ropsten.etherscan.io/address/${d[1]}`}>
+                                            <AddressLabel address={d[1]} />
+                                        </a>
                                     </td>
                                     <td>
                                         <AddressLabel address={d[3]} name={(this.props.postboxes.find(i => i.address === d[3]) || {}).name}/>
