@@ -67,6 +67,20 @@ class ParcelShow extends Component {
                             <span>{this.props.parcel.TemperatureLimit}</span>
                         </Col>
                     </Row>
+                    <Row>
+                        <Col xs={12} md={6}>
+                            <Row>
+                                <Col xs={4}>
+                                    <label>Current delivery</label>
+                                </Col>
+                                <Col xs={8}>
+                                    <a href={`https://ropsten.etherscan.io/address/${this.props.parcel.LastContractAddress}`}>
+                                        {this.props.parcel.LastContractAddress}
+                                    </a>
+                                </Col>
+                            </Row>
+                        </Col>
+                    </Row>
                 </Col>
                 
                 <Col xs={8}>

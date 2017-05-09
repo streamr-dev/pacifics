@@ -48,6 +48,13 @@ class ParcelTrack extends Component {
                     </Panel>
                 </Col>
                 <Col xs={12} md={6}>
+                    <Panel header="Current delivery">
+                        <a href={`https://ropsten.etherscan.io/address/${this.props.parcel.LastContractAddress}`}>
+                            {this.props.parcel.LastContractAddress}
+                        </a>
+                    </Panel>
+                </Col>
+                <Col xs={12} md={6}>
                     <Panel header="Parcel location">
                         <streamr-map url={'https://eth.streamr.com/api/v1/canvases/Zac64v1SQzy7QlHIAm6ecA4a-0NYa5S2ShGkfSQazLAw/modules/1/keys/' + this.props.params.address + '/modules/2'} />
                     </Panel>
