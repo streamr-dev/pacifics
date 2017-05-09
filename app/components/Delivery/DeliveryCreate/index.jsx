@@ -179,7 +179,7 @@ class DeliveryCreate extends Component {
                             />
                         </FormGroup>
                         <FormGroup>
-                            <ControlLabel>Temperature Penalties (ETH)</ControlLabel>
+                            <ControlLabel>Temperature Penalties (%)</ControlLabel>
                             <FormControl
                                 name="temperaturePenalties"
                                 onChange={this.handleInputChange}
@@ -210,7 +210,7 @@ class DeliveryCreate extends Component {
                             {createSelect('receiverPostbox')}
                         </FormGroup>
                         <FormGroup>
-                            <ControlLabel>Deposit (ETH)</ControlLabel>
+                            <ControlLabel>Deposit (PASS)</ControlLabel>
                             <FormControl
                                 name="deposit"
                                 onChange={this.handleInputChange}

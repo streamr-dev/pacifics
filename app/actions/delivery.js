@@ -38,7 +38,7 @@ export const createDelivery = (delivery, parcelAddress) => dispatch => {
     const startDate = dateToSeconds(delivery.canStartAfter)
     const deadline = dateToSeconds(delivery.deliveryDeadline)
     const minutes = Math.ceil((deadline - startDate) / 60)
-    const depositETH = delivery.deposit ? parseFloat(delivery.deposit.replace(',', '.')) : 0
+    const depositPASS = delivery.deposit ? parseFloat(delivery.deposit.replace(',', '.')) : 0
     const userFeeETH = delivery.userFee ? parseFloat(delivery.userFee.replace(',', '.')) : 0
     const minutesDeflationRate = delivery.minutesDeflationRate ? parseFloat(delivery.minutesDeflationRate.replace(',', '.')) : 0
     const temperaturePenalties = delivery.temperaturePenalties ? parseFloat(delivery.temperaturePenalties.replace(',', '.')) : 0
@@ -48,7 +48,7 @@ export const createDelivery = (delivery, parcelAddress) => dispatch => {
     
     // Timeout is a hack for a bug, where if deliveries are fetched right after creating a new one, the new one is not returned
     return new Promise((resolve, reject) => {
-        createDeliveryContract(parcelAddress, delivery.senderPostbox, delivery.receiverPostbox, delivery.receiverAddress, 0, depositETH, startDate, minutes, userFeeETH, minutesDeflationRate, temperaturePenalties)
+        createDeliveryContract(parcelAddress, delivery.senderPostbox, delivery.receiverPostbox, delivery.receiverAddress, 0, depositPASS, startDate, minutes, userFeeETH, minutesDeflationRate, temperaturePenalties)
             .then(event => setTimeout(() => {
                 dispatch(createDeliverySuccess())
                 resolve(event)

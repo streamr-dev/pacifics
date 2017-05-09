@@ -5,7 +5,7 @@ import _ from 'lodash'
 import {deliveryContractCreatorABI, deliveryContractABI, parcelABI} from './abi'
 import {getAll as solidityGetProperties, at as solidityGetBy} from './solidity-getters'
 //import {getAll as solidityGetProperties, getIndexedPropAt as solidityGetBy} from './solidity-getters'
-import {waitForEvent, sendTransaction} from './ethCall'
+import {waitForEvent} from './ethCall'
 
 
 const lastOf = arr => arr[arr.length - 1]
@@ -57,8 +57,10 @@ export const getDeliveryContract = id => getDeliveryMetadata(id).then(d => solid
  * @param minutes how many minutes from now must the delivery arrive
  * @returns {Promise.<string>} created contract's address
  */
-export function createDeliveryContract(parcelAddress, senderPostbox, receiverPostbox, receiver, endDate, depositETH, startDate, minutes, userFee, minutesDeflationRate, temperaturePenalties) {
-    const deposit = web3.toWei(depositETH, 'ether')
+export function createDeliveryContract(parcelAddress, senderPostbox, receiverPostbox, receiver, endDate, depositPASS, startDate, minutes, userFeeETH, minutesDeflationRate, temperaturePenalties) {
+    const deposit = web3.toWei(depositPASS, 'ether')
+    const userFee = web3.toWei(userFeeETH, 'ether')
+
     //console.log(`Creating delivery contract ${senderPostbox} -> ${receiverPostbox} in ${minutes} minutes`)
     const Parcel = web3.eth.contract(parcelABI).at(parcelAddress)
     return new Promise((resolve, reject) => {
