@@ -1,10 +1,10 @@
-import React, {Component} from 'react'
-import {Link} from 'react-router'
-import {Row, Col, FormGroup, Form, ControlLabel, FormControl, Button, Breadcrumb} from 'react-bootstrap'
+import React, { Component } from 'react'
+import { Link } from 'react-router'
+import { Row, Col, FormGroup, Form, ControlLabel, FormControl, Button, Breadcrumb } from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome'
-import {connect} from 'react-redux'
-import {replace} from 'react-router-redux'
-import {createDelivery} from '../../../actions/delivery'
+import { connect } from 'react-redux'
+import { replace } from 'react-router-redux'
+import { createDelivery } from '../../../actions/delivery'
 import moment from 'moment'
 import DateTime from 'react-datetime'
 import 'react-datetime/css/react-datetime.css'
@@ -123,7 +123,7 @@ class DeliveryCreate extends Component {
                             Create
                         </Breadcrumb.Item>
                     </Breadcrumb>
-                :
+                    :
                     <Breadcrumb/>
                 }
                 <Form onSubmit={this.handleSubmit}>
@@ -142,97 +142,115 @@ class DeliveryCreate extends Component {
                             </Col>
                         </Row>
                     </Col>
-                    <Col xs={12} md={6}>
+                    <Col xs={12}>
                         <Row>
-                            <Col xs={6}>
-                                <h4>From Postbox</h4>
+                            <Col xs={12} md={6}>
+                                <Row>
+                                    <Col xs={6}>
+                                        <h4>From Postbox</h4>
+                                    </Col>
+                                    <Col xs={6}>
+                                        <Link to={postboxCreateUrl} className="pull-right">
+                                            <Button bsSize="small">
+                                                <FontAwesome name="plus"/> New Postbox
+                                            </Button>
+                                        </Link>
+                                    </Col>
+                                </Row>
+                                <FormGroup>
+                                    {createSelect('senderPostbox')}
+                                </FormGroup>
                             </Col>
-                            <Col xs={6}>
-                                <Link to={postboxCreateUrl} className="pull-right">
-                                    <Button bsSize="small">
-                                        <FontAwesome name="plus" /> New Postbox
-                                    </Button>
-                                </Link>
+                            <Col xs={12} md={6}>
+                                <Row>
+                                    <Col xs={6}>
+                                        <h4>To Postbox</h4>
+                                    </Col>
+                                    <Col xs={6}>
+                                        <Link to={postboxCreateUrl} className="pull-right">
+                                            <Button bsSize="small">
+                                                <FontAwesome name="plus"/> New Postbox
+                                            </Button>
+                                        </Link>
+                                    </Col>
+                                </Row>
+                                <FormGroup>
+                                    {createSelect('receiverPostbox')}
+                                </FormGroup>
+                            </Col>
+                            <Col xs={12} md={6}>
+                                <FormGroup>
+                                    <ControlLabel>Receiver address</ControlLabel>
+                                    <FormControl
+                                        name="receiverAddress"
+                                        onChange={this.handleInputChange}
+                                        value={this.state.receiverAddress}
+                                        placeholder="0x"
+                                        disabled={this.props.fetching}
+                                    />
+                                </FormGroup>
+                            </Col>
+                            <Col xs={12} md={6}>
+                                <FormGroup>
+                                    <ControlLabel>Deposit (PASS)</ControlLabel>
+                                    <FormControl
+                                        name="deposit"
+                                        onChange={this.handleInputChange}
+                                        value={this.state.deposit}
+                                        placeholder="0"
+                                        disabled={this.props.fetching}
+                                    />
+                                </FormGroup>
+                            </Col>
+                            <Col xs={12} md={6}>
+                                <FormGroup>
+                                    <ControlLabel>Can start after</ControlLabel>
+                                    {createDatePicker('canStartAfter')}
+                                </FormGroup>
+                            </Col>
+                            <Col xs={12} md={6}>
+                                <FormGroup>
+                                    <ControlLabel>Delivery deadline</ControlLabel>
+                                    {createDatePicker('deliveryDeadline')}
+                                </FormGroup>
+                            </Col>
+                            <Col xs={12} md={6}>
+                                <FormGroup>
+                                    <ControlLabel>User Fee (ETH)</ControlLabel>
+                                    <FormControl
+                                        name="userFee"
+                                        onChange={this.handleInputChange}
+                                        value={this.state.userFee}
+                                        placeholder="0"
+                                        disabled={this.props.fetching}
+                                    />
+                                </FormGroup>
+                            </Col>
+                            <Col xs={12} md={6}>
+                                <FormGroup>
+                                    <ControlLabel>Deflation Rate (minutes)</ControlLabel>
+                                    <FormControl
+                                        name="minutesDeflationRate"
+                                        onChange={this.handleInputChange}
+                                        value={this.state.minutesDeflationRate}
+                                        placeholder="0"
+                                        disabled={this.props.fetching}
+                                    />
+                                </FormGroup>
+                            </Col>
+                            <Col xs={12} md={6}>
+                                <FormGroup>
+                                    <ControlLabel>Temperature Penalties (%)</ControlLabel>
+                                    <FormControl
+                                        name="temperaturePenalties"
+                                        onChange={this.handleInputChange}
+                                        value={this.state.temperaturePenalties}
+                                        placeholder="0"
+                                        disabled={this.props.fetching}
+                                    />
+                                </FormGroup>
                             </Col>
                         </Row>
-                        <FormGroup>
-                            {createSelect('senderPostbox')}
-                        </FormGroup>
-                        <FormGroup>
-                            <ControlLabel>Receiver address</ControlLabel>
-                            <FormControl
-                                name="receiverAddress"
-                                onChange={this.handleInputChange}
-                                value={this.state.receiverAddress}
-                                placeholder="0x"
-                                disabled={this.props.fetching}
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <ControlLabel>User Fee (ETH)</ControlLabel>
-                            <FormControl
-                                name="userFee"
-                                onChange={this.handleInputChange}
-                                value={this.state.userFee}
-                                placeholder="0"
-                                disabled={this.props.fetching}
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <ControlLabel>Temperature Penalties (%)</ControlLabel>
-                            <FormControl
-                                name="temperaturePenalties"
-                                onChange={this.handleInputChange}
-                                value={this.state.temperaturePenalties}
-                                placeholder="0"
-                                disabled={this.props.fetching}
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <ControlLabel>Can start after</ControlLabel>
-                            {createDatePicker('canStartAfter')}
-                        </FormGroup>
-                    </Col>
-                    <Col xs={12} md={6}>
-                        <Row>
-                            <Col xs={6}>
-                                <h4>To Postbox</h4>
-                            </Col>
-                            <Col xs={6}>
-                                <Link to={postboxCreateUrl} className="pull-right">
-                                    <Button bsSize="small">
-                                        <FontAwesome name="plus" /> New Postbox
-                                    </Button>
-                                </Link>
-                            </Col>
-                        </Row>
-                        <FormGroup>
-                            {createSelect('receiverPostbox')}
-                        </FormGroup>
-                        <FormGroup>
-                            <ControlLabel>Deposit (PASS)</ControlLabel>
-                            <FormControl
-                                name="deposit"
-                                onChange={this.handleInputChange}
-                                value={this.state.deposit}
-                                placeholder="0"
-                                disabled={this.props.fetching}
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <ControlLabel>Deflation Rate (minutes)</ControlLabel>
-                            <FormControl
-                                name="minutesDeflationRate"
-                                onChange={this.handleInputChange}
-                                value={this.state.minutesDeflationRate}
-                                placeholder="0"
-                                disabled={this.props.fetching}
-                            />
-                        </FormGroup>
-                        <FormGroup>
-                            <ControlLabel>Delivery deadline</ControlLabel>
-                            {createDatePicker('deliveryDeadline')}
-                        </FormGroup>
                     </Col>
                     <Col xs={12}>
                         {this.props.fetching || !this.props.parcel ?
@@ -242,7 +260,7 @@ class DeliveryCreate extends Component {
                                     size="3x"
                                     pulse
                                 />
-                                <span style = {{
+                                <span style={{
                                     padding: '15px'
                                 }}>
                                     Creating delivery
