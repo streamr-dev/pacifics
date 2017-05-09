@@ -18,7 +18,10 @@ class DeliveryCreate extends Component {
             receiverAddress: '',
             canStartAfter: new Date(),
             deposit: '0',
-            deliveryDeadline: new Date(Date.now() + 20 * 60 * 1000)
+            deliveryDeadline: new Date(Date.now() + 20 * 60 * 1000),
+            userFee: '0',
+            minutesDeflationRate: '0',
+            temperaturePenalties: '0'
         }
         this.handleInputChange = this.handleInputChange.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
@@ -166,6 +169,26 @@ class DeliveryCreate extends Component {
                             />
                         </FormGroup>
                         <FormGroup>
+                            <ControlLabel>User Fee (ETH)</ControlLabel>
+                            <FormControl
+                                name="userFee"
+                                onChange={this.handleInputChange}
+                                value={this.state.userFee}
+                                placeholder="0"
+                                disabled={this.props.fetching}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <ControlLabel>Temperature Penalties (ETH)</ControlLabel>
+                            <FormControl
+                                name="temperaturePenalties"
+                                onChange={this.handleInputChange}
+                                value={this.state.temperaturePenalties}
+                                placeholder="0"
+                                disabled={this.props.fetching}
+                            />
+                        </FormGroup>
+                        <FormGroup>
                             <ControlLabel>Can start after</ControlLabel>
                             {createDatePicker('canStartAfter')}
                         </FormGroup>
@@ -192,6 +215,16 @@ class DeliveryCreate extends Component {
                                 name="deposit"
                                 onChange={this.handleInputChange}
                                 value={this.state.deposit}
+                                placeholder="0"
+                                disabled={this.props.fetching}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <ControlLabel>Deflation Rate (minutes)</ControlLabel>
+                            <FormControl
+                                name="minutesDeflationRate"
+                                onChange={this.handleInputChange}
+                                value={this.state.minutesDeflationRate}
                                 placeholder="0"
                                 disabled={this.props.fetching}
                             />

@@ -57,12 +57,12 @@ export const getDeliveryContract = id => getDeliveryMetadata(id).then(d => solid
  * @param minutes how many minutes from now must the delivery arrive
  * @returns {Promise.<string>} created contract's address
  */
-export function createDeliveryContract(parcelAddress, senderPostbox, receiverPostbox, receiver, endDate, depositETH, startDate, minutes) {
+export function createDeliveryContract(parcelAddress, senderPostbox, receiverPostbox, receiver, endDate, depositETH, startDate, minutes, userFee, minutesDeflationRate, temperaturePenalties) {
     const deposit = web3.toWei(depositETH, 'ether')
     //console.log(`Creating delivery contract ${senderPostbox} -> ${receiverPostbox} in ${minutes} minutes`)
     const Parcel = web3.eth.contract(parcelABI).at(parcelAddress)
     return new Promise((resolve, reject) => {
-        Parcel.createDeliveryContract(senderPostbox, receiverPostbox, receiver, endDate, deposit, startDate, minutes, (err, tx) => {
+        Parcel.createDeliveryContract(senderPostbox, receiverPostbox, receiver, endDate, deposit, startDate, minutes, true, userFee, minutesDeflationRate, temperaturePenalties, (err, tx) => {
             if (err) {
                 return reject(err)
             }
@@ -70,22 +70,5 @@ export function createDeliveryContract(parcelAddress, senderPostbox, receiverPos
                 resolve(event.args)
             })
         })
-    })
-}
-
-export function signDeliveryContract(parcelAddress, deliveryAddress, userFee, deflationRate, temperaturePenalty) {
-    return sendTransaction(parcelABI, parcelAddress, 'signContract', [deliveryAddress, userFee, deflationRate, temperaturePenalty]).then(events => {
-        const responseArray = events.ContractSigned
-        if (!responseArray) {
-            throw new Error('ContractSigned event not sent from Solidity')
-        }
-        //console.log('Created delivery contract', responseArray)
-        return {
-            parcelAddress: parcelAddress,
-            deliveryAddress: deliveryAddress,
-            userFee: responseArray[0],
-            deflationRate: responseArray[1],
-            temperaturePenalty: responseArray[2]
-        }
     })
 }
