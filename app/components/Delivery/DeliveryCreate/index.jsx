@@ -18,7 +18,6 @@ class DeliveryCreate extends Component {
             receiverAddress: '',
             canStartAfter: new Date(),
             deposit: '0',
-            deliveryDeadline: new Date(Date.now() + 20 * 60 * 1000),
             userFee: '0',
             minutesDeflationRate: '0',
             temperaturePenalties: '0'
@@ -63,7 +62,11 @@ class DeliveryCreate extends Component {
     handleSubmit(e) {
         e.preventDefault()
         e.target.checkValidity()
-        this.props.dispatch(createDelivery(this.state, this.props.parcel.address))
+        const delivery = {
+            ...this.state,
+            deliveryDeadline: moment(this.props.maxMinutesPeriodContract * 60 * 1000 + Date.now()).toDate()
+        }
+        this.props.dispatch(createDelivery(delivery, this.props.parcel.address))
             .then(() => this.props.dispatch(replace(`/parcels/${this.props.params.address || ''}`)))
     }
     
@@ -142,115 +145,105 @@ class DeliveryCreate extends Component {
                             </Col>
                         </Row>
                     </Col>
-                    <Col xs={12}>
+                    <Col xs={12} md={6}>
                         <Row>
-                            <Col xs={12} md={6}>
-                                <Row>
-                                    <Col xs={6}>
-                                        <h4>From Postbox</h4>
-                                    </Col>
-                                    <Col xs={6}>
-                                        <Link to={postboxCreateUrl} className="pull-right">
-                                            <Button bsSize="small">
-                                                <FontAwesome name="plus"/> New Postbox
-                                            </Button>
-                                        </Link>
-                                    </Col>
-                                </Row>
-                                <FormGroup>
-                                    {createSelect('senderPostbox')}
-                                </FormGroup>
+                            <Col xs={6}>
+                                <h4>From Postbox</h4>
                             </Col>
-                            <Col xs={12} md={6}>
-                                <Row>
-                                    <Col xs={6}>
-                                        <h4>To Postbox</h4>
-                                    </Col>
-                                    <Col xs={6}>
-                                        <Link to={postboxCreateUrl} className="pull-right">
-                                            <Button bsSize="small">
-                                                <FontAwesome name="plus"/> New Postbox
-                                            </Button>
-                                        </Link>
-                                    </Col>
-                                </Row>
-                                <FormGroup>
-                                    {createSelect('receiverPostbox')}
-                                </FormGroup>
-                            </Col>
-                            <Col xs={12} md={6}>
-                                <FormGroup>
-                                    <ControlLabel>Receiver address</ControlLabel>
-                                    <FormControl
-                                        name="receiverAddress"
-                                        onChange={this.handleInputChange}
-                                        value={this.state.receiverAddress}
-                                        placeholder="0x"
-                                        disabled={this.props.fetching}
-                                    />
-                                </FormGroup>
-                            </Col>
-                            <Col xs={12} md={6}>
-                                <FormGroup>
-                                    <ControlLabel>Deposit (PASS)</ControlLabel>
-                                    <FormControl
-                                        name="deposit"
-                                        onChange={this.handleInputChange}
-                                        value={this.state.deposit}
-                                        placeholder="0"
-                                        disabled={this.props.fetching}
-                                    />
-                                </FormGroup>
-                            </Col>
-                            <Col xs={12} md={6}>
-                                <FormGroup>
-                                    <ControlLabel>Can start after</ControlLabel>
-                                    {createDatePicker('canStartAfter')}
-                                </FormGroup>
-                            </Col>
-                            <Col xs={12} md={6}>
-                                <FormGroup>
-                                    <ControlLabel>Delivery deadline</ControlLabel>
-                                    {createDatePicker('deliveryDeadline')}
-                                </FormGroup>
-                            </Col>
-                            <Col xs={12} md={6}>
-                                <FormGroup>
-                                    <ControlLabel>User Fee (ETH)</ControlLabel>
-                                    <FormControl
-                                        name="userFee"
-                                        onChange={this.handleInputChange}
-                                        value={this.state.userFee}
-                                        placeholder="0"
-                                        disabled={this.props.fetching}
-                                    />
-                                </FormGroup>
-                            </Col>
-                            <Col xs={12} md={6}>
-                                <FormGroup>
-                                    <ControlLabel>Deflation Rate (minutes)</ControlLabel>
-                                    <FormControl
-                                        name="minutesDeflationRate"
-                                        onChange={this.handleInputChange}
-                                        value={this.state.minutesDeflationRate}
-                                        placeholder="0"
-                                        disabled={this.props.fetching}
-                                    />
-                                </FormGroup>
-                            </Col>
-                            <Col xs={12} md={6}>
-                                <FormGroup>
-                                    <ControlLabel>Temperature Penalties (%)</ControlLabel>
-                                    <FormControl
-                                        name="temperaturePenalties"
-                                        onChange={this.handleInputChange}
-                                        value={this.state.temperaturePenalties}
-                                        placeholder="0"
-                                        disabled={this.props.fetching}
-                                    />
-                                </FormGroup>
+                            <Col xs={6}>
+                                <Link to={postboxCreateUrl} className="pull-right">
+                                    <Button bsSize="small">
+                                        <FontAwesome name="plus" /> New Postbox
+                                    </Button>
+                                </Link>
                             </Col>
                         </Row>
+                        <FormGroup>
+                            {createSelect('senderPostbox')}
+                        </FormGroup>
+                        <FormGroup>
+                            <ControlLabel>Receiver address</ControlLabel>
+                            <FormControl
+                                name="receiverAddress"
+                                onChange={this.handleInputChange}
+                                value={this.state.receiverAddress}
+                                placeholder="0x"
+                                disabled={this.props.fetching}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <ControlLabel>User Fee (ETH)</ControlLabel>
+                            <FormControl
+                                name="userFee"
+                                onChange={this.handleInputChange}
+                                value={this.state.userFee}
+                                placeholder="0"
+                                disabled={this.props.fetching}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <ControlLabel>Temperature Penalties (%)</ControlLabel>
+                            <FormControl
+                                name="temperaturePenalties"
+                                onChange={this.handleInputChange}
+                                value={this.state.temperaturePenalties}
+                                placeholder="0"
+                                disabled={this.props.fetching}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <ControlLabel>Can start after</ControlLabel>
+                            {createDatePicker('canStartAfter')}
+                        </FormGroup>
+                    </Col>
+                    <Col xs={12} md={6}>
+                        <Row>
+                            <Col xs={6}>
+                                <h4>To Postbox</h4>
+                            </Col>
+                            <Col xs={6}>
+                                <Link to={postboxCreateUrl} className="pull-right">
+                                    <Button bsSize="small">
+                                        <FontAwesome name="plus" /> New Postbox
+                                    </Button>
+                                </Link>
+                            </Col>
+                        </Row>
+                        <FormGroup>
+                            {createSelect('receiverPostbox')}
+                        </FormGroup>
+                        <FormGroup>
+                            <ControlLabel>Deposit (PASS)</ControlLabel>
+                            <FormControl
+                                name="deposit"
+                                onChange={this.handleInputChange}
+                                value={this.state.deposit}
+                                placeholder="0"
+                                disabled={this.props.fetching}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <ControlLabel>Deflation Rate (minutes)</ControlLabel>
+                            <FormControl
+                                name="minutesDeflationRate"
+                                onChange={this.handleInputChange}
+                                value={this.state.minutesDeflationRate}
+                                placeholder="0"
+                                disabled={this.props.fetching}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <ControlLabel>Delivery deadline</ControlLabel>
+                            <DateTime
+                                inputProps={{
+                                    name: 'deliveryDeadline',
+                                    disabled: this.props.fetching
+                                }}
+                                value={moment(this.props.maxMinutesPeriodContract * 60 * 1000 + Date.now())}
+                                dateFormat="MM-DD-YYYY"
+                                timeFormat="HH:mm:ss z"
+                            />
+                        </FormGroup>
                     </Col>
                     <Col xs={12}>
                         {this.props.fetching || !this.props.parcel ?
@@ -287,7 +280,7 @@ class DeliveryCreate extends Component {
     }
 }
 
-const {object, func, arrayOf, bool} = React.PropTypes
+const {object, func, arrayOf, bool, number } = React.PropTypes
 DeliveryCreate.propTypes = {
     location: object,
     dispatch: func,
@@ -295,14 +288,16 @@ DeliveryCreate.propTypes = {
     params: object,
     postboxes: arrayOf(object),
     parcel: object,
-    fetching: bool
+    fetching: bool,
+    maxMinutesPeriodContract: number
 }
 
 const mapStateToProps = ({postboxes, user, parcels, deliveries}, props) => ({
     postboxes: postboxes.list || [],
     user: user.user,
     parcel: parcels.list ? (parcels.list.find(p => p.address === props.params.address) || {}) : {},
-    fetching: Boolean(deliveries.fetching)
+    fetching: Boolean(deliveries.fetching),
+    maxMinutesPeriodContract: deliveries.maxMinutesPeriodContract || 666
 })
 
 export default connect(mapStateToProps, null)(DeliveryCreate)

@@ -4,7 +4,6 @@ import _ from 'lodash'
 
 import {deliveryContractCreatorABI, deliveryContractABI, parcelABI} from './abi'
 import {getAll as solidityGetProperties, at as solidityGetBy} from './solidity-getters'
-//import {getAll as solidityGetProperties, getIndexedPropAt as solidityGetBy} from './solidity-getters'
 import {waitForEvent} from './ethCall'
 
 
@@ -42,6 +41,12 @@ export function getDeliveryRange(startId, endId, deliveryContractCreatorAddress)
 export function getDeliveryMetadata(id, deliveryContractCreatorAddress) {
     const deliveryContractCreator = web3.eth.contract(deliveryContractCreatorABI).at(deliveryContractCreatorAddress)
     return solidityGetBy(id, deliveryContractCreator, 'contracts')
+}
+
+export function fetchMaxMinutesPeriodContract(deliveryContractCreatorAddress) {
+    return solidityGetProperties(deliveryContractCreatorABI, deliveryContractCreatorAddress).then(creator => {
+        return parseInt(creator.MaxMinutesPeriodContract)
+    })
 }
 
 export const getDeliveryContract = id => getDeliveryMetadata(id).then(d => solidityGetProperties(deliveryContractABI, d.address))

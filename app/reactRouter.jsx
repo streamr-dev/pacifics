@@ -18,7 +18,7 @@ import store, {history} from './store.js'
 
 import {getParcel, getAllParcels, getEvents, getPhotos} from './actions/parcel'
 import {getAllServices} from './actions/service'
-import {getAllDeliveries} from './actions/delivery'
+import {getAllDeliveries, getMaxMinutesPeriodContract} from './actions/delivery'
 import {getAllPostboxes} from './actions/postbox'
 
 export default class ReactRouter extends Component {
@@ -53,6 +53,7 @@ export default class ReactRouter extends Component {
                         <Route path="/parcels/:address/deliveries/create" components={DeliveryCreate} onEnter={location => {
                             store.dispatch(getParcel(location.params.address))
                             store.dispatch(getAllPostboxes())
+                            store.dispatch(getMaxMinutesPeriodContract())
                         }}/>
                         <Route path="/postboxes/create" components={PostboxesCreate}/>
                     </Route>

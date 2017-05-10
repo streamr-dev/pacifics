@@ -5,7 +5,8 @@ import {
     CREATE_DELIVERY_FAILURE,
     GET_ALL_DELIVERIES_REQUEST,
     GET_ALL_DELIVERIES_SUCCESS,
-    GET_ALL_DELIVERIES_FAILURE
+    GET_ALL_DELIVERIES_FAILURE,
+    GET_MAX_MINUTES_PERIOD_CONTRACT_SUCCESS
 } from '../actions/delivery.js'
 
 export default (state = {
@@ -39,6 +40,11 @@ export default (state = {
                 ...state,
                 error: action.error.toString(),
                 fetching: false
+            }
+        case GET_MAX_MINUTES_PERIOD_CONTRACT_SUCCESS:
+            return {
+                ...state,
+                maxMinutesPeriodContract: action.maxMinutesPeriodContract
             }
         default:
             return state

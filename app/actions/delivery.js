@@ -1,4 +1,4 @@
-import { createDeliveryContract, getAllDeliveryContracts } from '../src/deliveryContract'
+import { createDeliveryContract, getAllDeliveryContracts, fetchMaxMinutesPeriodContract } from '../src/deliveryContract'
 import store from '../store'
 
 export const GET_ALL_DELIVERIES_REQUEST = 'GET_ALL_DELIVERIES_REQUEST'
@@ -12,6 +12,8 @@ export const CREATE_DELIVERY_FAILURE = 'CREATE_DELIVERY_FAILURE'
 export const SIGN_DELIVERY_REQUEST = 'SIGN_DELIVERY_REQUEST'
 export const SIGN_DELIVERY_SUCCESS = 'SIGN_DELIVERY_SUCCESS'
 export const SIGN_DELIVERY_FAILURE = 'SIGN_DELIVERY_FAILURE'
+
+export const GET_MAX_MINUTES_PERIOD_CONTRACT_SUCCESS = 'GET_MAX_MINUTES_PERIOD_CONTRACT_SUCCESS'
 
 export const getAllDeliveries = () => dispatch => {
     const deliveryCreatorAddress = store.getState().user.user.service.deliveryCreatorAddress
@@ -60,6 +62,17 @@ export const createDelivery = (delivery, parcelAddress) => dispatch => {
     })
 }
 
+export const getMaxMinutesPeriodContract = () => dispatch => {
+    const deliveryCreatorAddress = store.getState().user.user.service.deliveryCreatorAddress
+    fetchMaxMinutesPeriodContract(deliveryCreatorAddress).then(maxMinutesPeriodContract => {
+        dispatch(getMaxMinutesPeriodContractSuccess(maxMinutesPeriodContract))
+    })
+}
+
+const getMaxMinutesPeriodContractSuccess = maxMinutesPeriodContract => ({
+    type: GET_MAX_MINUTES_PERIOD_CONTRACT_SUCCESS,
+    maxMinutesPeriodContract: maxMinutesPeriodContract
+})
 
 const getAllDeliveriesRequest = () => ({
     type: GET_ALL_DELIVERIES_REQUEST
