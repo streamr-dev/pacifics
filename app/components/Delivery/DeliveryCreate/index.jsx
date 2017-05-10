@@ -4,7 +4,7 @@ import { Row, Col, FormGroup, Form, ControlLabel, FormControl, Button, Breadcrum
 import FontAwesome from 'react-fontawesome'
 import { connect } from 'react-redux'
 import { replace } from 'react-router-redux'
-import { createDelivery } from '../../../actions/delivery'
+import { createDelivery, updateDeliveryDeadline } from '../../../actions/delivery'
 import moment from 'moment'
 import DateTime from 'react-datetime'
 import 'react-datetime/css/react-datetime.css'
@@ -64,10 +64,14 @@ class DeliveryCreate extends Component {
         e.target.checkValidity()
         const delivery = {
             ...this.state,
-            deliveryDeadline: moment(this.props.maxMinutesPeriodContract * 60 * 1000 + Date.now()).toDate()
+            deliveryDeadline: moment(this.props.deliveryDeadline).toDate()
         }
         this.props.dispatch(createDelivery(delivery, this.props.parcel.address))
             .then(() => this.props.dispatch(replace(`/parcels/${this.props.params.address || ''}`)))
+    }
+
+    handleDeliveryDeadlineChange(date) {
+        this.props.dispatch(updateDeliveryDeadline(date))
     }
     
     render() {
@@ -239,7 +243,13 @@ class DeliveryCreate extends Component {
                                     name: 'deliveryDeadline',
                                     disabled: this.props.fetching
                                 }}
-                                value={moment(this.props.maxMinutesPeriodContract * 60 * 1000 + Date.now())}
+                                value={this.props.deliveryDeadline}
+                                onBlur={this.handleDeliveryDeadlineChange.bind(this)}
+                                onChange={date => {
+                                    if (date instanceof moment) {
+                                        this.handleDeliveryDeadlineChange(date.format('MM-DD-YYYY HH:mm:ss z'))
+                                    }
+                                }}
                                 dateFormat="MM-DD-YYYY"
                                 timeFormat="HH:mm:ss z"
                             />
@@ -280,7 +290,7 @@ class DeliveryCreate extends Component {
     }
 }
 
-const {object, func, arrayOf, bool, number } = React.PropTypes
+const {object, func, arrayOf, bool, string } = React.PropTypes
 DeliveryCreate.propTypes = {
     location: object,
     dispatch: func,
@@ -289,7 +299,7 @@ DeliveryCreate.propTypes = {
     postboxes: arrayOf(object),
     parcel: object,
     fetching: bool,
-    maxMinutesPeriodContract: number
+    deliveryDeadline: string
 }
 
 const mapStateToProps = ({postboxes, user, parcels, deliveries}, props) => ({
@@ -297,7 +307,7 @@ const mapStateToProps = ({postboxes, user, parcels, deliveries}, props) => ({
     user: user.user,
     parcel: parcels.list ? (parcels.list.find(p => p.address === props.params.address) || {}) : {},
     fetching: Boolean(deliveries.fetching),
-    maxMinutesPeriodContract: deliveries.maxMinutesPeriodContract || 666
+    deliveryDeadline: deliveries.deliveryDeadline
 })
 
 export default connect(mapStateToProps, null)(DeliveryCreate)

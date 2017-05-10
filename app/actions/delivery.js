@@ -1,5 +1,6 @@
 import { createDeliveryContract, getAllDeliveryContracts, fetchMaxMinutesPeriodContract } from '../src/deliveryContract'
 import store from '../store'
+import moment from 'moment'
 
 export const GET_ALL_DELIVERIES_REQUEST = 'GET_ALL_DELIVERIES_REQUEST'
 export const GET_ALL_DELIVERIES_SUCCESS = 'GET_ALL_DELIVERIES_SUCCESS'
@@ -13,7 +14,7 @@ export const SIGN_DELIVERY_REQUEST = 'SIGN_DELIVERY_REQUEST'
 export const SIGN_DELIVERY_SUCCESS = 'SIGN_DELIVERY_SUCCESS'
 export const SIGN_DELIVERY_FAILURE = 'SIGN_DELIVERY_FAILURE'
 
-export const GET_MAX_MINUTES_PERIOD_CONTRACT_SUCCESS = 'GET_MAX_MINUTES_PERIOD_CONTRACT_SUCCESS'
+export const GET_DELIVERY_DEADLINE = 'GET_DELIVERY_DEADLINE'
 
 export const getAllDeliveries = () => dispatch => {
     const deliveryCreatorAddress = store.getState().user.user.service.deliveryCreatorAddress
@@ -44,8 +45,7 @@ export const createDelivery = (delivery, parcelAddress) => dispatch => {
     const userFeeETH = delivery.userFee ? parseFloat(delivery.userFee.replace(',', '.')) : 0
     const minutesDeflationRate = delivery.minutesDeflationRate ? parseFloat(delivery.minutesDeflationRate.replace(',', '.')) : 0
     const temperaturePenalties = delivery.temperaturePenalties ? parseFloat(delivery.temperaturePenalties.replace(',', '.')) : 0
-    
-    const deliveryCreatorAddress = store.getState().user.user.service.deliveryCreatorAddress
+
     dispatch(createDeliveryRequest())
     
     // Timeout is a hack for a bug, where if deliveries are fetched right after creating a new one, the new one is not returned
@@ -65,13 +65,17 @@ export const createDelivery = (delivery, parcelAddress) => dispatch => {
 export const getMaxMinutesPeriodContract = () => dispatch => {
     const deliveryCreatorAddress = store.getState().user.user.service.deliveryCreatorAddress
     fetchMaxMinutesPeriodContract(deliveryCreatorAddress).then(maxMinutesPeriodContract => {
-        dispatch(getMaxMinutesPeriodContractSuccess(maxMinutesPeriodContract))
+        dispatch(getDeliveryDeadline(moment(maxMinutesPeriodContract * 60 * 1000 + Date.now()).format('MM-DD-YYYY HH:mm:ss z')))
     })
 }
 
-const getMaxMinutesPeriodContractSuccess = maxMinutesPeriodContract => ({
-    type: GET_MAX_MINUTES_PERIOD_CONTRACT_SUCCESS,
-    maxMinutesPeriodContract: maxMinutesPeriodContract
+export const updateDeliveryDeadline = deliveryDeadline => dispatch => {
+    return dispatch(getDeliveryDeadline(deliveryDeadline))
+}
+
+const getDeliveryDeadline = deliveryDeadline => ({
+    type: GET_DELIVERY_DEADLINE,
+    deliveryDeadline: deliveryDeadline
 })
 
 const getAllDeliveriesRequest = () => ({
@@ -98,19 +102,5 @@ const createDeliverySuccess = () => ({
 
 const createDeliveryFailure = error => ({
     type: CREATE_DELIVERY_FAILURE,
-    error
-})
-
-const signDeliveryRequest = () => ({
-    type: SIGN_DELIVERY_REQUEST
-})
-
-const signDeliverySuccess = delivery => ({
-    type: SIGN_DELIVERY_SUCCESS,
-    delivery
-})
-
-const signDeliveryFailure = error => ({
-    type: SIGN_DELIVERY_FAILURE,
     error
 })
