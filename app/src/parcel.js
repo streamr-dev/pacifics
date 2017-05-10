@@ -89,16 +89,7 @@ export function createParcelContract(name, description, temperatureLimit, parcel
                 return reject(err)
             }
             waitForEvent('NewParcel', parcelCreatorAddress, parcelCreatorABI, tx).then(event => {
-                const newParcelEvent = event.args
-                const newParcel = web3.eth.contract(parcelABI).at(newParcelEvent.ParcelAddress)
-                newParcel.setStreams(trackingStreamId, trackingStreamKey, photoStreamId, photoStreamKey, (err, tx2 => {
-                    if (err) {
-                        return reject(err)
-                    }
-                    waitForEvent('StreamsSet', newParcelEvent.ParcelAddress, parcelABI, tx2).then(() => {
-                        resolve(newParcelEvent)
-                    })
-                }))
+                resolve(event.args)
             })
         })
     })
