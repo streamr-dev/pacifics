@@ -41,8 +41,9 @@ export default class ReactRouter extends Component {
                         }/>
                         <Route path="/parcels/create" component={ParcelsCreate}/>
                         <Route path="/parcels/:address" component={ParcelsShow} onEnter={location => {
+                            const deliveryCreatorAddress = store.getState().user.user.service.deliveryCreatorAddress
                             store.dispatch(getParcel(location.params.address))
-                            store.dispatch(getAllDeliveries())
+                            store.dispatch(getAllDeliveries(deliveryCreatorAddress))
                             store.dispatch(getAllPostboxes())
                         }}/>
                         <Route path="/parcels/:address/track" component={ParcelsTrack} onEnter={location => {
@@ -51,9 +52,10 @@ export default class ReactRouter extends Component {
                             store.dispatch(getPhotos(location.params.address))
                         }}/>
                         <Route path="/parcels/:address/deliveries/create" components={DeliveryCreate} onEnter={location => {
+                            const deliveryCreatorAddress = store.getState().user.user.service.deliveryCreatorAddress
                             store.dispatch(getParcel(location.params.address))
                             store.dispatch(getAllPostboxes())
-                            store.dispatch(getMaxMinutesPeriodContract())
+                            store.dispatch(getMaxMinutesPeriodContract(deliveryCreatorAddress))
                         }}/>
                         <Route path="/postboxes/create" components={PostboxesCreate}/>
                     </Route>

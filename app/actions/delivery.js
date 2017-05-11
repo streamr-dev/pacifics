@@ -1,5 +1,4 @@
 import { createDeliveryContract, getAllDeliveryContracts, fetchMaxMinutesPeriodContract } from '../src/deliveryContract'
-import store from '../store'
 import moment from 'moment'
 
 export const GET_ALL_DELIVERIES_REQUEST = 'GET_ALL_DELIVERIES_REQUEST'
@@ -14,10 +13,9 @@ export const SIGN_DELIVERY_REQUEST = 'SIGN_DELIVERY_REQUEST'
 export const SIGN_DELIVERY_SUCCESS = 'SIGN_DELIVERY_SUCCESS'
 export const SIGN_DELIVERY_FAILURE = 'SIGN_DELIVERY_FAILURE'
 
-export const GET_DELIVERY_DEADLINE = 'GET_DELIVERY_DEADLINE'
+export const GET_DELIVERY_DEADLINE_SUCCESS = 'GET_DELIVERY_DEADLINE_SUCCESS'
 
-export const getAllDeliveries = () => dispatch => {
-    const deliveryCreatorAddress = store.getState().user.user.service.deliveryCreatorAddress
+export const getAllDeliveries = deliveryCreatorAddress => dispatch => {
     dispatch(getAllDeliveriesRequest())
     return new Promise((resolve, reject) => {
         getAllDeliveryContracts(deliveryCreatorAddress)
@@ -62,20 +60,24 @@ export const createDelivery = (delivery, parcelAddress) => dispatch => {
     })
 }
 
-export const getMaxMinutesPeriodContract = () => dispatch => {
-    const deliveryCreatorAddress = store.getState().user.user.service.deliveryCreatorAddress
-    fetchMaxMinutesPeriodContract(deliveryCreatorAddress).then(maxMinutesPeriodContract => {
-        dispatch(getDeliveryDeadline(moment(maxMinutesPeriodContract * 60 * 1000 + Date.now()).format('MM-DD-YYYY HH:mm:ss z')))
-    })
+export const getMaxMinutesPeriodContract = deliveryCreatorAddress => dispatch => {
+    return fetchMaxMinutesPeriodContract(deliveryCreatorAddress)
+        .then(maxMinutesPeriodContract => {
+            return Promise.resolve(moment().add(maxMinutesPeriodContract, 'minutes')
+                .format('MM-DD-YYYY HH:mm:ss z'))
+        })
+        .then(formattedDate => {
+            dispatch(getDeliveryDeadlineSuccess(formattedDate))
+        })
 }
 
 export const updateDeliveryDeadline = deliveryDeadline => dispatch => {
-    return dispatch(getDeliveryDeadline(deliveryDeadline))
+    return dispatch(getDeliveryDeadlineSuccess(deliveryDeadline))
 }
 
-const getDeliveryDeadline = deliveryDeadline => ({
-    type: GET_DELIVERY_DEADLINE,
-    deliveryDeadline: deliveryDeadline
+const getDeliveryDeadlineSuccess = deliveryDeadline => ({
+    type: GET_DELIVERY_DEADLINE_SUCCESS,
+    deliveryDeadline
 })
 
 const getAllDeliveriesRequest = () => ({

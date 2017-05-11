@@ -6,7 +6,7 @@ import {
     GET_ALL_DELIVERIES_REQUEST,
     GET_ALL_DELIVERIES_SUCCESS,
     GET_ALL_DELIVERIES_FAILURE,
-    GET_DELIVERY_DEADLINE
+    GET_DELIVERY_DEADLINE_SUCCESS
 } from '../actions/delivery.js'
 
 export default (state = {
@@ -41,7 +41,7 @@ export default (state = {
                 error: action.error.toString(),
                 fetching: false
             }
-        case GET_DELIVERY_DEADLINE:
+        case GET_DELIVERY_DEADLINE_SUCCESS:
             return {
                 ...state,
                 deliveryDeadline: action.deliveryDeadline
