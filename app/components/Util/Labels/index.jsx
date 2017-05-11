@@ -42,7 +42,7 @@ export class AgeLabel extends Component {
     }
     render() {
         const now = moment(this.state.now)
-        const then = moment(this.props.date, this.props.inputFormat)
+        const then = moment(this.props.date)
         return (
             <span>
                 {moment.duration(now.diff(then)).asDays() < 5 ? moment.duration(now.diff(then)).humanize() + ' ago' : then.format(this.props.outputFormat)}
