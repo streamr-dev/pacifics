@@ -27,15 +27,15 @@ DateLabel.defaultProps = {
 export class AgeLabel extends Component {
     constructor() {
         super()
+        this.interval = 500
         this.state = {
-            interval: 500,
             now: Date.now()
         }
     }
     componentDidMount() {
         this.timeout = setInterval(() => this.setState({
             now: Date.now()
-        }), this.state.interval)
+        }), this.interval)
     }
     componentWillUnmount() {
         clearInterval(this.timeout)
@@ -45,7 +45,7 @@ export class AgeLabel extends Component {
         const then = moment(this.props.date, this.props.inputFormat)
         return (
             <span>
-                {moment.duration(now.diff(then)).asDays() < 5 ? moment.duration(now.diff(then)).humanize() : then.format(this.props.outputFormat)}
+                {moment.duration(now.diff(then)).asDays() < 5 ? moment.duration(now.diff(then)).humanize() + ' ago' : then.format(this.props.outputFormat)}
             </span>
         )
     }
