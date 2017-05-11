@@ -63,7 +63,7 @@ class ParcelTrack extends Component {
                     <Panel header="Parcel images">
                         <ListGroup>
                             {photos.map(img => (
-                                <ListGroupItem href={`/parcels/${this.props.parcel.address}/photos/${img.ipfsHash}`}
+                                <ListGroupItem href={`/parcel/${this.props.parcel.address}/photos/${img.ipfsHash}`}
                                                key={img.ipfsHash}>
                                     <AgeLabel date={img.createdAt} inputFormat="YYYY-MM-DD HH:mm:ss"/>
                                 </ListGroupItem>
