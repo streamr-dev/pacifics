@@ -88,7 +88,7 @@ export const getEvents = parcelAddress => dispatch => {
             getBlockDate(parseInt(e.blockNumber))
                 .then(blockDate => {
                     dispatch(addEvent(parcelAddress, {
-                        id: e.transactionHash + e.transactionIndex,
+                        id: e.transactionHash + e.transactionIndex + e.event,
                         time: new Date(blockDate * 1000),
                         event: unCamelCase(e.event)
                     }))
