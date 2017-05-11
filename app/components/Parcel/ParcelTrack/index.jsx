@@ -1,14 +1,13 @@
 import React, {Component, PropTypes} from 'react'
-import moment from 'moment'
 import {Row, Col, Panel, Table, Breadcrumb, ListGroup, ListGroupItem} from 'react-bootstrap'
 import {connect} from 'react-redux'
+import {AgeLabel} from '../../Util/Labels'
 
 class ParcelTrack extends Component {
-
+    
     render() {
         const events = this.props.parcel.events ? this.props.parcel.events.sort((a, b) => b.time.getTime() - a.time.getTime()) : []
         const photos = this.props.parcel.photos || []
-        const formatTime = time => moment.duration(moment().diff(moment(time))).asDays() < 5 ? moment(time).fromNow() : moment(time).format('MM-DD-YYYY HH:mm')
         return (
             <Row>
                 <Breadcrumb>
@@ -31,15 +30,15 @@ class ParcelTrack extends Component {
                     <Panel header="Event log">
                         <Table>
                             <thead>
-                                <tr>
-                                    <th>Time</th>
-                                    <th>Event</th>
-                                </tr>
+                            <tr>
+                                <th>Time</th>
+                                <th>Event</th>
+                            </tr>
                             </thead>
                             <tbody>
                             {events.map(e => (
                                 <tr key={e.id}>
-                                    <td>{formatTime(e.time)}</td>
+                                    <td><AgeLabel date={e.time}/></td>
                                     <td>{e.event}</td>
                                 </tr>
                             ))}
@@ -56,15 +55,17 @@ class ParcelTrack extends Component {
                 </Col>
                 <Col xs={12} md={6}>
                     <Panel header="Parcel location">
-                        <streamr-map url={'https://eth.streamr.com/api/v1/canvases/Zac64v1SQzy7QlHIAm6ecA4a-0NYa5S2ShGkfSQazLAw/modules/1/keys/' + this.props.params.address + '/modules/2'} />
+                        <streamr-map
+                            url={'https://eth.streamr.com/api/v1/canvases/Zac64v1SQzy7QlHIAm6ecA4a-0NYa5S2ShGkfSQazLAw/modules/1/keys/' + this.props.params.address + '/modules/2'}/>
                     </Panel>
                 </Col>
                 <Col xs={12} md={6}>
                     <Panel header="Parcel images">
                         <ListGroup>
                             {photos.map(img => (
-                                <ListGroupItem href={`/parcels/${this.props.parcel.address}/photos/${img.ipfsHash}`} key={img.ipfsHash}>
-                                    {formatTime(img.createdAt)}
+                                <ListGroupItem href={`/parcels/${this.props.parcel.address}/photos/${img.ipfsHash}`}
+                                               key={img.ipfsHash}>
+                                    <AgeLabel date={img.createdAt}/>
                                 </ListGroupItem>
                             ))}
                         </ListGroup>
@@ -72,7 +73,8 @@ class ParcelTrack extends Component {
                 </Col>
                 <Col xs={12} md={6}>
                     <Panel header="Parcel metrics">
-                        <streamr-chart url={'https://eth.streamr.com/api/v1/canvases/Zac64v1SQzy7QlHIAm6ecA4a-0NYa5S2ShGkfSQazLAw/modules/1/keys/' + this.props.params.address + '/modules/1'} />
+                        <streamr-chart
+                            url={'https://eth.streamr.com/api/v1/canvases/Zac64v1SQzy7QlHIAm6ecA4a-0NYa5S2ShGkfSQazLAw/modules/1/keys/' + this.props.params.address + '/modules/1'}/>
                     </Panel>
                 </Col>
             </Row>
