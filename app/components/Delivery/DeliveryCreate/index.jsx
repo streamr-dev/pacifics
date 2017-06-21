@@ -227,7 +227,7 @@ class DeliveryCreate extends Component {
                             />
                         </FormGroup>
                         <FormGroup>
-                            <ControlLabel>Deflation Rate (minutes)</ControlLabel>
+                            <ControlLabel>Deflation Rate (%/min)</ControlLabel>
                             <FormControl
                                 name="minutesDeflationRate"
                                 onChange={this.handleInputChange}
